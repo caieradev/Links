@@ -1,0 +1,51 @@
+import { createClient } from '@/lib/supabase/server'
+import { SettingsForm } from '@/components/dashboard/settings-form'
+
+export const metadata = {
+  title: 'Configuracoes - Links',
+  description: 'Configure sua conta',
+}
+
+export default async function SettingsPage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    return null
+  }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', user.id)
+    .single()
+
+  const { data: domains } = await supabase
+    .from('custom_domains')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
+
+  const { data: flags } = await supabase
+    .from('feature_flags')
+    .select('*')
+    .eq('user_id', user.id)
+    .single()
+
+  if (!profile) {
+    return null
+  }
+
+  const appDomain = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+
+  return (
+    <div className="max-w-3xl mx-auto">
+      <SettingsForm
+        profile={profile}
+        domains={domains ?? []}
+        flags={flags}
+        appDomain={appDomain}
+      />
+    </div>
+  )
+}
