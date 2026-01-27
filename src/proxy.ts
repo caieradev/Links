@@ -40,11 +40,24 @@ export async function proxy(request: NextRequest) {
   const hostname = request.headers.get('host') || ''
   const mainDomain = process.env.NEXT_PUBLIC_APP_DOMAIN || 'localhost:3000'
 
-  if (!hostname.includes(mainDomain) && !hostname.includes('localhost')) {
-    // Custom domain detected - rewrite to custom domain handler
-    const url = request.nextUrl.clone()
-    url.pathname = `/_custom-domain/${hostname}${pathname}`
-    return NextResponse.rewrite(url)
+  // Check if this is a custom domain (not main domain, localhost, or vercel.app)
+  const isCustomDomain = !hostname.includes(mainDomain) &&
+                         !hostname.includes('localhost') &&
+                         !hostname.includes('vercel.app')
+
+  if (isCustomDomain) {
+    // Extract just the domain without port
+    const customDomain = hostname.split(':')[0]
+
+    // Custom domains only serve the root page
+    if (pathname === '/' || pathname === '') {
+      const url = request.nextUrl.clone()
+      url.pathname = `/_custom-domain/${customDomain}`
+      return NextResponse.rewrite(url)
+    }
+
+    // Any other path on custom domain returns 404
+    return NextResponse.rewrite(new URL('/_not-found', request.url))
   }
 
   // Protected routes - redirect to login if not authenticated

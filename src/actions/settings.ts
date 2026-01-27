@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { addDomainToVercel, removeDomainFromVercel, verifyDomainOnVercel, getVercelDomainConfig } from '@/lib/vercel'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
@@ -111,6 +112,12 @@ export async function addCustomDomain(
   // Generate verification token
   const verificationToken = crypto.randomBytes(16).toString('hex')
 
+  // Add domain to Vercel first
+  const vercelResult = await addDomainToVercel(domain)
+  if (!vercelResult.success) {
+    return { error: vercelResult.error || 'Erro ao configurar dominio no servidor' }
+  }
+
   const { error } = await supabase.from('custom_domains').insert({
     user_id: user.id,
     domain,
@@ -119,6 +126,8 @@ export async function addCustomDomain(
   })
 
   if (error) {
+    // Rollback: remove from Vercel if DB insert fails
+    await removeDomainFromVercel(domain)
     return { error: 'Erro ao adicionar dominio' }
   }
 
@@ -134,22 +143,32 @@ export async function verifyDomain(domainId: string): Promise<SettingsState> {
     return { error: 'Nao autenticado' }
   }
 
-  const { data: domain } = await supabase
+  const { data: domainData } = await supabase
     .from('custom_domains')
     .select('*')
     .eq('id', domainId)
     .eq('user_id', user.id)
     .single()
 
-  if (!domain) {
+  if (!domainData) {
     return { error: 'Dominio nao encontrado' }
   }
 
-  // In production, you would actually verify DNS here
-  // For now, we'll just mark it as verified for demo purposes
-  // Real implementation would check:
-  // 1. CNAME record pointing to the app domain
-  // 2. TXT record with verification token
+  // Verify domain configuration on Vercel
+  const vercelVerify = await verifyDomainOnVercel(domainData.domain)
+
+  if (!vercelVerify.success) {
+    // Check if DNS is at least configured
+    const configCheck = await getVercelDomainConfig(domainData.domain)
+
+    if (!configCheck.configured) {
+      return { error: 'DNS nao configurado. Adicione um CNAME apontando para cname.vercel-dns.com' }
+    }
+
+    if (!configCheck.verified) {
+      return { error: 'Aguardando propagacao do DNS. Tente novamente em alguns minutos.' }
+    }
+  }
 
   const { error } = await supabase
     .from('custom_domains')
@@ -172,6 +191,19 @@ export async function deleteDomain(domainId: string): Promise<SettingsState> {
     return { error: 'Nao autenticado' }
   }
 
+  // Get domain name first to remove from Vercel
+  const { data: domainData } = await supabase
+    .from('custom_domains')
+    .select('domain')
+    .eq('id', domainId)
+    .eq('user_id', user.id)
+    .single()
+
+  if (!domainData) {
+    return { error: 'Dominio nao encontrado' }
+  }
+
+  // Remove from database
   const { error } = await supabase
     .from('custom_domains')
     .delete()
@@ -181,6 +213,9 @@ export async function deleteDomain(domainId: string): Promise<SettingsState> {
   if (error) {
     return { error: 'Erro ao remover dominio' }
   }
+
+  // Remove from Vercel (don't fail if this fails, domain is already removed from DB)
+  await removeDomainFromVercel(domainData.domain)
 
   revalidatePath('/settings')
   return { success: 'Dominio removido com sucesso' }

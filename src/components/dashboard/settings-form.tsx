@@ -214,21 +214,27 @@ export function SettingsForm({ profile, domains, flags, appDomain }: SettingsFor
             )}
 
             {domains.some((d) => !d.is_verified) && (
-              <div className="p-4 bg-muted/50 rounded-lg space-y-2">
+              <div className="p-4 bg-muted/50 rounded-lg space-y-3">
                 <h4 className="font-medium">Configuracao DNS</h4>
                 <p className="text-sm text-muted-foreground">
-                  Para verificar seu dominio, adicione os seguintes registros DNS:
+                  Para verificar seu dominio, adicione o seguinte registro DNS no seu provedor:
                 </p>
                 <div className="space-y-2 text-sm">
-                  <div className="p-2 bg-background rounded">
-                    <strong>CNAME:</strong> @ ou www → {appDomain}
-                  </div>
-                  {domains.filter((d) => !d.is_verified).map((domain) => (
-                    <div key={domain.id} className="p-2 bg-background rounded">
-                      <strong>TXT:</strong> _links-verify.{domain.domain} →{' '}
-                      {domain.verification_token}
+                  <div className="p-3 bg-background rounded border">
+                    <div className="grid grid-cols-3 gap-2 text-muted-foreground text-xs mb-1">
+                      <span>Tipo</span>
+                      <span>Nome</span>
+                      <span>Valor</span>
                     </div>
-                  ))}
+                    <div className="grid grid-cols-3 gap-2 font-mono">
+                      <span>CNAME</span>
+                      <span>@ ou www</span>
+                      <span className="break-all">cname.vercel-dns.com</span>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    A propagacao do DNS pode levar ate 48 horas. Apos configurar, clique em &quot;Verificar&quot;.
+                  </p>
                 </div>
               </div>
             )}
