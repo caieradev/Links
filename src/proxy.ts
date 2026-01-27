@@ -52,7 +52,7 @@ export async function proxy(request: NextRequest) {
     // Custom domains only serve the root page
     if (pathname === '/' || pathname === '') {
       const url = request.nextUrl.clone()
-      url.pathname = `/_custom-domain/${customDomain}`
+      url.pathname = `/d/${customDomain}`
       return NextResponse.rewrite(url)
     }
 

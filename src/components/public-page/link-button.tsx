@@ -34,8 +34,13 @@ export function LinkButton({ link, settings }: LinkButtonProps) {
 
   const getLinkClasses = () => {
     const classes = [
-      'block w-full p-4 text-center font-medium transition-all duration-200',
+      'block w-full p-4 font-medium transition-all duration-200',
     ]
+
+    // Center text only if no thumbnail
+    if (!link.thumbnail_url) {
+      classes.push('text-center')
+    }
 
     switch (settings.link_style) {
       case 'rounded':
@@ -78,9 +83,27 @@ export function LinkButton({ link, settings }: LinkButtonProps) {
       className={getLinkClasses()}
       style={getLinkStyle()}
     >
-      {link.title}
-      {link.description && (
-        <span className="block text-sm opacity-75 mt-1">{link.description}</span>
+      {link.thumbnail_url ? (
+        <div className="flex items-center gap-3">
+          <img
+            src={link.thumbnail_url}
+            alt=""
+            className="w-12 h-12 rounded object-cover flex-shrink-0"
+          />
+          <div className="flex-1 text-left min-w-0">
+            <span className="block truncate">{link.title}</span>
+            {link.description && (
+              <span className="block text-sm opacity-75 truncate">{link.description}</span>
+            )}
+          </div>
+        </div>
+      ) : (
+        <>
+          {link.title}
+          {link.description && (
+            <span className="block text-sm opacity-75 mt-1">{link.description}</span>
+          )}
+        </>
       )}
     </a>
   )
