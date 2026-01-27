@@ -193,9 +193,9 @@ export function CreateLinkDialog({ flags }: CreateLinkDialogProps) {
           onOpenChange={setCropperOpen}
           imageSrc={selectedImage}
           onCropComplete={handleCropComplete}
-          aspectRatio={16 / 9}
-          circularCrop={false}
-          outputWidth={800}
+          aspectRatio={1}
+          circularCrop={true}
+          outputWidth={200}
         />
       )}
     </>

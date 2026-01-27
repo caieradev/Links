@@ -3,6 +3,7 @@
 import { useTransition } from 'react'
 import { trackLinkClick } from '@/actions/analytics'
 import { cn } from '@/lib/utils'
+import { detectSocialIcon, getSocialIconSvg } from '@/lib/social-icons'
 import type { Link, PageSettings } from '@/types/database'
 
 interface LinkButtonProps {
@@ -19,6 +20,15 @@ export function LinkButton({ link, settings }: LinkButtonProps) {
     })
   }
 
+  // Detect social media icon from URL
+  const socialInfo = detectSocialIcon(link.url)
+  const socialIconSvg = socialInfo ? getSocialIconSvg(socialInfo.icon) : null
+
+  // Determine what icon/image to show
+  const hasCustomThumbnail = !!link.thumbnail_url
+  const hasSocialIcon = !!socialIconSvg
+  const hasIcon = hasCustomThumbnail || hasSocialIcon
+
   const getLinkStyle = () => {
     const baseStyle: React.CSSProperties = {
       backgroundColor: settings.link_background_color,
@@ -34,11 +44,11 @@ export function LinkButton({ link, settings }: LinkButtonProps) {
 
   const getLinkClasses = () => {
     const classes = [
-      'block w-full p-4 font-medium transition-all duration-200',
+      'block w-full p-4 lg:p-5 font-medium lg:text-lg transition-all duration-200',
     ]
 
-    // Center text only if no thumbnail
-    if (!link.thumbnail_url) {
+    // Center text only if no icon
+    if (!hasIcon) {
       classes.push('text-center')
     }
 
@@ -74,6 +84,35 @@ export function LinkButton({ link, settings }: LinkButtonProps) {
     return cn(classes)
   }
 
+  const renderIcon = () => {
+    if (hasCustomThumbnail) {
+      return (
+        <img
+          src={link.thumbnail_url!}
+          alt=""
+          className="w-10 h-10 lg:w-12 lg:h-12 rounded-full object-cover flex-shrink-0"
+        />
+      )
+    }
+
+    if (hasSocialIcon) {
+      return (
+        <div
+          className="w-10 h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center flex-shrink-0"
+          style={{ backgroundColor: settings.text_color + '15' }}
+        >
+          <div
+            className="w-5 h-5 lg:w-6 lg:h-6"
+            style={{ color: settings.link_text_color }}
+            dangerouslySetInnerHTML={{ __html: socialIconSvg! }}
+          />
+        </div>
+      )
+    }
+
+    return null
+  }
+
   return (
     <a
       href={link.url}
@@ -83,13 +122,9 @@ export function LinkButton({ link, settings }: LinkButtonProps) {
       className={getLinkClasses()}
       style={getLinkStyle()}
     >
-      {link.thumbnail_url ? (
+      {hasIcon ? (
         <div className="flex items-center gap-3">
-          <img
-            src={link.thumbnail_url}
-            alt=""
-            className="w-12 h-12 rounded object-cover flex-shrink-0"
-          />
+          {renderIcon()}
           <div className="flex-1 text-left min-w-0">
             <span className="block truncate">{link.title}</span>
             {link.description && (

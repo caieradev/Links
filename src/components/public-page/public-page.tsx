@@ -41,11 +41,11 @@ export function PublicPage({ profile, links, settings, flags }: PublicPageProps)
   const getAvatarSize = () => {
     switch (settings.avatar_size) {
       case 'small':
-        return 'h-16 w-16'
+        return 'h-16 w-16 lg:h-20 lg:w-20'
       case 'large':
-        return 'h-32 w-32'
+        return 'h-32 w-32 lg:h-40 lg:w-40'
       default:
-        return 'h-24 w-24'
+        return 'h-24 w-24 lg:h-32 lg:w-32'
     }
   }
 
@@ -79,7 +79,7 @@ export function PublicPage({ profile, links, settings, flags }: PublicPageProps)
         />
       )}
 
-      <div className="relative z-10 container max-w-md mx-auto px-4 py-12">
+      <div className="relative z-10 container max-w-md lg:max-w-lg mx-auto px-4 py-12 lg:py-16">
         <div className="flex flex-col items-center text-center">
           {/* Avatar */}
           {settings.show_avatar && (
@@ -96,7 +96,7 @@ export function PublicPage({ profile, links, settings, flags }: PublicPageProps)
 
           {/* Display Name */}
           <h1
-            className="text-2xl font-bold mb-1"
+            className="text-2xl lg:text-3xl font-bold mb-1"
             style={{ color: settings.text_color }}
           >
             {profile.display_name || profile.username}
@@ -104,7 +104,7 @@ export function PublicPage({ profile, links, settings, flags }: PublicPageProps)
 
           {/* Username */}
           <p
-            className="text-sm opacity-75 mb-2"
+            className="text-sm lg:text-base opacity-75 mb-2"
             style={{ color: settings.text_color }}
           >
             @{profile.username}
@@ -113,7 +113,7 @@ export function PublicPage({ profile, links, settings, flags }: PublicPageProps)
           {/* Bio */}
           {settings.show_bio && profile.bio && (
             <p
-              className="text-sm mb-8 max-w-xs"
+              className="text-sm lg:text-base mb-8 max-w-xs lg:max-w-sm break-words whitespace-pre-wrap"
               style={{ color: settings.text_color }}
             >
               {profile.bio}
