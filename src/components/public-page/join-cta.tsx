@@ -45,7 +45,7 @@ export function JoinCTA({ profileName, settings }: JoinCTAProps) {
             backgroundColor: 'transparent',
           }}
         >
-          <a href="/pricing">Saiba mais</a>
+          <a href="/">Saiba mais</a>
         </Button>
       </div>
     </div>

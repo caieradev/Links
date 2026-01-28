@@ -1,8 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
 import { getAnalytics } from '@/actions/analytics'
 import { AnalyticsDashboard } from '@/components/dashboard/analytics-dashboard'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { Lock } from 'lucide-react'
+import Link from 'next/link'
 
 export const metadata = {
   title: 'Analytics - Links',
@@ -27,23 +29,18 @@ export default async function AnalyticsPage() {
 
   if (!canViewAnalytics) {
     return (
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-3xl mx-auto">
         <Card>
-          <CardHeader>
-            <CardTitle>Analytics</CardTitle>
-            <CardDescription>
-              Visualize estatisticas detalhadas da sua página
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <Lock className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-medium mb-2">Recurso Pro</h3>
-              <p className="text-muted-foreground mb-4 max-w-sm">
-                Faca upgrade para o plano Pro para acessar analytics completos,
-                incluindo visualizacoes de página, cliques em links, origens de trafego e muito mais.
-              </p>
-            </div>
+          <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+            <Lock className="h-12 w-12 text-muted-foreground mb-4" />
+            <h2 className="text-xl font-semibold mb-2">Recurso Premium</h2>
+            <p className="text-muted-foreground mb-6 max-w-md">
+              O analytics detalhado esta disponível no plano Pro.
+              Visualize estatísticas de página, cliques em links, origens de tráfego e muito mais.
+            </p>
+            <Button asChild>
+              <Link href="/settings">Fazer Upgrade</Link>
+            </Button>
           </CardContent>
         </Card>
       </div>

@@ -11,11 +11,11 @@ import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ImageCropper } from '@/components/ui/image-cropper'
-import { FeatureGate } from './feature-gate'
 import { ThemeSelector } from './appearance/theme-selector'
 import { RedirectSettings } from './appearance/redirect-settings'
 import { Textarea } from '@/components/ui/textarea'
 import { Loader2, Upload, ImageIcon, Trash2, Lock } from 'lucide-react'
+import Link from 'next/link'
 import { hasFeature } from '@/lib/feature-flags'
 import type { Profile, PageSettings, FeatureFlags } from '@/types/database'
 
@@ -283,7 +283,7 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                   </div>
                 </div>
 
-                <FeatureGate flags={flags} feature="can_use_custom_fonts">
+                {canUseFonts ? (
                   <div className="space-y-2">
                     <Label>Fonte</Label>
                     <Select
@@ -291,7 +291,6 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                       onValueChange={(value) =>
                         setFormData((prev) => ({ ...prev, font_family: value }))
                       }
-                      disabled={!canUseFonts}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -305,7 +304,15 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                       </SelectContent>
                     </Select>
                   </div>
-                </FeatureGate>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-6 text-center border rounded-lg bg-muted/30">
+                    <Lock className="h-8 w-8 text-muted-foreground mb-2" />
+                    <p className="text-sm text-muted-foreground mb-2">Fontes personalizadas</p>
+                    <Button type="button" variant="outline" size="sm" asChild>
+                      <Link href="/settings">Fazer Upgrade</Link>
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -631,7 +638,7 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                   />
                 </div>
 
-                <FeatureGate flags={flags} feature="can_use_animations">
+                {canUseAnimations ? (
                   <div className="space-y-2">
                     <Label>Animacao</Label>
                     <Select
@@ -639,7 +646,6 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                       onValueChange={(value) =>
                         setFormData((prev) => ({ ...prev, link_animation: value }))
                       }
-                      disabled={!canUseAnimations}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -653,7 +659,15 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                       </SelectContent>
                     </Select>
                   </div>
-                </FeatureGate>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-6 text-center border rounded-lg bg-muted/30">
+                    <Lock className="h-8 w-8 text-muted-foreground mb-2" />
+                    <p className="text-sm text-muted-foreground mb-2">Animacoes de links</p>
+                    <Button type="button" variant="outline" size="sm" asChild>
+                      <Link href="/settings">Fazer Upgrade</Link>
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -721,13 +735,15 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                   </>
                 ) : (
                   <div className="flex flex-col items-center justify-center py-8 text-center">
-                    <Lock className="h-8 w-8 text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground mb-2">
-                      Recurso disponível a partir do plano Starter
-                    </p>
-                    <p className="text-sm text-muted-foreground">
+                    <Lock className="h-12 w-12 text-muted-foreground mb-4" />
+                    <h3 className="text-xl font-semibold mb-2">Recurso Premium</h3>
+                    <p className="text-muted-foreground mb-6 max-w-md">
+                      A captura de inscritos esta disponível a partir do plano Starter.
                       Colete emails dos visitantes e exporte para suas ferramentas de marketing.
                     </p>
+                    <Button type="button" asChild>
+                      <Link href="/settings">Fazer Upgrade</Link>
+                    </Button>
                   </div>
                 )}
               </CardContent>
@@ -739,7 +755,7 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
             <RedirectSettings flags={flags} settings={settings} />
 
             {/* Social Icons Position */}
-            <FeatureGate flags={flags} feature="can_use_social_buttons">
+            {hasFeature(flags, 'can_use_social_buttons') ? (
               <Card>
                 <CardHeader>
                   <CardTitle>Ícones Sociais</CardTitle>
@@ -771,10 +787,24 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                   </div>
                 </CardContent>
               </Card>
-            </FeatureGate>
+            ) : (
+              <Card>
+                <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                  <Lock className="h-12 w-12 text-muted-foreground mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">Recurso Premium</h3>
+                  <p className="text-muted-foreground mb-6 max-w-md">
+                    Os ícones de redes sociais estao disponíveis a partir do plano Pro.
+                    Exiba seus perfis sociais de forma elegante na sua página.
+                  </p>
+                  <Button type="button" asChild>
+                    <Link href="/settings">Fazer Upgrade</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
 
             {/* YouTube Header Vídeo */}
-            <FeatureGate flags={flags} feature="can_use_header_video">
+            {hasFeature(flags, 'can_use_header_video') ? (
               <Card>
                 <CardHeader>
                   <CardTitle>Vídeo de Cabecalho</CardTitle>
@@ -799,7 +829,7 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                   </div>
 
                   {formData.header_video_url && (
-                    <div className="aspect-vídeo rounded-lg overflow-hidden border">
+                    <div className="aspect-video rounded-lg overflow-hidden border">
                       <iframe
                         src={`https://www.youtube.com/embed/${extractYouTubeId(formData.header_video_url) || ''}`}
                         className="w-full h-full"
@@ -809,7 +839,21 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                   )}
                 </CardContent>
               </Card>
-            </FeatureGate>
+            ) : (
+              <Card>
+                <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                  <Lock className="h-12 w-12 text-muted-foreground mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">Recurso Premium</h3>
+                  <p className="text-muted-foreground mb-6 max-w-md">
+                    O vídeo de cabecalho esta disponível a partir do plano Pro.
+                    Adicione um vídeo do YouTube no topo da sua página.
+                  </p>
+                  <Button type="button" asChild>
+                    <Link href="/settings">Fazer Upgrade</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
         </Tabs>
 

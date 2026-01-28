@@ -1,14 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { stripe, getPlanFromPriceId, PLAN_FEATURES } from '@/lib/stripe'
-import { createClient } from '@supabase/supabase-js'
+import { createAdminClient } from '@/lib/supabase/admin'
 import type Stripe from 'stripe'
 
-// Use secret key client for webhook (no auth context)
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SECRET_KEY!
-)
+// Use admin client for webhook (bypasses RLS)
+const supabaseAdmin = createAdminClient()
 
 export async function POST(request: NextRequest) {
   const body = await request.text()

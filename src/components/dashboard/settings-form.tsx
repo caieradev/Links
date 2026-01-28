@@ -10,9 +10,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
-import { FeatureGate } from './feature-gate'
-import { Loader2, Trash2, Check, AlertCircle, Copy } from 'lucide-react'
+import { Loader2, Trash2, Check, AlertCircle, Copy, Lock } from 'lucide-react'
 import { hasFeature } from '@/lib/feature-flags'
+import Link from 'next/link'
 import type { Profile, CustomDomain, FeatureFlags } from '@/types/database'
 import { toast } from 'sonner'
 
@@ -160,13 +160,13 @@ export function SettingsForm({ profile, domains, flags, appDomain }: SettingsFor
       </Card>
 
       {/* Custom Domains */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Domínios Customizados</CardTitle>
-          <CardDescription>Use seu próprio domínio para sua página</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <FeatureGate flags={flags} feature="can_use_custom_domain">
+      {canUseDomains ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Domínios Customizados</CardTitle>
+            <CardDescription>Use seu próprio domínio para sua página</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
             {domains.length > 0 && (
               <div className="space-y-3">
                 {domains.map((domain) => (
@@ -243,9 +243,8 @@ export function SettingsForm({ profile, domains, flags, appDomain }: SettingsFor
               <Input
                 name="domain"
                 placeholder="seu-domínio.com"
-                disabled={!canUseDomains}
               />
-              <Button type="submit" disabled={domainPending || !canUseDomains}>
+              <Button type="submit" disabled={domainPending}>
                 {domainPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Adicionar
               </Button>
@@ -257,9 +256,23 @@ export function SettingsForm({ profile, domains, flags, appDomain }: SettingsFor
             {domainState.success && (
               <p className="text-sm text-green-600">{domainState.success}</p>
             )}
-          </FeatureGate>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card>
+          <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+            <Lock className="h-12 w-12 text-muted-foreground mb-4" />
+            <h2 className="text-xl font-semibold mb-2">Recurso Premium</h2>
+            <p className="text-muted-foreground mb-6 max-w-md">
+              Os domínios customizados estao disponíveis a partir do plano Pro.
+              Use seu próprio domínio para sua página de links.
+            </p>
+            <Button asChild>
+              <Link href="/pricing">Fazer Upgrade</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Danger Zone */}
       <Card className="border-destructive/50">

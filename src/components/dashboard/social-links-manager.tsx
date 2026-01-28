@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useActionState } from 'react'
-import { Plus, Trash2, GripVertical, Pencil } from 'lucide-react'
+import { Plus, Trash2, GripVertical, Pencil, Lock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -20,7 +20,8 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FeatureGate } from './feature-gate'
+import { hasFeature } from '@/lib/feature-flags'
+import Link from 'next/link'
 import {
   createSocialLink,
   updateSocialLink,
@@ -76,8 +77,28 @@ export function SocialLinksManager({ socialLinks, flags }: SocialLinksManagerPro
     setTimeout(() => setEditingLink(null), 100)
   }
 
+  const canUseSocialButtons = hasFeature(flags, 'can_use_social_buttons')
+
+  if (!canUseSocialButtons) {
+    return (
+      <Card>
+        <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+          <Lock className="h-12 w-12 text-muted-foreground mb-4" />
+          <h2 className="text-xl font-semibold mb-2">Recurso Premium</h2>
+          <p className="text-muted-foreground mb-6 max-w-md">
+            Os links sociais estao disponíveis a partir do plano Pro.
+            Adicione ícones de suas redes sociais na sua página.
+          </p>
+          <Button asChild>
+            <Link href="/settings">Fazer Upgrade</Link>
+          </Button>
+        </CardContent>
+      </Card>
+    )
+  }
+
   return (
-    <FeatureGate flags={flags} feature="can_use_social_buttons">
+    <>
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -258,6 +279,6 @@ export function SocialLinksManager({ socialLinks, flags }: SocialLinksManagerPro
           )}
         </DialogContent>
       </Dialog>
-    </FeatureGate>
+    </>
   )
 }
