@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useActionState } from 'react'
+import { useState, useActionState, useEffect } from 'react'
 import { Plus, Trash2, GripVertical, Pencil, Lock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -57,25 +57,23 @@ export function SocialLinksManager({ socialLinks, flags }: SocialLinksManagerPro
     }
   }
 
-  const handleCreateSuccess = () => {
-    if (createState.success) {
+  // Reset dialog state when opening
+  const handleOpenAddDialog = (open: boolean) => {
+    setIsAddDialogOpen(open)
+  }
+
+  // Close dialog on success
+  useEffect(() => {
+    if (createState.success && isAddDialogOpen) {
       setIsAddDialogOpen(false)
     }
-  }
+  }, [createState.success])
 
-  const handleUpdateSuccess = () => {
-    if (updateState.success) {
+  useEffect(() => {
+    if (updateState.success && editingLink) {
       setEditingLink(null)
     }
-  }
-
-  // Check for success and close dialogs
-  if (createState.success && isAddDialogOpen) {
-    setTimeout(() => setIsAddDialogOpen(false), 100)
-  }
-  if (updateState.success && editingLink) {
-    setTimeout(() => setEditingLink(null), 100)
-  }
+  }, [updateState.success])
 
   const canUseSocialButtons = hasFeature(flags, 'can_use_social_buttons')
 
@@ -108,7 +106,7 @@ export function SocialLinksManager({ socialLinks, flags }: SocialLinksManagerPro
                 Adicione ícones de suas redes sociais
               </CardDescription>
             </div>
-            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <Dialog open={isAddDialogOpen} onOpenChange={handleOpenAddDialog}>
               <DialogTrigger asChild>
                 <Button size="sm">
                   <Plus className="h-4 w-4 mr-2" />

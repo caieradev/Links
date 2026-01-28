@@ -196,12 +196,7 @@ export default function HomePage() {
               <h4 className="font-semibold mb-4">Suporte</h4>
               <ul className="space-y-2 text-muted-foreground">
                 <li>
-                  <Link href="#" className="hover:text-foreground">
-                    Central de ajuda
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-foreground">
+                  <Link href="mailto:contato@stratus.dev.br" className="hover:text-foreground">
                     Contato
                   </Link>
                 </li>
@@ -211,12 +206,12 @@ export default function HomePage() {
               <h4 className="font-semibold mb-4">Legal</h4>
               <ul className="space-y-2 text-muted-foreground">
                 <li>
-                  <Link href="#" className="hover:text-foreground">
+                  <Link href="/termos" className="hover:text-foreground">
                     Termos de uso
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-foreground">
+                  <Link href="/privacidade" className="hover:text-foreground">
                     Privacidade
                   </Link>
                 </li>

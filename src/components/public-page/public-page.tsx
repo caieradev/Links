@@ -31,6 +31,7 @@ interface PublicPageProps {
 
 export function PublicPage({ profile, links, settings, flags, sections = [], socialLinks = [], pageUrl }: PublicPageProps) {
   const canRemoveBranding = flags?.can_remove_branding ?? false
+  const hideBranding = canRemoveBranding && (settings.hide_branding ?? false)
   const canCollectSubscribers = flags?.can_collect_subscribers ?? false
   const canUseSocialButtons = flags?.can_use_social_buttons ?? false
   const canUseHeaderVideo = flags?.can_use_header_video ?? false
@@ -235,7 +236,7 @@ export function PublicPage({ profile, links, settings, flags, sections = [], soc
             )}
 
             {/* Branding / Join CTA */}
-            {!canRemoveBranding && (
+            {!hideBranding && (
               <JoinCTA profileName={profileName} settings={settings} />
             )}
           </div>

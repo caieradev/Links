@@ -30,6 +30,7 @@ const pageSettingsSchema = z.object({
   subscriber_form_description: z.string().nullable(),
   header_video_url: z.string().nullable(),
   social_icons_position: z.enum(['hidden', 'above', 'below']),
+  hide_branding: z.boolean(),
 })
 
 export type AppearanceState = {
@@ -83,6 +84,7 @@ export async function updatePageSettings(
     subscriber_form_description: formData.get('subscriber_form_description') as string || null,
     header_video_url: formData.get('header_video_url') as string || null,
     social_icons_position: formData.get('social_icons_position') as string || 'hidden',
+    hide_branding: formData.get('hide_branding') === 'true' && (flags?.can_remove_branding ?? false),
   }
 
   // Validate feature flags

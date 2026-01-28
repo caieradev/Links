@@ -102,6 +102,7 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
     subscriber_form_description: settings.subscriber_form_description || '',
     header_video_url: settings.header_video_url || '',
     social_icons_position: settings.social_icons_position || 'below',
+    hide_branding: settings.hide_branding ?? false,
   })
 
   const [profileData, setProfileData] = useState({
@@ -134,6 +135,7 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
       subscriber_form_description: settings.subscriber_form_description || '',
       header_video_url: settings.header_video_url || '',
       social_icons_position: settings.social_icons_position || 'below',
+      hide_branding: settings.hide_branding ?? false,
     })
     setBackgroundImageUrl(settings.background_image_url)
   }, [settings])
@@ -809,7 +811,50 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
 
           {/* Advanced Tab */}
           <TabsContent value="advanced" className="space-y-4">
-            <RedirectSettings flags={flags} settings={settings} />
+            {/* RedirectSettings temporarily disabled */}
+            {/* <RedirectSettings flags={flags} settings={settings} /> */}
+
+            {/* Hide Branding */}
+            {hasFeature(flags, 'can_remove_branding') ? (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Branding</CardTitle>
+                  <CardDescription>
+                    Controle a exibicao do branding Links na sua pagina
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label>Ocultar branding</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Remove o &quot;Feito com Links&quot; da sua pagina
+                      </p>
+                    </div>
+                    <Switch
+                      checked={formData.hide_branding}
+                      onCheckedChange={(checked) =>
+                        setFormData((prev) => ({ ...prev, hide_branding: checked }))
+                      }
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card>
+                <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                  <Lock className="h-12 w-12 text-muted-foreground mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">Recurso Premium</h3>
+                  <p className="text-muted-foreground mb-6 max-w-md">
+                    A remocao do branding esta disponível no plano Pro.
+                    Deixe sua pagina ainda mais profissional.
+                  </p>
+                  <Button type="button" asChild>
+                    <Link href="/settings">Fazer Upgrade</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Social Icons Position */}
             {hasFeature(flags, 'can_use_social_buttons') ? (

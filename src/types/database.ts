@@ -138,6 +138,7 @@ export interface Database {
           redirect_until: string | null
           header_video_url: string | null
           social_icons_position: string
+          hide_branding: boolean
           created_at: string
           updated_at: string
         }
@@ -169,6 +170,7 @@ export interface Database {
           redirect_until?: string | null
           header_video_url?: string | null
           social_icons_position?: string
+          hide_branding?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -200,6 +202,7 @@ export interface Database {
           redirect_until?: string | null
           header_video_url?: string | null
           social_icons_position?: string
+          hide_branding?: boolean
           created_at?: string
           updated_at?: string
         }

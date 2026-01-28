@@ -116,6 +116,7 @@ export default async function UserPage({ params }: PageProps) {
     redirect_until: null,
     header_video_url: null,
     social_icons_position: 'below',
+    hide_branding: false,
     created_at: '',
     updated_at: '',
   }
