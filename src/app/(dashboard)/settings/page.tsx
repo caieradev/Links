@@ -4,7 +4,7 @@ import { SubscriptionCard } from '@/components/dashboard/subscription-card'
 import type { Subscription } from '@/types/database'
 
 export const metadata = {
-  title: 'Configuracoes - Links',
+  title: 'Configuracões - Links',
   description: 'Configure sua conta',
 }
 

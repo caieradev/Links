@@ -73,7 +73,7 @@ export default async function SubscribersPage() {
             </div>
             <div className="flex items-center gap-4">
               <Badge variant={settings?.subscriber_form_enabled ? 'default' : 'secondary'}>
-                {settings?.subscriber_form_enabled ? 'Formulario ativo' : 'Formulario inativo'}
+                {settings?.subscriber_form_enabled ? 'Formulário ativo' : 'Formulário inativo'}
               </Badge>
               <Badge variant="secondary">
                 {count ?? 0} inscritos

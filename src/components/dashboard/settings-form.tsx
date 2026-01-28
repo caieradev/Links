@@ -1,11 +1,10 @@
 'use client'
 
 import { useActionState, useTransition, useState } from 'react'
-import { updateProfile, addCustomDomain, verifyDomain, deleteDomain, deleteAccount, type SettingsState } from '@/actions/settings'
+import { addCustomDomain, verifyDomain, deleteDomain, deleteAccount, type SettingsState } from '@/actions/settings'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -26,7 +25,6 @@ interface SettingsFormProps {
 const initialState: SettingsState = {}
 
 export function SettingsForm({ profile, domains, flags, appDomain }: SettingsFormProps) {
-  const [profileState, profileAction, profilePending] = useActionState(updateProfile, initialState)
   const [domainState, domainAction, domainPending] = useActionState(addCustomDomain, initialState)
   const [isPending, startTransition] = useTransition()
 
@@ -94,49 +92,6 @@ export function SettingsForm({ profile, domains, flags, appDomain }: SettingsFor
 
   return (
     <div className="space-y-6">
-      {/* Profile Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Perfil</CardTitle>
-          <CardDescription>Informações basicas do seu perfil</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form action={profileAction} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="display_name">Nome de exibicao</Label>
-              <Input
-                id="display_name"
-                name="display_name"
-                defaultValue={profile.display_name || ''}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="bio">Bio</Label>
-              <Textarea
-                id="bio"
-                name="bio"
-                defaultValue={profile.bio || ''}
-                placeholder="Escreva algo sobre você..."
-                rows={3}
-              />
-            </div>
-
-            {profileState.error && (
-              <p className="text-sm text-destructive">{profileState.error}</p>
-            )}
-            {profileState.success && (
-              <p className="text-sm text-green-600">{profileState.success}</p>
-            )}
-
-            <Button type="submit" disabled={profilePending}>
-              {profilePending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Salvar
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-
       {/* URL Info */}
       <Card>
         <CardHeader>
@@ -145,7 +100,7 @@ export function SettingsForm({ profile, domains, flags, appDomain }: SettingsFor
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-2">
-            <code className="flex-1 p-2 bg-muted rounded text-sm">
+            <code className="flex-1 p-2 bg-muted rounded text-sm break-all overflow-hidden">
               {appDomain}/{profile.username}
             </code>
             <Button
@@ -278,7 +233,7 @@ export function SettingsForm({ profile, domains, flags, appDomain }: SettingsFor
       <Card className="border-destructive/50">
         <CardHeader>
           <CardTitle className="text-destructive">Zona de Perigo</CardTitle>
-          <CardDescription>Acoes irreversiveis para sua conta</CardDescription>
+          <CardDescription>Ações irreversíveis para sua conta</CardDescription>
         </CardHeader>
         <CardContent>
           <Separator className="mb-4" />
@@ -286,7 +241,7 @@ export function SettingsForm({ profile, domains, flags, appDomain }: SettingsFor
             <div>
               <h4 className="font-medium">Deletar conta</h4>
               <p className="text-sm text-muted-foreground">
-                Todos os seus dados serao permanentemente deletados
+                Todos os seus dados serão permanentemente deletados
               </p>
             </div>
             <Button variant="destructive" onClick={() => setDeleteAccountOpen(true)}>
@@ -314,7 +269,7 @@ export function SettingsForm({ profile, domains, flags, appDomain }: SettingsFor
         open={deleteAccountOpen}
         onOpenChange={setDeleteAccountOpen}
         title="Deletar conta permanentemente"
-        description="Esta acao e irreversivel. Todos os seus links, configuraçãooes e dados serao permanentemente deletados. Você tem certeza absoluta?"
+        description="Esta acao e irreversivel. Todos os seus links, configuraçãooes e dados serão permanentemente deletados. Você tem certeza absoluta?"
         confirmText="Sim, deletar minha conta"
         variant="destructive"
         onConfirm={handleDeleteAccount}

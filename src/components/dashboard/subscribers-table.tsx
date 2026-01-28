@@ -94,7 +94,7 @@ export function SubscribersTable({ subscribers }: SubscribersTableProps) {
       <div className="text-center py-12 text-muted-foreground">
         <p>Nenhum inscrito ainda.</p>
         <p className="text-sm mt-2">
-          Habilite o formulario de inscrição em Aparência para começar a coletar emails.
+          Habilite o formulário de inscrição em Aparência para começar a coletar emails.
         </p>
       </div>
     )

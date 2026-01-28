@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useTransition, useState } from 'react'
+import { useActionState, useTransition, useState, useEffect } from 'react'
 import { updatePageSettings, uploadAvatar, uploadBackground, type AppearanceState } from '@/actions/appearance'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -101,8 +101,42 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
     subscriber_form_title: settings.subscriber_form_title,
     subscriber_form_description: settings.subscriber_form_description || '',
     header_video_url: settings.header_video_url || '',
-    social_icons_position: settings.social_icons_position || 'hidden',
+    social_icons_position: settings.social_icons_position || 'below',
   })
+
+  const [profileData, setProfileData] = useState({
+    display_name: profile.display_name || '',
+    bio: profile.bio || '',
+  })
+
+  // Sync formData when settings prop changes (e.g., after theme is applied)
+  useEffect(() => {
+    setFormData({
+      background_type: settings.background_type,
+      background_color: settings.background_color,
+      background_gradient_start: settings.background_gradient_start || '#ffffff',
+      background_gradient_end: settings.background_gradient_end || '#000000',
+      background_gradient_direction: settings.background_gradient_direction,
+      background_blur: settings.background_blur,
+      text_color: settings.text_color,
+      link_background_color: settings.link_background_color,
+      link_text_color: settings.link_text_color,
+      link_hover_color: settings.link_hover_color,
+      font_family: settings.font_family,
+      link_style: settings.link_style,
+      link_shadow: settings.link_shadow,
+      show_avatar: settings.show_avatar,
+      show_bio: settings.show_bio,
+      avatar_size: settings.avatar_size,
+      link_animation: settings.link_animation,
+      subscriber_form_enabled: settings.subscriber_form_enabled,
+      subscriber_form_title: settings.subscriber_form_title,
+      subscriber_form_description: settings.subscriber_form_description || '',
+      header_video_url: settings.header_video_url || '',
+      social_icons_position: settings.social_icons_position || 'below',
+    })
+    setBackgroundImageUrl(settings.background_image_url)
+  }, [settings])
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>, type: 'avatar' | 'background') => {
     const file = e.target.files?.[0]
@@ -158,6 +192,8 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
           <input key={key} type="hidden" name={key} value={String(value)} />
         ))}
         <input type="hidden" name="background_image_url" value={backgroundImageUrl || ''} />
+        <input type="hidden" name="display_name" value={profileData.display_name} />
+        <input type="hidden" name="bio" value={profileData.bio} />
 
         <Tabs defaultValue="profile">
           <TabsList className="grid w-full grid-cols-5">
@@ -203,6 +239,27 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                       disabled={isUploading}
                     />
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="display_name">Nome de exibição</Label>
+                  <Input
+                    id="display_name"
+                    value={profileData.display_name}
+                    onChange={(e) => setProfileData((prev) => ({ ...prev, display_name: e.target.value }))}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="bio">Bio</Label>
+                  <Textarea
+                    id="bio"
+                    value={profileData.bio}
+                    onChange={(e) => setProfileData((prev) => ({ ...prev, bio: e.target.value }))}
+                    placeholder="Escreva algo sobre voce..."
+                    rows={3}
+                  />
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -353,7 +410,7 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="solid">Cor solida</SelectItem>
+                    <SelectItem value="solid">Cor sólida</SelectItem>
                     <SelectItem value="gradient" disabled={!canUseGradients}>
                       Gradiente {!canUseGradients && '(Pro)'}
                     </SelectItem>
@@ -640,7 +697,7 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
 
                 {canUseAnimations ? (
                   <div className="space-y-2">
-                    <Label>Animacao</Label>
+                    <Label>Animação</Label>
                     <Select
                       value={formData.link_animation}
                       onValueChange={(value) =>
@@ -662,7 +719,7 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                 ) : (
                   <div className="flex flex-col items-center justify-center py-6 text-center border rounded-lg bg-muted/30">
                     <Lock className="h-8 w-8 text-muted-foreground mb-2" />
-                    <p className="text-sm text-muted-foreground mb-2">Animacoes de links</p>
+                    <p className="text-sm text-muted-foreground mb-2">Animações de links</p>
                     <Button type="button" variant="outline" size="sm" asChild>
                       <Link href="/settings">Fazer Upgrade</Link>
                     </Button>
@@ -676,7 +733,7 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
           <TabsContent value="subscribers" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Formulario de inscrição</CardTitle>
+                <CardTitle>Formulário de inscrição</CardTitle>
                 <CardDescription>
                   Colete emails dos visitantes da sua página
                 </CardDescription>
@@ -686,9 +743,9 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                   <>
                     <div className="flex items-center justify-between">
                       <div>
-                        <Label>Habilitar formulario</Label>
+                        <Label>Habilitar formulário</Label>
                         <p className="text-sm text-muted-foreground">
-                          Exibir formulario de inscrição na sua página
+                          Exibir formulário de inscrição na sua página
                         </p>
                       </div>
                       <Switch
@@ -765,7 +822,7 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label>Posicao</Label>
+                    <Label>Posicão</Label>
                     <Select
                       value={formData.social_icons_position}
                       onValueChange={(value) =>

@@ -200,7 +200,7 @@ export function SectionManager({ sections, flags }: SectionManagerProps) {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         title="Deletar seção?"
-        description="Os links desta seção não serao deletados, apenas ficaran sem seção."
+        description="Os links desta seção não serão deletados, apenas ficaran sem seção."
         onConfirm={handleDelete}
         loading={isPending}
         variant="destructive"

@@ -53,8 +53,8 @@ export function RedirectSettings({ flags, settings }: RedirectSettingsProps) {
           <Lock className="h-12 w-12 text-muted-foreground mb-4" />
           <h2 className="text-xl font-semibold mb-2">Recurso Premium</h2>
           <p className="text-muted-foreground mb-6 max-w-md">
-            O redirecionamento temporario esta disponível a partir do plano Starter.
-            Redirecione visitantes para campanhas e promocoes por tempo limitado.
+            O redirecionamento temporário esta disponível a partir do plano Starter.
+            Redirecione visitantes para campanhas e promoções por tempo limitado.
           </p>
           <Button asChild>
             <Link href="/settings">Fazer Upgrade</Link>
@@ -67,7 +67,7 @@ export function RedirectSettings({ flags, settings }: RedirectSettingsProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Redirecionamento Temporario</CardTitle>
+        <CardTitle>Redirecionamento Temporário</CardTitle>
         <CardDescription>
           Redirecione visitantes para outra página por tempo limitado
         </CardDescription>
@@ -92,10 +92,7 @@ export function RedirectSettings({ flags, settings }: RedirectSettingsProps) {
             />
           </div>
 
-          {/* Hidden input for when disabled */}
-          <input type="hidden" name="redirect_url" value={enabled ? redirectUrl : ''} />
-
-          {enabled && (
+          {enabled ? (
             <>
               {isRedirectActive && (
                 <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
@@ -107,9 +104,10 @@ export function RedirectSettings({ flags, settings }: RedirectSettingsProps) {
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="redirect_url_input">URL de destino</Label>
+                <Label htmlFor="redirect_url">URL de destino</Label>
                 <Input
-                  id="redirect_url_input"
+                  id="redirect_url"
+                  name="redirect_url"
                   placeholder="meusite.com/promocao"
                   value={redirectUrl}
                   onChange={(e) => setRedirectUrl(e.target.value)}
@@ -129,6 +127,8 @@ export function RedirectSettings({ flags, settings }: RedirectSettingsProps) {
                 </p>
               </div>
             </>
+          ) : (
+            <input type="hidden" name="redirect_url" value="" />
           )}
 
           {state.error && (

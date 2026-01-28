@@ -62,12 +62,12 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Visualizacoes de Página</CardTitle>
+            <CardTitle className="text-sm font-medium">Visualizações de Página</CardTitle>
             <Eye className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{data.totalPageViews.toLocaleString('pt-BR')}</div>
-            <p className="text-xs text-muted-foreground">Ultimos 30 dias</p>
+            <p className="text-xs text-muted-foreground">Últimos 30 dias</p>
           </CardContent>
         </Card>
 
@@ -78,7 +78,7 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{data.totalLinkClicks.toLocaleString('pt-BR')}</div>
-            <p className="text-xs text-muted-foreground">Ultimos 30 dias</p>
+            <p className="text-xs text-muted-foreground">Últimos 30 dias</p>
           </CardContent>
         </Card>
       </div>
@@ -87,7 +87,7 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
       <Card>
         <CardHeader>
           <CardTitle>Atividade</CardTitle>
-          <CardDescription>Visualizacoes e cliques ao longo do tempo</CardDescription>
+          <CardDescription>Visualizações e cliques ao longo do tempo</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="h-[300px]">
@@ -117,7 +117,7 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
                   stroke="#8884d8"
                   fill="#8884d8"
                   fillOpacity={0.6}
-                  name="Visualizacoes"
+                  name="Visualizações"
                 />
                 <Area
                   type="monotone"
@@ -245,8 +245,8 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
         {/* Referrer Stats */}
         <Card>
           <CardHeader>
-            <CardTitle>Origens de Trafego</CardTitle>
-            <CardDescription>De onde vem seus visitantes</CardDescription>
+            <CardTitle>Origens de Tráfego</CardTitle>
+            <CardDescription>De onde vêm seus visitantes</CardDescription>
           </CardHeader>
           <CardContent>
             {data.referrerStats.length > 0 ? (

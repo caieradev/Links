@@ -116,6 +116,24 @@ export async function updatePageSettings(
     return { error: 'Dados inválidos' }
   }
 
+  // Update profile data (display_name and bio)
+  const displayName = formData.get('display_name') as string
+  const bio = formData.get('bio') as string | null
+
+  if (displayName) {
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .update({
+        display_name: displayName,
+        bio: bio || null,
+      })
+      .eq('id', user.id)
+
+    if (profileError) {
+      return { error: 'Erro ao atualizar perfil' }
+    }
+  }
+
   const { error } = await supabase
     .from('page_settings')
     .update(parsed.data as Partial<PageSettings>)
@@ -126,6 +144,7 @@ export async function updatePageSettings(
   }
 
   revalidatePath('/appearance')
+  revalidatePath('/settings')
   return { success: 'Configurações salvas com sucesso' }
 }
 

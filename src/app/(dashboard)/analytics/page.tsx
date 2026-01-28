@@ -53,7 +53,7 @@ export default async function AnalyticsPage() {
     <div className="max-w-6xl mx-auto">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Analytics</h1>
-        <p className="text-muted-foreground">Ultimos 30 dias</p>
+        <p className="text-muted-foreground">Últimos 30 dias</p>
       </div>
 
       {analytics ? (

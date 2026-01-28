@@ -32,7 +32,7 @@ export async function createSection(
     .single()
 
   if (!flags?.can_use_link_sections) {
-    return { error: 'Secoes de links não estao disponiveis no seu plano' }
+    return { error: 'Seções de links não estao disponiveis no seu plano' }
   }
 
   const parsed = sectionSchema.safeParse({
@@ -146,11 +146,11 @@ export async function reorderSections(
   const hasError = results.some((result) => result.error)
 
   if (hasError) {
-    return { error: 'Erro ao reordenar secoes' }
+    return { error: 'Erro ao reordenar seções' }
   }
 
   revalidatePath('/dashboard')
-  return { success: 'Secoes reordenadas com sucesso' }
+  return { success: 'Seções reordenadas com sucesso' }
 }
 
 export async function assignLinkToSection(
@@ -193,7 +193,7 @@ export async function getUserSections() {
     .order('position', { ascending: true })
 
   if (error) {
-    return { error: 'Erro ao buscar secoes', data: null }
+    return { error: 'Erro ao buscar seções', data: null }
   }
 
   return { error: null, data }

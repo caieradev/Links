@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
@@ -12,8 +13,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
 import { logout } from '@/actions/auth'
-import { Link2, Palette, Settings, LogOut, ExternalLink, Users, BarChart3 } from 'lucide-react'
+import { Link2, Palette, Settings, LogOut, ExternalLink, Users, BarChart3, Menu } from 'lucide-react'
 import type { Profile } from '@/types/database'
 
 interface DashboardNavProps {
@@ -25,16 +33,50 @@ const navItems = [
   { href: '/subscribers', label: 'Inscritos', icon: Users },
   { href: '/analytics', label: 'Analytics', icon: BarChart3 },
   { href: '/appearance', label: 'Aparência', icon: Palette },
-  { href: '/settings', label: 'Configuracoes', icon: Settings },
+  { href: '/settings', label: 'Configuracões', icon: Settings },
 ]
 
 export function DashboardNav({ profile }: DashboardNavProps) {
   const pathname = usePathname()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 flex h-16 items-center justify-between">
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4">
+          {/* Mobile menu button */}
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-64">
+              <SheetHeader>
+                <SheetTitle>Menu</SheetTitle>
+              </SheetHeader>
+              <nav className="flex flex-col gap-2 mt-4">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={cn(
+                      'flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors',
+                      pathname === item.href
+                        ? 'bg-muted text-foreground'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                    )}
+                  >
+                    <item.icon className="h-4 w-4" />
+                    {item.label}
+                  </Link>
+                ))}
+              </nav>
+            </SheetContent>
+          </Sheet>
+
           <Link href="/dashboard" className="text-xl font-bold">
             Links
           </Link>
@@ -84,37 +126,6 @@ export function DashboardNav({ profile }: DashboardNavProps) {
                 </div>
               </div>
               <DropdownMenuSeparator />
-              <DropdownMenuItem asChild className="md:hidden">
-                <Link href="/dashboard">
-                  <Link2 className="mr-2 h-4 w-4" />
-                  Links
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild className="md:hidden">
-                <Link href="/subscribers">
-                  <Users className="mr-2 h-4 w-4" />
-                  Inscritos
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild className="md:hidden">
-                <Link href="/analytics">
-                  <BarChart3 className="mr-2 h-4 w-4" />
-                  Analytics
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild className="md:hidden">
-                <Link href="/appearance">
-                  <Palette className="mr-2 h-4 w-4" />
-                  Aparência
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild className="md:hidden">
-                <Link href="/settings">
-                  <Settings className="mr-2 h-4 w-4" />
-                  Configuracoes
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator className="md:hidden" />
               <DropdownMenuItem asChild>
                 <form action={logout} className="w-full">
                   <button type="submit" className="flex items-center w-full">

@@ -90,7 +90,7 @@ export default async function DashboardPage() {
       {/* Section Manager */}
       <Card>
         <CardHeader>
-          <CardTitle>Secoes</CardTitle>
+          <CardTitle>Seções</CardTitle>
           <CardDescription>
             Organize seus links em categorias
           </CardDescription>

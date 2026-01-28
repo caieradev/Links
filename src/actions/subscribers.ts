@@ -40,7 +40,7 @@ export async function addSubscriber(
     .single()
 
   if (!settings?.subscriber_form_enabled) {
-    return { error: 'Formulario de inscrição não esta habilitado' }
+    return { error: 'Formulário de inscrição não esta habilitado' }
   }
 
   // Check if the profile owner has the feature flag
