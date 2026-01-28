@@ -88,7 +88,7 @@ export function LoginForm() {
 
               <Button type="submit" className="w-full" disabled={magicLinkPending}>
                 {magicLinkPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Enviar Link Magico
+                Enviar Link Mágico
               </Button>
             </form>
           </TabsContent>
@@ -96,7 +96,7 @@ export function LoginForm() {
       </CardContent>
       <CardFooter className="justify-center">
         <p className="text-sm text-muted-foreground">
-          Nao tem uma conta?{' '}
+          Não tem uma conta?{' '}
           <Link href="/register" className="text-primary hover:underline">
             Criar conta
           </Link>

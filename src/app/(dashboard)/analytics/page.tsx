@@ -6,7 +6,7 @@ import { Lock } from 'lucide-react'
 
 export const metadata = {
   title: 'Analytics - Links',
-  description: 'Visualize estatisticas da sua pagina',
+  description: 'Visualize estatisticas da sua página',
 }
 
 export default async function AnalyticsPage() {
@@ -32,7 +32,7 @@ export default async function AnalyticsPage() {
           <CardHeader>
             <CardTitle>Analytics</CardTitle>
             <CardDescription>
-              Visualize estatisticas detalhadas da sua pagina
+              Visualize estatisticas detalhadas da sua página
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -41,7 +41,7 @@ export default async function AnalyticsPage() {
               <h3 className="text-lg font-medium mb-2">Recurso Pro</h3>
               <p className="text-muted-foreground mb-4 max-w-sm">
                 Faca upgrade para o plano Pro para acessar analytics completos,
-                incluindo visualizacoes de pagina, cliques em links, origens de trafego e muito mais.
+                incluindo visualizacoes de página, cliques em links, origens de trafego e muito mais.
               </p>
             </div>
           </CardContent>
@@ -65,7 +65,7 @@ export default async function AnalyticsPage() {
         <Card>
           <CardContent className="py-12 text-center">
             <p className="text-muted-foreground">
-              Nenhum dado de analytics disponivel ainda.
+              Nenhum dado de analytics disponível ainda.
             </p>
           </CardContent>
         </Card>

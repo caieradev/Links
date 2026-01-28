@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export const metadata = {
   title: 'Criar Conta - Links',
-  description: 'Crie sua conta para comecar a compartilhar seus links',
+  description: 'Crie sua conta para começar a compartilhar seus links',
 }
 
 export default function RegisterPage() {

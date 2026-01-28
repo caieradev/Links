@@ -93,7 +93,7 @@ export function SectionManager({ sections, flags }: SectionManagerProps) {
     return (
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <Lock className="h-4 w-4" />
-        <span>Secoes disponiveis no Starter+</span>
+        <span>Seções disponiveis no Starter+</span>
       </div>
     )
   }
@@ -101,25 +101,25 @@ export function SectionManager({ sections, flags }: SectionManagerProps) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium">Secoes</h3>
+        <h3 className="text-sm font-medium">Seções</h3>
         <Dialog open={createOpen} onOpenChange={setCreateOpen}>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm">
               <FolderPlus className="mr-2 h-4 w-4" />
-              Nova secao
+              Nova seção
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Criar secao</DialogTitle>
+              <DialogTitle>Criar seção</DialogTitle>
               <DialogDescription>
-                Organize seus links em secoes com titulos
+                Organize seus links em seções com títulos
               </DialogDescription>
             </DialogHeader>
             <form action={createAction} className="space-y-4">
               <Input
                 name="title"
-                placeholder="Nome da secao"
+                placeholder="Nome da seção"
                 required
                 maxLength={50}
               />
@@ -134,7 +134,7 @@ export function SectionManager({ sections, flags }: SectionManagerProps) {
 
       {sections.length === 0 ? (
         <p className="text-sm text-muted-foreground">
-          Nenhuma secao criada ainda.
+          Nenhuma seção criada ainda.
         </p>
       ) : (
         <div className="space-y-2">
@@ -199,8 +199,8 @@ export function SectionManager({ sections, flags }: SectionManagerProps) {
       <ConfirmDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
-        title="Deletar secao?"
-        description="Os links desta secao nao serao deletados, apenas ficaran sem secao."
+        title="Deletar seção?"
+        description="Os links desta seção não serao deletados, apenas ficaran sem seção."
         onConfirm={handleDelete}
         loading={isPending}
         variant="destructive"

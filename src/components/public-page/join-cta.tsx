@@ -20,7 +20,7 @@ export function JoinCTA({ profileName, settings }: JoinCTAProps) {
           className="text-sm opacity-75"
           style={{ color: settings.text_color }}
         >
-          Crie sua propria pagina de links. E gratis!
+          Crie sua propria página de links. E grátis!
         </p>
       </div>
 

@@ -29,7 +29,7 @@ export async function addSubscriber(
 
   if (!parsed.success) {
     const issues = parsed.error.issues
-    return { error: issues[0]?.message || 'Dados invalidos' }
+    return { error: issues[0]?.message || 'Dados inválidos' }
   }
 
   // Check if the profile has subscriber collection enabled
@@ -40,7 +40,7 @@ export async function addSubscriber(
     .single()
 
   if (!settings?.subscriber_form_enabled) {
-    return { error: 'Formulario de inscricao nao esta habilitado' }
+    return { error: 'Formulario de inscrição não esta habilitado' }
   }
 
   // Check if the profile owner has the feature flag
@@ -51,7 +51,7 @@ export async function addSubscriber(
     .single()
 
   if (!flags?.can_collect_subscribers) {
-    return { error: 'Coleta de subscribers nao esta disponivel' }
+    return { error: 'Coleta de subscribers não esta disponível' }
   }
 
   const { error } = await supabase.from('subscribers').insert({
@@ -75,7 +75,7 @@ export async function getSubscribers() {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Nao autenticado', data: null, count: 0 }
+    return { error: 'Não autenticado', data: null, count: 0 }
   }
 
   const { data, error, count } = await supabase
@@ -96,7 +96,7 @@ export async function deleteSubscriber(subscriberId: string): Promise<Subscriber
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Nao autenticado' }
+    return { error: 'Não autenticado' }
   }
 
   const { error } = await supabase
@@ -118,7 +118,7 @@ export async function exportSubscribersCSV(): Promise<{ csv: string | null; erro
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { csv: null, error: 'Nao autenticado' }
+    return { csv: null, error: 'Não autenticado' }
   }
 
   const { data, error } = await supabase

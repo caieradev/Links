@@ -15,10 +15,12 @@ interface SubscriptionCardProps {
 export function SubscriptionCard({ subscription }: SubscriptionCardProps) {
   const [isLoading, setIsLoading] = useState(false)
 
-  const planName = subscription?.plan_type === 'pro' ? 'Pro' : subscription?.plan_type === 'starter' ? 'Starter' : 'Free'
+  const planType = subscription?.plan_type ?? 'free'
+  const planName = planType === 'pro' ? 'Pro' : planType === 'starter' ? 'Starter' : 'Free'
   const isActive = subscription?.status === 'active'
   const isPastDue = subscription?.status === 'past_due'
   const willCancel = subscription?.cancel_at_period_end
+  const isFree = planType === 'free' || !subscription
 
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return null
@@ -86,15 +88,21 @@ export function SubscriptionCard({ subscription }: SubscriptionCardProps) {
               <p className="font-medium text-amber-600">Cancelamento agendado</p>
               <p className="text-muted-foreground">
                 Sua assinatura sera cancelada em {formatDate(subscription.current_period_end)}.
-                Voce pode reativar a qualquer momento.
+                Você pode reativar a qualquer momento.
               </p>
             </div>
           </div>
         )}
 
-        {subscription?.plan_type !== 'free' && subscription?.current_period_end && !willCancel && (
+        {!isFree && subscription?.current_period_end && !willCancel && (
           <div className="text-sm text-muted-foreground">
             Proxima cobranca: {formatDate(subscription.current_period_end)}
+          </div>
+        )}
+
+        {isFree && (
+          <div className="text-sm text-muted-foreground">
+            Voce esta no plano gratuito. Faca upgrade para desbloquear recursos premium.
           </div>
         )}
 
@@ -111,7 +119,7 @@ export function SubscriptionCard({ subscription }: SubscriptionCardProps) {
             </Button>
           )}
 
-          {subscription?.plan_type === 'free' && (
+          {isFree && (
             <Button asChild>
               <a href="/pricing">Fazer upgrade</a>
             </Button>

@@ -14,13 +14,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Links - Sua pagina de links personalizada",
-  description: "Crie sua pagina de links em segundos. Compartilhe todos os seus links em um so lugar.",
-  keywords: ["linktree", "links", "bio link", "pagina de links"],
+  title: "Links - Sua página de links personalizada",
+  description: "Crie sua página de links em segundos. Compartilhe todos os seus links em um so lugar.",
+  keywords: ["linktree", "links", "bio link", "página de links"],
   authors: [{ name: "Links" }],
   openGraph: {
-    title: "Links - Sua pagina de links personalizada",
-    description: "Crie sua pagina de links em segundos. Compartilhe todos os seus links em um so lugar.",
+    title: "Links - Sua página de links personalizada",
+    description: "Crie sua página de links em segundos. Compartilhe todos os seus links em um so lugar.",
     type: "website",
   },
 };

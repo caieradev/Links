@@ -19,7 +19,7 @@ function normalizeUrl(url: string): string {
 }
 
 // Custom URL validation that accepts URLs with or without protocol
-const urlSchema = z.string().min(1, 'URL e obrigatoria').transform(normalizeUrl).refine(
+const urlSchema = z.string().min(1, 'URL é obrigatória').transform(normalizeUrl).refine(
   (url) => {
     try {
       new URL(url)
@@ -28,13 +28,13 @@ const urlSchema = z.string().min(1, 'URL e obrigatoria').transform(normalizeUrl)
       return false
     }
   },
-  { message: 'URL invalida' }
+  { message: 'URL inválida' }
 )
 
 const createLinkSchema = z.object({
-  title: z.string().min(1, 'Titulo e obrigatorio').max(100, 'Titulo muito longo'),
+  title: z.string().min(1, 'Título é obrigatório').max(100, 'Título muito longo'),
   url: urlSchema,
-  description: z.string().max(200, 'Descricao muito longa').optional(),
+  description: z.string().max(200, 'Descrição muito longa').optional(),
   icon: z.string().optional(),
   thumbnail_url: z.string().optional(),
 })
@@ -59,7 +59,7 @@ export async function createLink(
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Nao autenticado' }
+    return { error: 'Não autenticado' }
   }
 
   const parsed = createLinkSchema.safeParse({
@@ -72,7 +72,7 @@ export async function createLink(
 
   if (!parsed.success) {
     const issues = parsed.error.issues
-    return { error: issues[0]?.message || 'Dados invalidos' }
+    return { error: issues[0]?.message || 'Dados inválidos' }
   }
 
   // Check feature flag for max links
@@ -90,7 +90,7 @@ export async function createLink(
   const maxLinks = flags?.max_links ?? null // null = unlimited
 
   if (maxLinks !== null && count !== null && count >= maxLinks) {
-    return { error: `Voce atingiu o limite de ${maxLinks} links` }
+    return { error: `Você atingiu o limite de ${maxLinks} links` }
   }
 
   // Get the highest position
@@ -130,7 +130,7 @@ export async function updateLink(
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Nao autenticado' }
+    return { error: 'Não autenticado' }
   }
 
   const parsed = updateLinkSchema.safeParse({
@@ -147,7 +147,7 @@ export async function updateLink(
 
   if (!parsed.success) {
     const issues = parsed.error.issues
-    return { error: issues[0]?.message || 'Dados invalidos' }
+    return { error: issues[0]?.message || 'Dados inválidos' }
   }
 
   const { error } = await supabase
@@ -178,7 +178,7 @@ export async function deleteLink(linkId: string): Promise<LinkActionState> {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Nao autenticado' }
+    return { error: 'Não autenticado' }
   }
 
   const { error } = await supabase
@@ -200,7 +200,7 @@ export async function toggleLinkActive(linkId: string, isActive: boolean): Promi
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Nao autenticado' }
+    return { error: 'Não autenticado' }
   }
 
   const { error } = await supabase
@@ -222,7 +222,7 @@ export async function toggleLinkFeatured(linkId: string, isFeatured: boolean): P
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Nao autenticado' }
+    return { error: 'Não autenticado' }
   }
 
   // Check feature flag
@@ -233,7 +233,7 @@ export async function toggleLinkFeatured(linkId: string, isFeatured: boolean): P
     .single()
 
   if (!flags?.can_use_featured_links) {
-    return { error: 'Voce nao tem permissao para destacar links' }
+    return { error: 'Você não tem permissão para destacar links' }
   }
 
   const { error } = await supabase
@@ -257,7 +257,7 @@ export async function reorderLinks(
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Nao autenticado' }
+    return { error: 'Não autenticado' }
   }
 
   // Update positions for all links
@@ -285,7 +285,7 @@ export async function getUserLinks() {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Nao autenticado', data: null }
+    return { error: 'Não autenticado', data: null }
   }
 
   const { data, error } = await supabase
@@ -306,7 +306,7 @@ export async function uploadLinkThumbnail(formData: FormData): Promise<{ url: st
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { url: null, error: 'Nao autenticado' }
+    return { url: null, error: 'Não autenticado' }
   }
 
   // Check feature flag
@@ -317,7 +317,7 @@ export async function uploadLinkThumbnail(formData: FormData): Promise<{ url: st
     .single()
 
   if (!flags?.can_use_link_thumbnails) {
-    return { url: null, error: 'Voce nao tem permissao para usar thumbnails em links' }
+    return { url: null, error: 'Você não tem permissão para usar thumbnails em links' }
   }
 
   const file = formData.get('file') as File
@@ -348,7 +348,7 @@ export async function uploadLinkCoverImage(formData: FormData): Promise<{ url: s
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { url: null, error: 'Nao autenticado' }
+    return { url: null, error: 'Não autenticado' }
   }
 
   // Check feature flag
@@ -359,7 +359,7 @@ export async function uploadLinkCoverImage(formData: FormData): Promise<{ url: s
     .single()
 
   if (!flags?.can_use_link_cover_images) {
-    return { url: null, error: 'Voce nao tem permissao para usar imagens de capa' }
+    return { url: null, error: 'Você não tem permissão para usar imagens de capa' }
   }
 
   const file = formData.get('file') as File

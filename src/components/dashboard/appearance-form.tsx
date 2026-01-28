@@ -208,7 +208,7 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                 <div className="flex items-center justify-between">
                   <div>
                     <Label>Mostrar avatar</Label>
-                    <p className="text-sm text-muted-foreground">Exibir seu avatar na pagina</p>
+                    <p className="text-sm text-muted-foreground">Exibir seu avatar na página</p>
                   </div>
                   <Switch
                     checked={formData.show_avatar}
@@ -221,7 +221,7 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                 <div className="flex items-center justify-between">
                   <div>
                     <Label>Mostrar bio</Label>
-                    <p className="text-sm text-muted-foreground">Exibir sua bio na pagina</p>
+                    <p className="text-sm text-muted-foreground">Exibir sua bio na página</p>
                   </div>
                   <Switch
                     checked={formData.show_bio}
@@ -536,7 +536,7 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
             <Card>
               <CardHeader>
                 <CardTitle>Estilo dos links</CardTitle>
-                <CardDescription>Personalize a aparencia dos seus links</CardDescription>
+                <CardDescription>Personalize a aparência dos seus links</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
@@ -662,9 +662,9 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
           <TabsContent value="subscribers" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Formulario de inscricao</CardTitle>
+                <CardTitle>Formulario de inscrição</CardTitle>
                 <CardDescription>
-                  Colete emails dos visitantes da sua pagina
+                  Colete emails dos visitantes da sua página
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -674,7 +674,7 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                       <div>
                         <Label>Habilitar formulario</Label>
                         <p className="text-sm text-muted-foreground">
-                          Exibir formulario de inscricao na sua pagina
+                          Exibir formulario de inscrição na sua página
                         </p>
                       </div>
                       <Switch
@@ -688,7 +688,7 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                     {formData.subscriber_form_enabled && (
                       <>
                         <div className="space-y-2">
-                          <Label>Titulo</Label>
+                          <Label>Título</Label>
                           <Input
                             type="text"
                             value={formData.subscriber_form_title}
@@ -703,7 +703,7 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                         </div>
 
                         <div className="space-y-2">
-                          <Label>Descricao (opcional)</Label>
+                          <Label>Descrição (opcional)</Label>
                           <Textarea
                             value={formData.subscriber_form_description}
                             onChange={(e) =>
@@ -723,7 +723,7 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                   <div className="flex flex-col items-center justify-center py-8 text-center">
                     <Lock className="h-8 w-8 text-muted-foreground mb-4" />
                     <p className="text-muted-foreground mb-2">
-                      Recurso disponivel a partir do plano Starter
+                      Recurso disponível a partir do plano Starter
                     </p>
                     <p className="text-sm text-muted-foreground">
                       Colete emails dos visitantes e exporte para suas ferramentas de marketing.
@@ -742,9 +742,9 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
             <FeatureGate flags={flags} feature="can_use_social_buttons">
               <Card>
                 <CardHeader>
-                  <CardTitle>Icones Sociais</CardTitle>
+                  <CardTitle>Ícones Sociais</CardTitle>
                   <CardDescription>
-                    Configure onde os icones das redes sociais aparecem
+                    Configure onde os ícones das redes sociais aparecem
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -766,20 +766,20 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                       </SelectContent>
                     </Select>
                     <p className="text-sm text-muted-foreground">
-                      Configure seus links sociais na pagina de Links Sociais
+                      Configure seus links sociais na página de Links Sociais
                     </p>
                   </div>
                 </CardContent>
               </Card>
             </FeatureGate>
 
-            {/* YouTube Header Video */}
+            {/* YouTube Header Vídeo */}
             <FeatureGate flags={flags} feature="can_use_header_video">
               <Card>
                 <CardHeader>
-                  <CardTitle>Video de Cabecalho</CardTitle>
+                  <CardTitle>Vídeo de Cabecalho</CardTitle>
                   <CardDescription>
-                    Adicione um video do YouTube no topo da sua pagina
+                    Adicione um vídeo do YouTube no topo da sua página
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -794,12 +794,12 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                       placeholder="https://www.youtube.com/watch?v=..."
                     />
                     <p className="text-sm text-muted-foreground">
-                      Cole a URL de um video do YouTube. Deixe vazio para remover.
+                      Cole a URL de um vídeo do YouTube. Deixe vazio para remover.
                     </p>
                   </div>
 
                   {formData.header_video_url && (
-                    <div className="aspect-video rounded-lg overflow-hidden border">
+                    <div className="aspect-vídeo rounded-lg overflow-hidden border">
                       <iframe
                         src={`https://www.youtube.com/embed/${extractYouTubeId(formData.header_video_url) || ''}`}
                         className="w-full h-full"
@@ -822,7 +822,7 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
 
         <Button type="submit" disabled={pending} className="w-full">
           {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Salvar alteracoes
+          Salvar alterações
         </Button>
       </form>
 

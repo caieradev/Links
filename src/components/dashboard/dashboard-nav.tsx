@@ -24,7 +24,7 @@ const navItems = [
   { href: '/dashboard', label: 'Links', icon: Link2 },
   { href: '/subscribers', label: 'Inscritos', icon: Users },
   { href: '/analytics', label: 'Analytics', icon: BarChart3 },
-  { href: '/appearance', label: 'Aparencia', icon: Palette },
+  { href: '/appearance', label: 'Aparência', icon: Palette },
   { href: '/settings', label: 'Configuracoes', icon: Settings },
 ]
 
@@ -61,7 +61,7 @@ export function DashboardNav({ profile }: DashboardNavProps) {
           <Button variant="outline" size="sm" asChild>
             <Link href={`/${profile.username}`} target="_blank">
               <ExternalLink className="mr-2 h-4 w-4" />
-              Ver pagina
+              Ver página
             </Link>
           </Button>
 
@@ -105,7 +105,7 @@ export function DashboardNav({ profile }: DashboardNavProps) {
               <DropdownMenuItem asChild className="md:hidden">
                 <Link href="/appearance">
                   <Palette className="mr-2 h-4 w-4" />
-                  Aparencia
+                  Aparência
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild className="md:hidden">

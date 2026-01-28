@@ -84,14 +84,14 @@ export function CreateLinkDialog({ flags }: CreateLinkDialogProps) {
           <DialogHeader>
             <DialogTitle>Adicionar novo link</DialogTitle>
             <DialogDescription>
-              Adicione um novo link a sua pagina.
+              Adicione um novo link à sua página.
             </DialogDescription>
           </DialogHeader>
           <form action={action} className="space-y-4">
             <input type="hidden" name="thumbnail_url" value={thumbnailUrl || ''} />
 
             <div className="space-y-2">
-              <Label htmlFor="title">Titulo</Label>
+              <Label htmlFor="title">Título</Label>
               <Input
                 id="title"
                 name="title"
@@ -109,11 +109,11 @@ export function CreateLinkDialog({ flags }: CreateLinkDialogProps) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="description">Descricao (opcional)</Label>
+              <Label htmlFor="description">Descrição (opcional)</Label>
               <Textarea
                 id="description"
                 name="description"
-                placeholder="Uma breve descricao do link"
+                placeholder="Uma breve descrição do link"
                 rows={2}
               />
             </div>

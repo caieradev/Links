@@ -98,7 +98,7 @@ export function SettingsForm({ profile, domains, flags, appDomain }: SettingsFor
       <Card>
         <CardHeader>
           <CardTitle>Perfil</CardTitle>
-          <CardDescription>Informacoes basicas do seu perfil</CardDescription>
+          <CardDescription>Informações basicas do seu perfil</CardDescription>
         </CardHeader>
         <CardContent>
           <form action={profileAction} className="space-y-4">
@@ -117,7 +117,7 @@ export function SettingsForm({ profile, domains, flags, appDomain }: SettingsFor
                 id="bio"
                 name="bio"
                 defaultValue={profile.bio || ''}
-                placeholder="Escreva algo sobre voce..."
+                placeholder="Escreva algo sobre você..."
                 rows={3}
               />
             </div>
@@ -141,7 +141,7 @@ export function SettingsForm({ profile, domains, flags, appDomain }: SettingsFor
       <Card>
         <CardHeader>
           <CardTitle>Sua URL</CardTitle>
-          <CardDescription>Compartilhe sua pagina de links</CardDescription>
+          <CardDescription>Compartilhe sua página de links</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-2">
@@ -162,8 +162,8 @@ export function SettingsForm({ profile, domains, flags, appDomain }: SettingsFor
       {/* Custom Domains */}
       <Card>
         <CardHeader>
-          <CardTitle>Dominios Customizados</CardTitle>
-          <CardDescription>Use seu proprio dominio para sua pagina</CardDescription>
+          <CardTitle>Domínios Customizados</CardTitle>
+          <CardDescription>Use seu próprio domínio para sua página</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <FeatureGate flags={flags} feature="can_use_custom_domain">
@@ -217,7 +217,7 @@ export function SettingsForm({ profile, domains, flags, appDomain }: SettingsFor
               <div className="p-4 bg-muted/50 rounded-lg space-y-3">
                 <h4 className="font-medium">Configuracao DNS</h4>
                 <p className="text-sm text-muted-foreground">
-                  Para verificar seu dominio, adicione o seguinte registro DNS no seu provedor:
+                  Para verificar seu domínio, adicione o seguinte registro DNS no seu provedor:
                 </p>
                 <div className="space-y-2 text-sm">
                   <div className="p-3 bg-background rounded border">
@@ -242,7 +242,7 @@ export function SettingsForm({ profile, domains, flags, appDomain }: SettingsFor
             <form action={domainAction} className="flex gap-2">
               <Input
                 name="domain"
-                placeholder="seu-dominio.com"
+                placeholder="seu-domínio.com"
                 disabled={!canUseDomains}
               />
               <Button type="submit" disabled={domainPending || !canUseDomains}>
@@ -288,8 +288,8 @@ export function SettingsForm({ profile, domains, flags, appDomain }: SettingsFor
       <ConfirmDialog
         open={deleteDomainOpen}
         onOpenChange={setDeleteDomainOpen}
-        title="Remover dominio"
-        description={`Tem certeza que deseja remover o dominio "${domainToDelete?.domain}"? Voce precisara configura-lo novamente se quiser usa-lo no futuro.`}
+        title="Remover domínio"
+        description={`Tem certeza que deseja remover o domínio "${domainToDelete?.domain}"? Você precisara configura-lo novamente se quiser usa-lo no futuro.`}
         confirmText="Remover"
         variant="destructive"
         onConfirm={handleDeleteDomain}
@@ -301,7 +301,7 @@ export function SettingsForm({ profile, domains, flags, appDomain }: SettingsFor
         open={deleteAccountOpen}
         onOpenChange={setDeleteAccountOpen}
         title="Deletar conta permanentemente"
-        description="Esta acao e irreversivel. Todos os seus links, configuracoes e dados serao permanentemente deletados. Voce tem certeza absoluta?"
+        description="Esta acao e irreversivel. Todos os seus links, configuraçãooes e dados serao permanentemente deletados. Você tem certeza absoluta?"
         confirmText="Sim, deletar minha conta"
         variant="destructive"
         onConfirm={handleDeleteAccount}

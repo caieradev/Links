@@ -43,7 +43,7 @@ export function PricingSection({ currentPlan = 'free' }: PricingSectionProps) {
       <div className="text-center space-y-4">
         <h2 className="text-3xl font-bold">Escolha seu plano</h2>
         <p className="text-muted-foreground max-w-md mx-auto">
-          Comece gratis e faca upgrade quando precisar de mais recursos
+          Comece grátis e faça upgrade quando precisar de mais recursos
         </p>
         <PricingToggle period={period} onChange={setPeriod} />
       </div>

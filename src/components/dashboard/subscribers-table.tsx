@@ -94,7 +94,7 @@ export function SubscribersTable({ subscribers }: SubscribersTableProps) {
       <div className="text-center py-12 text-muted-foreground">
         <p>Nenhum inscrito ainda.</p>
         <p className="text-sm mt-2">
-          Habilite o formulario de inscricao em Aparencia para comecar a coletar emails.
+          Habilite o formulario de inscrição em Aparência para começar a coletar emails.
         </p>
       </div>
     )
@@ -167,7 +167,7 @@ export function SubscribersTable({ subscribers }: SubscribersTableProps) {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
         title="Remover inscrito?"
-        description="Esta acao nao pode ser desfeita."
+        description="Esta acao não pode ser desfeita."
         onConfirm={handleDelete}
         loading={isPending}
         variant="destructive"

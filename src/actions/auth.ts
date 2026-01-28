@@ -3,31 +3,32 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
+import { getAppUrl } from '@/lib/utils'
 
 const loginSchema = z.object({
-  email: z.string().email('Email invalido'),
+  email: z.string().email('E-mail inválido'),
   password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
 })
 
 const registerSchema = z.object({
-  email: z.string().email('Email invalido'),
+  email: z.string().email('E-mail inválido'),
   password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
-  message: 'Senhas nao coincidem',
+  message: 'Senhas não coincidem',
   path: ['confirmPassword'],
 })
 
 const magicLinkSchema = z.object({
-  email: z.string().email('Email invalido'),
+  email: z.string().email('E-mail inválido'),
 })
 
 const usernameSchema = z.object({
   username: z
     .string()
     .min(3, 'Username deve ter pelo menos 3 caracteres')
-    .max(30, 'Username deve ter no maximo 30 caracteres')
-    .regex(/^[a-zA-Z0-9_-]+$/, 'Username pode conter apenas letras, numeros, _ e -'),
+    .max(30, 'Username deve ter no máximo 30 caracteres')
+    .regex(/^[a-zA-Z0-9_-]+$/, 'Username pode conter apenas letras, números, _ e -'),
 })
 
 export type AuthState = {
@@ -45,7 +46,7 @@ export async function login(prevState: AuthState, formData: FormData): Promise<A
 
   if (!parsed.success) {
     const issues = parsed.error.issues
-    return { error: issues[0]?.message || 'Dados invalidos' }
+    return { error: issues[0]?.message || 'Dados inválidos' }
   }
 
   const { error } = await supabase.auth.signInWithPassword({
@@ -87,14 +88,14 @@ export async function register(prevState: AuthState, formData: FormData): Promis
 
   if (!parsed.success) {
     const issues = parsed.error.issues
-    return { error: issues[0]?.message || 'Dados invalidos' }
+    return { error: issues[0]?.message || 'Dados inválidos' }
   }
 
   const { data, error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
     options: {
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/confirm`,
+      emailRedirectTo: `${getAppUrl()}/auth/confirm`,
     },
   })
 
@@ -105,10 +106,10 @@ export async function register(prevState: AuthState, formData: FormData): Promis
   // Supabase returns a user with identities = [] if email already exists (for security)
   // We need to check this to give proper feedback
   if (data.user && data.user.identities && data.user.identities.length === 0) {
-    return { error: 'Este email ja esta cadastrado. Tente fazer login.' }
+    return { error: 'Este email já está cadastrado. Tente fazer login.' }
   }
 
-  return { success: 'Verifique seu email para confirmar sua conta' }
+  return { success: 'Verifique seu e-mail para confirmar sua conta' }
 }
 
 export async function sendMagicLink(prevState: AuthState, formData: FormData): Promise<AuthState> {
@@ -120,13 +121,13 @@ export async function sendMagicLink(prevState: AuthState, formData: FormData): P
 
   if (!parsed.success) {
     const issues = parsed.error.issues
-    return { error: issues[0]?.message || 'Dados invalidos' }
+    return { error: issues[0]?.message || 'Dados inválidos' }
   }
 
   const { error } = await supabase.auth.signInWithOtp({
     email: parsed.data.email,
     options: {
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/confirm`,
+      emailRedirectTo: `${getAppUrl()}/auth/confirm`,
     },
   })
 
@@ -134,7 +135,7 @@ export async function sendMagicLink(prevState: AuthState, formData: FormData): P
     return { error: error.message }
   }
 
-  return { success: 'Link magico enviado! Verifique seu email.' }
+  return { success: 'Link mágico enviado! Verifique seu e-mail.' }
 }
 
 export async function completeOnboarding(prevState: AuthState, formData: FormData): Promise<AuthState> {
@@ -142,7 +143,7 @@ export async function completeOnboarding(prevState: AuthState, formData: FormDat
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    return { error: 'Nao autenticado' }
+    return { error: 'Não autenticado' }
   }
 
   const parsed = usernameSchema.safeParse({
@@ -151,7 +152,7 @@ export async function completeOnboarding(prevState: AuthState, formData: FormDat
 
   if (!parsed.success) {
     const issues = parsed.error.issues
-    return { error: issues[0]?.message || 'Dados invalidos' }
+    return { error: issues[0]?.message || 'Dados inválidos' }
   }
 
   const username = parsed.data.username.toLowerCase()
@@ -164,7 +165,7 @@ export async function completeOnboarding(prevState: AuthState, formData: FormDat
     .single()
 
   if (existing) {
-    return { error: 'Este username ja esta em uso' }
+    return { error: 'Este username já está em uso' }
   }
 
   // Create profile

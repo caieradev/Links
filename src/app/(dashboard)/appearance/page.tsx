@@ -3,8 +3,8 @@ import { AppearanceForm } from '@/components/dashboard/appearance-form'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 export const metadata = {
-  title: 'Aparencia - Links',
-  description: 'Personalize a aparencia da sua pagina',
+  title: 'Aparência - Links',
+  description: 'Personalize a aparência da sua página',
 }
 
 export default async function AppearancePage() {
@@ -73,9 +73,9 @@ export default async function AppearancePage() {
     <div className="max-w-3xl mx-auto">
       <Card>
         <CardHeader>
-          <CardTitle>Aparencia</CardTitle>
+          <CardTitle>Aparência</CardTitle>
           <CardDescription>
-            Personalize o visual da sua pagina de links
+            Personalize o visual da sua página de links
           </CardDescription>
         </CardHeader>
         <CardContent>

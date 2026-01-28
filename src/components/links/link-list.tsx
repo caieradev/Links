@@ -65,8 +65,8 @@ export function LinkList({ initialLinks, showAnalytics = false, flags, sections 
   if (links.length === 0) {
     return (
       <div className="text-center py-12 text-muted-foreground">
-        <p>Voce ainda nao tem nenhum link.</p>
-        <p className="text-sm">Clique em &quot;Adicionar Link&quot; para comecar.</p>
+        <p>Você ainda não tem nenhum link.</p>
+        <p className="text-sm">Clique em &quot;Adicionar Link&quot; para começar.</p>
       </div>
     )
   }

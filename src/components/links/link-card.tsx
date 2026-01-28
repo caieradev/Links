@@ -169,7 +169,7 @@ export function LinkCard({ link, showAnalytics = false, flags, sections = [] }: 
         open={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}
         title="Deletar link"
-        description={`Tem certeza que deseja deletar o link "${link.title}"? Esta acao nao pode ser desfeita.`}
+        description={`Tem certeza que deseja deletar o link "${link.title}"? Esta acao não pode ser desfeita.`}
         confirmText="Deletar"
         variant="destructive"
         onConfirm={handleDelete}

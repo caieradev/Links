@@ -45,7 +45,7 @@ export async function updatePageSettings(
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Nao autenticado' }
+    return { error: 'Não autenticado' }
   }
 
   // Get feature flags to validate what user can change
@@ -87,33 +87,33 @@ export async function updatePageSettings(
 
   // Validate feature flags
   if (data.background_type === 'gradient' && !flags?.can_use_gradients) {
-    return { error: 'Voce nao tem permissao para usar gradientes' }
+    return { error: 'Você não tem permissão para usar gradientes' }
   }
 
   if (data.background_type === 'image' && !flags?.can_use_custom_background_image) {
-    return { error: 'Voce nao tem permissao para usar imagem de fundo' }
+    return { error: 'Você não tem permissão para usar imagem de fundo' }
   }
 
   if (data.font_family !== 'Inter' && !flags?.can_use_custom_fonts) {
-    return { error: 'Voce nao tem permissao para usar fontes customizadas' }
+    return { error: 'Você não tem permissão para usar fontes customizadas' }
   }
 
   if (data.link_animation !== 'none' && !flags?.can_use_animations) {
-    return { error: 'Voce nao tem permissao para usar animacoes' }
+    return { error: 'Você não tem permissão para usar animações' }
   }
 
   if (data.header_video_url && !flags?.can_use_header_video) {
-    return { error: 'Voce nao tem permissao para usar video de cabecalho' }
+    return { error: 'Você não tem permissão para usar vídeo de cabeçalho' }
   }
 
   if (data.social_icons_position !== 'hidden' && !flags?.can_use_social_buttons) {
-    return { error: 'Voce nao tem permissao para usar icones sociais' }
+    return { error: 'Você não tem permissão para usar ícones sociais' }
   }
 
   const parsed = pageSettingsSchema.safeParse(data)
 
   if (!parsed.success) {
-    return { error: 'Dados invalidos' }
+    return { error: 'Dados inválidos' }
   }
 
   const { error } = await supabase
@@ -122,11 +122,11 @@ export async function updatePageSettings(
     .eq('user_id', user.id)
 
   if (error) {
-    return { error: 'Erro ao salvar configuracoes' }
+    return { error: 'Erro ao salvar configurações' }
   }
 
   revalidatePath('/appearance')
-  return { success: 'Configuracoes salvas com sucesso' }
+  return { success: 'Configurações salvas com sucesso' }
 }
 
 export async function uploadAvatar(formData: FormData): Promise<{ url: string | null; error: string | null }> {
@@ -134,7 +134,7 @@ export async function uploadAvatar(formData: FormData): Promise<{ url: string | 
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { url: null, error: 'Nao autenticado' }
+    return { url: null, error: 'Não autenticado' }
   }
 
   const file = formData.get('file') as File
@@ -172,7 +172,7 @@ export async function uploadBackground(formData: FormData): Promise<{ url: strin
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { url: null, error: 'Nao autenticado' }
+    return { url: null, error: 'Não autenticado' }
   }
 
   // Check feature flag
@@ -185,7 +185,7 @@ export async function uploadBackground(formData: FormData): Promise<{ url: strin
   const flags = flagsData as Pick<FeatureFlags, 'can_use_custom_background_image'> | null
 
   if (!flags?.can_use_custom_background_image) {
-    return { url: null, error: 'Voce nao tem permissao para usar imagem de fundo' }
+    return { url: null, error: 'Você não tem permissão para usar imagem de fundo' }
   }
 
   const file = formData.get('file') as File
@@ -229,7 +229,7 @@ export async function updateRedirectSettings(
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Nao autenticado' }
+    return { error: 'Não autenticado' }
   }
 
   // Check feature flag
@@ -242,7 +242,7 @@ export async function updateRedirectSettings(
   const flags = flagsData as Pick<FeatureFlags, 'can_use_redirect_links'> | null
 
   if (!flags?.can_use_redirect_links) {
-    return { error: 'Voce nao tem permissao para usar redirecionamento' }
+    return { error: 'Você não tem permissão para usar redirecionamento' }
   }
 
   let redirectUrl = formData.get('redirect_url') as string || null
@@ -258,7 +258,7 @@ export async function updateRedirectSettings(
     try {
       new URL(redirectUrl)
     } catch {
-      return { error: 'URL invalida' }
+      return { error: 'URL inválida' }
     }
   }
 
@@ -285,7 +285,7 @@ export async function applyTheme(themeId: string): Promise<AppearanceState> {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Nao autenticado' }
+    return { error: 'Não autenticado' }
   }
 
   // Check feature flag
@@ -298,12 +298,12 @@ export async function applyTheme(themeId: string): Promise<AppearanceState> {
   const flags = flagsData as Pick<FeatureFlags, 'can_use_themes'> | null
 
   if (!flags?.can_use_themes) {
-    return { error: 'Voce nao tem permissao para usar temas' }
+    return { error: 'Você não tem permissão para usar temas' }
   }
 
   const theme = getThemeById(themeId)
   if (!theme) {
-    return { error: 'Tema nao encontrado' }
+    return { error: 'Tema não encontrado' }
   }
 
   const { error } = await supabase

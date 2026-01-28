@@ -3,8 +3,8 @@ import { PricingSection } from '@/components/pricing/pricing-section'
 import type { PlanType } from '@/lib/stripe'
 
 export const metadata = {
-  title: 'Precos - Links',
-  description: 'Escolha o plano ideal para voce',
+  title: 'Preços - Links',
+  description: 'Escolha o plano ideal para você',
 }
 
 export default async function PricingPage() {

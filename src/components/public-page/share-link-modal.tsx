@@ -169,7 +169,7 @@ export function ShareLinkModal({ link, settings, profileName, isOpen, onClose }:
           <div className="text-center mb-4">
             <h4 className="font-semibold">Junte-se a {profileName} no Links</h4>
             <p className="text-sm text-muted-foreground">
-              Crie sua propria pagina de links gratuitamente
+              Crie sua propria página de links gratuitamente
             </p>
           </div>
           <div className="flex flex-col gap-2">

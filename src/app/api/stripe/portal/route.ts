@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe'
+import { getAppUrl } from '@/lib/utils'
 
 export async function POST() {
   try {
@@ -8,7 +9,7 @@ export async function POST() {
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
-      return NextResponse.json({ error: 'Nao autenticado' }, { status: 401 })
+      return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
     }
 
     // Get customer ID
@@ -19,13 +20,13 @@ export async function POST() {
       .single()
 
     if (!subscription?.stripe_customer_id) {
-      return NextResponse.json({ error: 'Cliente nao encontrado' }, { status: 404 })
+      return NextResponse.json({ error: 'Cliente não encontrado' }, { status: 404 })
     }
 
     // Create portal session
     const session = await stripe.billingPortal.sessions.create({
       customer: subscription.stripe_customer_id,
-      return_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings`,
+      return_url: `${getAppUrl()}/settings`,
     })
 
     return NextResponse.json({ url: session.url })

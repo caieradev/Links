@@ -19,7 +19,7 @@ function normalizeUrl(url: string): string {
 }
 
 // Custom URL validation that accepts URLs with or without protocol
-const urlSchema = z.string().min(1, 'URL e obrigatoria').transform(normalizeUrl).refine(
+const urlSchema = z.string().min(1, 'URL é obrigatória').transform(normalizeUrl).refine(
   (url) => {
     try {
       new URL(url)
@@ -28,11 +28,11 @@ const urlSchema = z.string().min(1, 'URL e obrigatoria').transform(normalizeUrl)
       return false
     }
   },
-  { message: 'URL invalida' }
+  { message: 'URL inválida' }
 )
 
 const socialLinkSchema = z.object({
-  platform: z.string().min(1, 'Plataforma obrigatoria'),
+  platform: z.string().min(1, 'Plataforma obrigatória'),
   url: urlSchema,
 })
 
@@ -52,7 +52,7 @@ export async function createSocialLink(
   } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Voce precisa estar logado' }
+    return { error: 'Você precisa estar logado' }
   }
 
   // Check feature flag
@@ -63,7 +63,7 @@ export async function createSocialLink(
     .single()
 
   if (!flags?.can_use_social_buttons) {
-    return { error: 'Funcionalidade nao disponivel no seu plano' }
+    return { error: 'Funcionalidade não disponível no seu plano' }
   }
 
   const parsed = socialLinkSchema.safeParse({
@@ -113,7 +113,7 @@ export async function updateSocialLink(
   } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Voce precisa estar logado' }
+    return { error: 'Você precisa estar logado' }
   }
 
   const id = formData.get('id') as string
@@ -154,7 +154,7 @@ export async function deleteSocialLink(id: string): Promise<SocialLinkActionStat
   } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Voce precisa estar logado' }
+    return { error: 'Você precisa estar logado' }
   }
 
   const { error } = await supabase
@@ -181,7 +181,7 @@ export async function reorderSocialLinks(orderedIds: string[]): Promise<SocialLi
   } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Voce precisa estar logado' }
+    return { error: 'Você precisa estar logado' }
   }
 
   // Update positions
@@ -213,7 +213,7 @@ export async function getSocialLinks() {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    return { data: [], error: 'Nao autenticado' }
+    return { data: [], error: 'Não autenticado' }
   }
 
   const { data, error } = await supabase

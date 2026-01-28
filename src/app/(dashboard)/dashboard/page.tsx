@@ -55,7 +55,7 @@ export default async function DashboardPage() {
             <div>
               <CardTitle>Seus Links</CardTitle>
               <CardDescription>
-                Gerencie os links da sua pagina
+                Gerencie os links da sua página
               </CardDescription>
             </div>
             <div className="flex items-center gap-4">

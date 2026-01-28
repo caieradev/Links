@@ -19,7 +19,7 @@ export function RegisterForm() {
       <CardHeader className="text-center">
         <CardTitle className="text-2xl">Criar Conta</CardTitle>
         <CardDescription>
-          Crie sua conta para comecar a compartilhar seus links
+          Crie sua conta para começar a compartilhar seus links
         </CardDescription>
       </CardHeader>
       <CardContent>

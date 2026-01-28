@@ -2,7 +2,7 @@ import { OnboardingForm } from '@/components/auth/onboarding-form'
 
 export const metadata = {
   title: 'Escolha seu username - Links',
-  description: 'Escolha um username para sua pagina de links',
+  description: 'Escolha um username para sua página de links',
 }
 
 export default function OnboardingPage() {

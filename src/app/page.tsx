@@ -16,32 +16,32 @@ const features = [
   {
     icon: Link2,
     title: 'Links ilimitados',
-    description: 'Adicione quantos links quiser a sua pagina',
+    description: 'Adicione quantos links quiser à sua página',
   },
   {
     icon: Palette,
-    title: 'Personalizacao total',
+    title: 'Personalização total',
     description: 'Cores, fontes, estilos e muito mais',
   },
   {
     icon: BarChart2,
     title: 'Analytics detalhado',
-    description: 'Acompanhe cliques e estatisticas',
+    description: 'Acompanhe cliques e estatísticas',
   },
   {
     icon: Globe,
-    title: 'Dominio customizado',
-    description: 'Use seu proprio dominio',
+    title: 'Domínio customizado',
+    description: 'Use seu próprio domínio',
   },
   {
     icon: Zap,
-    title: 'Super rapido',
-    description: 'Carregamento instantaneo',
+    title: 'Super rápido',
+    description: 'Carregamento instantâneo',
   },
   {
     icon: Shield,
     title: 'Seguro',
-    description: 'Seus dados estao protegidos',
+    description: 'Seus dados estão protegidos',
   },
 ]
 
@@ -49,48 +49,48 @@ const plans = [
   {
     name: 'Free',
     price: 'R$ 0',
-    description: 'Perfeito para comecar',
+    description: 'Perfeito para começar',
     features: [
       'Links ilimitados',
       'Cores personalizadas',
-      'Botao compartilhar pagina',
-      'QR Code da pagina',
-      'SEO basico',
+      'Botão compartilhar página',
+      'QR Code da página',
+      'SEO básico',
     ],
-    cta: 'Comecar gratis',
+    cta: 'Começar grátis',
     highlighted: false,
   },
   {
     name: 'Starter',
     price: 'R$ 19',
-    period: '/mes',
+    period: '/mês',
     description: 'Para criadores em crescimento',
     features: [
       'Tudo do Free +',
       'Temas prontos',
-      'Secoes de links',
+      'Seções de links',
       'Redirect links',
       'Captura de subscribers',
-      'Icones de redes sociais',
+      'Ícones de redes sociais',
       'Imagem de capa nos links',
     ],
-    cta: 'Comecar agora',
+    cta: 'Começar agora',
     highlighted: true,
   },
   {
     name: 'Pro',
     price: 'R$ 31',
-    period: '/mes',
+    period: '/mês',
     description: 'Para profissionais',
     features: [
       'Tudo do Starter +',
       'Remover branding',
       'Analytics detalhado',
       'Gradientes e backgrounds',
-      'Fontes e animacoes',
-      'Video do YouTube no header',
+      'Fontes e animações',
+      'Vídeo do YouTube no header',
       'Lead gate (captura de email)',
-      'Dominio customizado',
+      'Domínio customizado',
     ],
     cta: 'Assinar Pro',
     highlighted: false,
@@ -124,16 +124,16 @@ export default function HomePage() {
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
               Todos os seus links
               <br />
-              <span className="text-primary">em um so lugar</span>
+              <span className="text-primary">em um só lugar</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-              Crie sua pagina de links personalizada em segundos. Compartilhe
-              tudo o que voce faz com uma unica URL.
+              Crie sua página de links personalizada em segundos. Compartilhe
+              tudo o que você faz com uma única URL.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" asChild>
                 <Link href="/register">
-                  Criar minha pagina
+                  Criar minha página
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
@@ -166,10 +166,10 @@ export default function HomePage() {
         <section id="features" className="py-20 bg-muted/30">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-4">
-              Tudo que voce precisa
+              Tudo que você precisa
             </h2>
             <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-12">
-              Recursos poderosos para criar a pagina de links perfeita
+              Recursos poderosos para criar a página de links perfeita
             </p>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {features.map((feature) => (
@@ -196,7 +196,7 @@ export default function HomePage() {
               Planos simples e transparentes
             </h2>
             <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-12">
-              Comece gratis e faca upgrade quando precisar
+              Comece grátis e faça upgrade quando precisar
             </p>
             <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
               {plans.map((plan) => (
@@ -252,15 +252,15 @@ export default function HomePage() {
         <section className="py-20 bg-primary text-primary-foreground">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold mb-4">
-              Pronto para comecar?
+              Pronto para começar?
             </h2>
             <p className="text-primary-foreground/80 max-w-2xl mx-auto mb-8">
-              Crie sua pagina de links em menos de 1 minuto. Sem cartao de
-              credito necessario.
+              Crie sua página de links em menos de 1 minuto. Sem cartão de
+              crédito necessário.
             </p>
             <Button size="lg" variant="secondary" asChild>
               <Link href="/register">
-                Criar minha pagina gratis
+                Criar minha página grátis
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
@@ -277,7 +277,7 @@ export default function HomePage() {
                 Links
               </Link>
               <p className="text-muted-foreground mt-2">
-                Sua pagina de links personalizada.
+                Sua página de links personalizada.
               </p>
             </div>
             <div>
@@ -290,7 +290,7 @@ export default function HomePage() {
                 </li>
                 <li>
                   <Link href="#pricing" className="hover:text-foreground">
-                    Precos
+                    Preços
                   </Link>
                 </li>
               </ul>

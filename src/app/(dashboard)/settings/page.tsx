@@ -43,7 +43,7 @@ export default async function SettingsPage() {
     return null
   }
 
-  const appDomain = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+  const appDomain = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'http://localhost:3000'
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">

@@ -33,14 +33,14 @@ export async function POST(request: NextRequest) {
 
     if (linkError || !link) {
       return NextResponse.json(
-        { error: 'Link nao encontrado' },
+        { error: 'Link não encontrado' },
         { status: 404 }
       )
     }
 
     if (!link.requires_email) {
       return NextResponse.json(
-        { error: 'Este link nao requer email' },
+        { error: 'Este link não requer email' },
         { status: 400 }
       )
     }
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
 
     if (!flags?.can_use_lead_gate) {
       return NextResponse.json(
-        { error: 'Funcionalidade nao disponivel' },
+        { error: 'Funcionalidade não disponível' },
         { status: 403 }
       )
     }

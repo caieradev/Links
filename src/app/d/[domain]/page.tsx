@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!customDomain) {
     return {
-      title: 'Dominio nao encontrado - Links',
+      title: 'Dominio não encontrado - Links',
     }
   }
 
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!profile) {
     return {
-      title: 'Usuario nao encontrado - Links',
+      title: 'Usuário não encontrado - Links',
     }
   }
 

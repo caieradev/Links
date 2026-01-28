@@ -171,7 +171,7 @@ export async function verifyDomainOnVercel(domain: string): Promise<{ success: b
     const data: VercelDomainResponse = await response.json()
 
     if (!response.ok) {
-      return { success: false, error: data.error?.message || 'Dominio nao verificado' }
+      return { success: false, error: data.error?.message || 'Dominio não verificado' }
     }
 
     return { success: data.verified }

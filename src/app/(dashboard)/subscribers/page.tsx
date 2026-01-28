@@ -36,7 +36,7 @@ export default async function SubscribersPage() {
             <Lock className="h-12 w-12 text-muted-foreground mb-4" />
             <h2 className="text-xl font-semibold mb-2">Recurso Premium</h2>
             <p className="text-muted-foreground mb-6 max-w-md">
-              A captura de inscritos esta disponivel a partir do plano Starter.
+              A captura de inscritos esta disponível a partir do plano Starter.
               Colete emails dos seus visitantes e exporte para suas ferramentas de marketing.
             </p>
             <Button asChild>
@@ -68,7 +68,7 @@ export default async function SubscribersPage() {
             <div>
               <CardTitle>Inscritos</CardTitle>
               <CardDescription>
-                Pessoas que se inscreveram na sua pagina
+                Pessoas que se inscreveram na sua página
               </CardDescription>
             </div>
             <div className="flex items-center gap-4">

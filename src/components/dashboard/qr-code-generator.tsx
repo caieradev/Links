@@ -85,9 +85,9 @@ export function QRCodeGenerator({ username, appUrl }: QRCodeGeneratorProps) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>QR Code da sua pagina</DialogTitle>
+          <DialogTitle>QR Code da sua página</DialogTitle>
           <DialogDescription>
-            Compartilhe sua pagina atraves deste QR Code
+            Compartilhe sua página atraves deste QR Code
           </DialogDescription>
         </DialogHeader>
 

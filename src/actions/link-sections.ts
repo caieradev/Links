@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 
 const sectionSchema = z.object({
-  title: z.string().min(1, 'Titulo obrigatorio').max(50, 'Titulo muito longo'),
+  title: z.string().min(1, 'Titulo obrigatorio').max(50, 'Título muito longo'),
 })
 
 export type SectionActionState = {
@@ -21,7 +21,7 @@ export async function createSection(
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Nao autenticado' }
+    return { error: 'Não autenticado' }
   }
 
   // Check feature flag
@@ -32,7 +32,7 @@ export async function createSection(
     .single()
 
   if (!flags?.can_use_link_sections) {
-    return { error: 'Secoes de links nao estao disponiveis no seu plano' }
+    return { error: 'Secoes de links não estao disponiveis no seu plano' }
   }
 
   const parsed = sectionSchema.safeParse({
@@ -41,7 +41,7 @@ export async function createSection(
 
   if (!parsed.success) {
     const issues = parsed.error.issues
-    return { error: issues[0]?.message || 'Dados invalidos' }
+    return { error: issues[0]?.message || 'Dados inválidos' }
   }
 
   // Get the highest position
@@ -77,14 +77,14 @@ export async function updateSection(
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Nao autenticado' }
+    return { error: 'Não autenticado' }
   }
 
   const parsed = sectionSchema.safeParse({ title })
 
   if (!parsed.success) {
     const issues = parsed.error.issues
-    return { error: issues[0]?.message || 'Dados invalidos' }
+    return { error: issues[0]?.message || 'Dados inválidos' }
   }
 
   const { error } = await supabase
@@ -106,7 +106,7 @@ export async function deleteSection(sectionId: string): Promise<SectionActionSta
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Nao autenticado' }
+    return { error: 'Não autenticado' }
   }
 
   // Links in this section will have section_id set to null (ON DELETE SET NULL)
@@ -131,7 +131,7 @@ export async function reorderSections(
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Nao autenticado' }
+    return { error: 'Não autenticado' }
   }
 
   const updates = orderedIds.map((id, index) =>
@@ -161,7 +161,7 @@ export async function assignLinkToSection(
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Nao autenticado' }
+    return { error: 'Não autenticado' }
   }
 
   const { error } = await supabase
@@ -183,7 +183,7 @@ export async function getUserSections() {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Nao autenticado', data: null }
+    return { error: 'Não autenticado', data: null }
   }
 
   const { data, error } = await supabase

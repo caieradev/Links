@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { stripe, getPriceId, type BillingPeriod } from '@/lib/stripe'
+import { getAppUrl } from '@/lib/utils'
 
 export async function POST(request: NextRequest) {
   try {
@@ -8,19 +9,19 @@ export async function POST(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
-      return NextResponse.json({ error: 'Nao autenticado' }, { status: 401 })
+      return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
     }
 
     const { plan, period } = await request.json() as { plan: 'starter' | 'pro'; period: BillingPeriod }
 
     if (!plan || !period) {
-      return NextResponse.json({ error: 'Plano e periodo sao obrigatorios' }, { status: 400 })
+      return NextResponse.json({ error: 'Plano e período sao obrigatorios' }, { status: 400 })
     }
 
     const priceId = getPriceId(plan, period)
 
     if (!priceId) {
-      return NextResponse.json({ error: 'Preco nao encontrado' }, { status: 400 })
+      return NextResponse.json({ error: 'Preco não encontrado' }, { status: 400 })
     }
 
     // Get or create customer
@@ -62,8 +63,8 @@ export async function POST(request: NextRequest) {
           quantity: 1,
         },
       ],
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings?success=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings?canceled=true`,
+      success_url: `${getAppUrl()}/settings?success=true`,
+      cancel_url: `${getAppUrl()}/settings?canceled=true`,
       metadata: {
         user_id: user.id,
       },

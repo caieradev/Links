@@ -40,7 +40,7 @@ export function RedirectSettings({ flags, settings }: RedirectSettingsProps) {
           <div>
             <CardTitle>Redirecionamento Temporario</CardTitle>
             <CardDescription>
-              Redirecione visitantes para outra pagina por tempo limitado
+              Redirecione visitantes para outra página por tempo limitado
             </CardDescription>
           </div>
           {!canUseRedirectLinks && (
@@ -85,7 +85,7 @@ export function RedirectSettings({ flags, settings }: RedirectSettingsProps) {
                 defaultValue={formatDatetimeLocal(redirectUntil)}
               />
               <p className="text-xs text-muted-foreground">
-                Apos essa data, os visitantes verao sua pagina normal
+                Apos essa data, os visitantes verao sua página normal
               </p>
             </div>
 
@@ -105,10 +105,10 @@ export function RedirectSettings({ flags, settings }: RedirectSettingsProps) {
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <Lock className="h-8 w-8 text-muted-foreground mb-4" />
             <p className="text-muted-foreground mb-2">
-              Recurso disponivel a partir do plano Starter
+              Recurso disponível a partir do plano Starter
             </p>
             <p className="text-sm text-muted-foreground">
-              Redirecione temporariamente sua pagina para campanhas e promocoes.
+              Redirecione temporariamente sua página para campanhas e promocoes.
             </p>
           </div>
         )}

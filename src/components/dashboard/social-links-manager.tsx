@@ -84,7 +84,7 @@ export function SocialLinksManager({ socialLinks, flags }: SocialLinksManagerPro
             <div>
               <CardTitle>Links Sociais</CardTitle>
               <CardDescription>
-                Adicione icones de suas redes sociais
+                Adicione ícones de suas redes sociais
               </CardDescription>
             </div>
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
@@ -148,7 +148,7 @@ export function SocialLinksManager({ socialLinks, flags }: SocialLinksManagerPro
           {socialLinks.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               <p>Nenhum link social adicionado</p>
-              <p className="text-sm">Clique em "Adicionar" para comecar</p>
+              <p className="text-sm">Clique em "Adicionar" para começar</p>
             </div>
           ) : (
             <div className="space-y-2">

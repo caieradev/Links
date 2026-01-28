@@ -125,7 +125,7 @@ export function EditLinkDialog({ link, open, onOpenChange, flags, sections = [] 
           <DialogHeader>
             <DialogTitle>Editar link</DialogTitle>
             <DialogDescription>
-              Edite as informacoes do seu link.
+              Edite as informações do seu link.
             </DialogDescription>
           </DialogHeader>
           <form action={action} className="space-y-4">
@@ -136,7 +136,7 @@ export function EditLinkDialog({ link, open, onOpenChange, flags, sections = [] 
             <input type="hidden" name="requires_email" value={String(requiresEmail)} />
 
             <div className="space-y-2">
-              <Label htmlFor="edit-title">Titulo</Label>
+              <Label htmlFor="edit-title">Título</Label>
               <Input
                 id="edit-title"
                 name="title"
@@ -155,7 +155,7 @@ export function EditLinkDialog({ link, open, onOpenChange, flags, sections = [] 
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-description">Descricao (opcional)</Label>
+              <Label htmlFor="edit-description">Descrição (opcional)</Label>
               <Textarea
                 id="edit-description"
                 name="description"
@@ -166,7 +166,7 @@ export function EditLinkDialog({ link, open, onOpenChange, flags, sections = [] 
 
             {canUseSections && sections.length > 0 && (
               <div className="space-y-2">
-                <Label>Secao</Label>
+                <Label>Seção</Label>
                 <Select
                   value={sectionId || 'none'}
                   onValueChange={(value) => {
@@ -184,10 +184,10 @@ export function EditLinkDialog({ link, open, onOpenChange, flags, sections = [] 
                   disabled={isAssigning}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Sem secao" />
+                    <SelectValue placeholder="Sem seção" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">Sem secao</SelectItem>
+                    <SelectItem value="none">Sem seção</SelectItem>
                     {sections.map((section) => (
                       <SelectItem key={section.id} value={section.id}>
                         {section.title}

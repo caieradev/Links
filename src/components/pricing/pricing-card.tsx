@@ -47,7 +47,7 @@ export function PricingCard({ plan, period, currentPlan, onSelect, highlighted }
       <CardHeader>
         <CardTitle>{plan.name}</CardTitle>
         <CardDescription>
-          {isFree ? 'Para comecar' : plan.type === 'starter' ? 'Para criadores' : 'Para profissionais'}
+          {isFree ? 'Para começar' : plan.type === 'starter' ? 'Para criadores' : 'Para profissionais'}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1">

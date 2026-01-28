@@ -62,7 +62,7 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Visualizacoes de Pagina</CardTitle>
+            <CardTitle className="text-sm font-medium">Visualizacoes de Página</CardTitle>
             <Eye className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>

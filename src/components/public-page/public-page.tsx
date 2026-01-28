@@ -118,7 +118,7 @@ export function PublicPage({ profile, links, settings, flags, sections = [], soc
 
       <div className="relative z-10 container max-w-md lg:max-w-lg mx-auto px-4 py-12 lg:py-16">
         <div className="flex flex-col items-center text-center">
-          {/* YouTube Header Video */}
+          {/* YouTube Header Vídeo */}
           {showYouTubeHeader && (
             <YouTubeHeader videoUrl={settings.header_video_url!} />
           )}

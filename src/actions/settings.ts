@@ -36,7 +36,7 @@ export async function updateProfile(
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Nao autenticado' }
+    return { error: 'Não autenticado' }
   }
 
   const parsed = profileSchema.safeParse({
@@ -46,7 +46,7 @@ export async function updateProfile(
 
   if (!parsed.success) {
     const issues = parsed.error.issues
-    return { error: issues[0]?.message || 'Dados invalidos' }
+    return { error: issues[0]?.message || 'Dados inválidos' }
   }
 
   const { error } = await supabase
@@ -73,7 +73,7 @@ export async function addCustomDomain(
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Nao autenticado' }
+    return { error: 'Não autenticado' }
   }
 
   // Check feature flag
@@ -84,7 +84,7 @@ export async function addCustomDomain(
     .single()
 
   if (!flags?.can_use_custom_domain) {
-    return { error: 'Voce nao tem permissao para usar dominios customizados' }
+    return { error: 'Você não tem permissão para usar dominios customizados' }
   }
 
   const parsed = domainSchema.safeParse({
@@ -93,7 +93,7 @@ export async function addCustomDomain(
 
   if (!parsed.success) {
     const issues = parsed.error.issues
-    return { error: issues[0]?.message || 'Dados invalidos' }
+    return { error: issues[0]?.message || 'Dados inválidos' }
   }
 
   const domain = parsed.data.domain.toLowerCase()
@@ -140,7 +140,7 @@ export async function verifyDomain(domainId: string): Promise<SettingsState> {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Nao autenticado' }
+    return { error: 'Não autenticado' }
   }
 
   const { data: domainData } = await supabase
@@ -151,7 +151,7 @@ export async function verifyDomain(domainId: string): Promise<SettingsState> {
     .single()
 
   if (!domainData) {
-    return { error: 'Dominio nao encontrado' }
+    return { error: 'Dominio não encontrado' }
   }
 
   // Verify domain configuration on Vercel
@@ -162,7 +162,7 @@ export async function verifyDomain(domainId: string): Promise<SettingsState> {
     const configCheck = await getVercelDomainConfig(domainData.domain)
 
     if (!configCheck.configured) {
-      return { error: 'DNS nao configurado. Adicione um CNAME apontando para cname.vercel-dns.com' }
+      return { error: 'DNS não configurado. Adicione um CNAME apontando para cname.vercel-dns.com' }
     }
 
     if (!configCheck.verified) {
@@ -188,7 +188,7 @@ export async function deleteDomain(domainId: string): Promise<SettingsState> {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Nao autenticado' }
+    return { error: 'Não autenticado' }
   }
 
   // Get domain name first to remove from Vercel
@@ -200,7 +200,7 @@ export async function deleteDomain(domainId: string): Promise<SettingsState> {
     .single()
 
   if (!domainData) {
-    return { error: 'Dominio nao encontrado' }
+    return { error: 'Dominio não encontrado' }
   }
 
   // Remove from database
@@ -226,7 +226,7 @@ export async function deleteAccount(): Promise<SettingsState> {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return { error: 'Nao autenticado' }
+    return { error: 'Não autenticado' }
   }
 
   // Use admin client to delete user from Supabase Auth
