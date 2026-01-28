@@ -229,10 +229,25 @@ export async function deleteAccount(): Promise<SettingsState> {
     return { error: 'Não autenticado' }
   }
 
-  // Use admin client to delete user from Supabase Auth
-  // This will cascade delete all related data due to foreign key constraints
+  // Use admin client to delete user and storage files
   const adminClient = createAdminClient()
 
+  // Delete all user storage files from all buckets
+  const buckets = ['avatars', 'backgrounds', 'link-thumbnails']
+
+  for (const bucket of buckets) {
+    const { data: files } = await adminClient.storage
+      .from(bucket)
+      .list(user.id)
+
+    if (files && files.length > 0) {
+      const filePaths = files.map((f) => `${user.id}/${f.name}`)
+      await adminClient.storage.from(bucket).remove(filePaths)
+    }
+  }
+
+  // Delete user from Supabase Auth
+  // This will cascade delete all related data due to foreign key constraints
   const { error: deleteError } = await adminClient.auth.admin.deleteUser(user.id)
 
   if (deleteError) {

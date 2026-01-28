@@ -163,12 +163,22 @@ export async function uploadAvatar(formData: FormData): Promise<{ url: string | 
     return { url: null, error: 'Nenhum arquivo enviado' }
   }
 
+  // Delete old avatar files (handles extension changes)
+  const { data: existingFiles } = await supabase.storage
+    .from('avatars')
+    .list(user.id)
+
+  if (existingFiles && existingFiles.length > 0) {
+    const filesToDelete = existingFiles.map((f) => `${user.id}/${f.name}`)
+    await supabase.storage.from('avatars').remove(filesToDelete)
+  }
+
   const fileExt = file.name.split('.').pop()
   const fileName = `${user.id}/avatar.${fileExt}`
 
   const { error: uploadError } = await supabase.storage
     .from('avatars')
-    .upload(fileName, file, { upsert: true })
+    .upload(fileName, file)
 
   if (uploadError) {
     return { url: null, error: 'Erro ao fazer upload' }
@@ -214,12 +224,22 @@ export async function uploadBackground(formData: FormData): Promise<{ url: strin
     return { url: null, error: 'Nenhum arquivo enviado' }
   }
 
+  // Delete old background files (handles extension changes)
+  const { data: existingFiles } = await supabase.storage
+    .from('backgrounds')
+    .list(user.id)
+
+  if (existingFiles && existingFiles.length > 0) {
+    const filesToDelete = existingFiles.map((f) => `${user.id}/${f.name}`)
+    await supabase.storage.from('backgrounds').remove(filesToDelete)
+  }
+
   const fileExt = file.name.split('.').pop()
   const fileName = `${user.id}/background.${fileExt}`
 
   const { error: uploadError } = await supabase.storage
     .from('backgrounds')
-    .upload(fileName, file, { upsert: true })
+    .upload(fileName, file)
 
   if (uploadError) {
     return { url: null, error: 'Erro ao fazer upload' }

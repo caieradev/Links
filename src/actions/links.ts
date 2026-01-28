@@ -160,6 +160,35 @@ export async function updateLink(
     return { error: issues[0]?.message || 'Dados inválidos' }
   }
 
+  // Get current link data to compare thumbnail/cover URLs
+  const { data: currentLink } = await supabase
+    .from('links')
+    .select('thumbnail_url, cover_image_url')
+    .eq('id', parsed.data.id)
+    .eq('user_id', user.id)
+    .single()
+
+  // Clean up old storage files if URLs changed
+  if (currentLink) {
+    const filesToDelete: string[] = []
+
+    // If thumbnail changed or was removed, delete old file
+    if (currentLink.thumbnail_url && currentLink.thumbnail_url !== (parsed.data.thumbnail_url || null)) {
+      const oldPath = extractStoragePath(currentLink.thumbnail_url, 'link-thumbnails')
+      if (oldPath) filesToDelete.push(oldPath)
+    }
+
+    // If cover changed or was removed, delete old file
+    if (currentLink.cover_image_url && currentLink.cover_image_url !== (parsed.data.cover_image_url || null)) {
+      const oldPath = extractStoragePath(currentLink.cover_image_url, 'link-thumbnails')
+      if (oldPath) filesToDelete.push(oldPath)
+    }
+
+    if (filesToDelete.length > 0) {
+      await supabase.storage.from('link-thumbnails').remove(filesToDelete)
+    }
+  }
+
   const { error } = await supabase
     .from('links')
     .update({
@@ -191,6 +220,33 @@ export async function deleteLink(linkId: string): Promise<LinkActionState> {
     return { error: 'Não autenticado' }
   }
 
+  // Get link data to find storage files
+  const { data: linkData } = await supabase
+    .from('links')
+    .select('thumbnail_url, cover_image_url')
+    .eq('id', linkId)
+    .eq('user_id', user.id)
+    .single()
+
+  // Delete associated storage files
+  if (linkData) {
+    const filesToDelete: string[] = []
+
+    if (linkData.thumbnail_url) {
+      const thumbnailPath = extractStoragePath(linkData.thumbnail_url, 'link-thumbnails')
+      if (thumbnailPath) filesToDelete.push(thumbnailPath)
+    }
+
+    if (linkData.cover_image_url) {
+      const coverPath = extractStoragePath(linkData.cover_image_url, 'link-thumbnails')
+      if (coverPath) filesToDelete.push(coverPath)
+    }
+
+    if (filesToDelete.length > 0) {
+      await supabase.storage.from('link-thumbnails').remove(filesToDelete)
+    }
+  }
+
   const { error } = await supabase
     .from('links')
     .delete()
@@ -203,6 +259,16 @@ export async function deleteLink(linkId: string): Promise<LinkActionState> {
 
   revalidatePath('/dashboard')
   return { success: 'Link deletado com sucesso' }
+}
+
+// Helper to extract storage path from public URL
+function extractStoragePath(url: string, bucket: string): string | null {
+  try {
+    const match = url.match(new RegExp(`/storage/v1/object/public/${bucket}/(.+)$`))
+    return match ? match[1] : null
+  } catch {
+    return null
+  }
 }
 
 export async function toggleLinkActive(linkId: string, isActive: boolean): Promise<LinkActionState> {

@@ -55,6 +55,19 @@ export default async function DashboardPage() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
+      {/* Section Manager */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Seções</CardTitle>
+          <CardDescription>
+            Organize seus links em categorias
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <SectionManager sections={sections ?? []} flags={flags} />
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -86,20 +99,6 @@ export default async function DashboardPage() {
           />
         </CardContent>
       </Card>
-
-      {/* Section Manager */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Seções</CardTitle>
-          <CardDescription>
-            Organize seus links em categorias
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <SectionManager sections={sections ?? []} flags={flags} />
-        </CardContent>
-      </Card>
-
       {/* Social Links Manager */}
       <SocialLinksManager socialLinks={socialLinks ?? []} flags={flags} />
     </div>

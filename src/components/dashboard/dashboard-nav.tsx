@@ -30,9 +30,9 @@ interface DashboardNavProps {
 
 const navItems = [
   { href: '/dashboard', label: 'Links', icon: Link2 },
-  { href: '/subscribers', label: 'Inscritos', icon: Users },
-  { href: '/analytics', label: 'Analytics', icon: BarChart3 },
   { href: '/appearance', label: 'Aparência', icon: Palette },
+  { href: '/analytics', label: 'Analytics', icon: BarChart3 },
+  { href: '/subscribers', label: 'Inscritos', icon: Users },
   { href: '/settings', label: 'Configuracões', icon: Settings },
 ]
 
