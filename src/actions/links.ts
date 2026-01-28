@@ -4,9 +4,36 @@ import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 
+// Normalizes URL by adding https:// if no protocol is present
+function normalizeUrl(url: string): string {
+  const trimmed = url.trim()
+  if (!trimmed) return trimmed
+
+  // If already has a protocol, return as is
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed
+  }
+
+  // Add https:// prefix
+  return `https://${trimmed}`
+}
+
+// Custom URL validation that accepts URLs with or without protocol
+const urlSchema = z.string().min(1, 'URL e obrigatoria').transform(normalizeUrl).refine(
+  (url) => {
+    try {
+      new URL(url)
+      return true
+    } catch {
+      return false
+    }
+  },
+  { message: 'URL invalida' }
+)
+
 const createLinkSchema = z.object({
   title: z.string().min(1, 'Titulo e obrigatorio').max(100, 'Titulo muito longo'),
-  url: z.string().url('URL invalida'),
+  url: urlSchema,
   description: z.string().max(200, 'Descricao muito longa').optional(),
   icon: z.string().optional(),
   thumbnail_url: z.string().optional(),
@@ -15,6 +42,8 @@ const createLinkSchema = z.object({
 const updateLinkSchema = createLinkSchema.extend({
   id: z.string().uuid(),
   is_active: z.boolean().optional(),
+  cover_image_url: z.string().optional(),
+  requires_email: z.boolean().optional(),
 })
 
 export type LinkActionState = {
@@ -58,9 +87,9 @@ export async function createLink(
     .select('*', { count: 'exact', head: true })
     .eq('user_id', user.id)
 
-  const maxLinks = flags?.max_links ?? 10
+  const maxLinks = flags?.max_links ?? null // null = unlimited
 
-  if (count !== null && count >= maxLinks) {
+  if (maxLinks !== null && count !== null && count >= maxLinks) {
     return { error: `Voce atingiu o limite de ${maxLinks} links` }
   }
 
@@ -111,6 +140,8 @@ export async function updateLink(
     description: formData.get('description') || undefined,
     icon: formData.get('icon') || undefined,
     thumbnail_url: formData.get('thumbnail_url') || undefined,
+    cover_image_url: formData.get('cover_image_url') || undefined,
+    requires_email: formData.get('requires_email') === 'true',
     is_active: formData.get('is_active') === 'true',
   })
 
@@ -127,6 +158,8 @@ export async function updateLink(
       description: parsed.data.description || null,
       icon: parsed.data.icon || null,
       thumbnail_url: parsed.data.thumbnail_url || null,
+      cover_image_url: parsed.data.cover_image_url || null,
+      requires_email: parsed.data.requires_email ?? false,
       is_active: parsed.data.is_active,
     })
     .eq('id', parsed.data.id)
@@ -182,6 +215,39 @@ export async function toggleLinkActive(linkId: string, isActive: boolean): Promi
 
   revalidatePath('/dashboard')
   return { success: 'Link atualizado com sucesso' }
+}
+
+export async function toggleLinkFeatured(linkId: string, isFeatured: boolean): Promise<LinkActionState> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    return { error: 'Nao autenticado' }
+  }
+
+  // Check feature flag
+  const { data: flags } = await supabase
+    .from('feature_flags')
+    .select('can_use_featured_links')
+    .eq('user_id', user.id)
+    .single()
+
+  if (!flags?.can_use_featured_links) {
+    return { error: 'Voce nao tem permissao para destacar links' }
+  }
+
+  const { error } = await supabase
+    .from('links')
+    .update({ is_featured: isFeatured })
+    .eq('id', linkId)
+    .eq('user_id', user.id)
+
+  if (error) {
+    return { error: 'Erro ao atualizar link' }
+  }
+
+  revalidatePath('/dashboard')
+  return { success: isFeatured ? 'Link destacado com sucesso' : 'Link removido do destaque' }
 }
 
 export async function reorderLinks(
@@ -261,6 +327,48 @@ export async function uploadLinkThumbnail(formData: FormData): Promise<{ url: st
 
   const fileExt = file.name.split('.').pop()
   const fileName = `${user.id}/${Date.now()}.${fileExt}`
+
+  const { error: uploadError } = await supabase.storage
+    .from('link-thumbnails')
+    .upload(fileName, file)
+
+  if (uploadError) {
+    return { url: null, error: 'Erro ao fazer upload' }
+  }
+
+  const { data: { publicUrl } } = supabase.storage
+    .from('link-thumbnails')
+    .getPublicUrl(fileName)
+
+  return { url: publicUrl, error: null }
+}
+
+export async function uploadLinkCoverImage(formData: FormData): Promise<{ url: string | null; error: string | null }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    return { url: null, error: 'Nao autenticado' }
+  }
+
+  // Check feature flag
+  const { data: flags } = await supabase
+    .from('feature_flags')
+    .select('can_use_link_cover_images')
+    .eq('user_id', user.id)
+    .single()
+
+  if (!flags?.can_use_link_cover_images) {
+    return { url: null, error: 'Voce nao tem permissao para usar imagens de capa' }
+  }
+
+  const file = formData.get('file') as File
+  if (!file) {
+    return { url: null, error: 'Nenhum arquivo enviado' }
+  }
+
+  const fileExt = file.name.split('.').pop()
+  const fileName = `${user.id}/cover-${Date.now()}.${fileExt}`
 
   const { error: uploadError } = await supabase.storage
     .from('link-thumbnails')

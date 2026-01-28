@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { logout } from '@/actions/auth'
-import { Link2, Palette, Settings, LogOut, ExternalLink } from 'lucide-react'
+import { Link2, Palette, Settings, LogOut, ExternalLink, Users, BarChart3 } from 'lucide-react'
 import type { Profile } from '@/types/database'
 
 interface DashboardNavProps {
@@ -22,6 +22,8 @@ interface DashboardNavProps {
 
 const navItems = [
   { href: '/dashboard', label: 'Links', icon: Link2 },
+  { href: '/subscribers', label: 'Inscritos', icon: Users },
+  { href: '/analytics', label: 'Analytics', icon: BarChart3 },
   { href: '/appearance', label: 'Aparencia', icon: Palette },
   { href: '/settings', label: 'Configuracoes', icon: Settings },
 ]
@@ -86,6 +88,18 @@ export function DashboardNav({ profile }: DashboardNavProps) {
                 <Link href="/dashboard">
                   <Link2 className="mr-2 h-4 w-4" />
                   Links
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild className="md:hidden">
+                <Link href="/subscribers">
+                  <Users className="mr-2 h-4 w-4" />
+                  Inscritos
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild className="md:hidden">
+                <Link href="/analytics">
+                  <BarChart3 className="mr-2 h-4 w-4" />
+                  Analytics
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild className="md:hidden">

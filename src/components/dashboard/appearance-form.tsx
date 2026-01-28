@@ -12,7 +12,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ImageCropper } from '@/components/ui/image-cropper'
 import { FeatureGate } from './feature-gate'
-import { Loader2, Upload, ImageIcon, Trash2 } from 'lucide-react'
+import { ThemeSelector } from './appearance/theme-selector'
+import { RedirectSettings } from './appearance/redirect-settings'
+import { Textarea } from '@/components/ui/textarea'
+import { Loader2, Upload, ImageIcon, Trash2, Lock } from 'lucide-react'
 import { hasFeature } from '@/lib/feature-flags'
 import type { Profile, PageSettings, FeatureFlags } from '@/types/database'
 
@@ -20,6 +23,18 @@ interface AppearanceFormProps {
   profile: Profile
   settings: PageSettings
   flags: FeatureFlags | null
+}
+
+function extractYouTubeId(url: string): string | null {
+  const patterns = [
+    /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/,
+    /^([^"&?\/\s]{11})$/,
+  ]
+  for (const pattern of patterns) {
+    const match = url.match(pattern)
+    if (match) return match[1]
+  }
+  return null
 }
 
 const initialState: AppearanceState = {}
@@ -82,6 +97,11 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
     show_bio: settings.show_bio,
     avatar_size: settings.avatar_size,
     link_animation: settings.link_animation,
+    subscriber_form_enabled: settings.subscriber_form_enabled,
+    subscriber_form_title: settings.subscriber_form_title,
+    subscriber_form_description: settings.subscriber_form_description || '',
+    header_video_url: settings.header_video_url || '',
+    social_icons_position: settings.social_icons_position || 'hidden',
   })
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>, type: 'avatar' | 'background') => {
@@ -140,10 +160,12 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
         <input type="hidden" name="background_image_url" value={backgroundImageUrl || ''} />
 
         <Tabs defaultValue="profile">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="profile">Perfil</TabsTrigger>
             <TabsTrigger value="background">Fundo</TabsTrigger>
             <TabsTrigger value="links">Links</TabsTrigger>
+            <TabsTrigger value="subscribers">Inscritos</TabsTrigger>
+            <TabsTrigger value="advanced">Avancado</TabsTrigger>
           </TabsList>
 
           {/* Profile Tab */}
@@ -290,6 +312,24 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
 
           {/* Background Tab */}
           <TabsContent value="background" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Temas</CardTitle>
+                <CardDescription>Aplique um tema pronto ou personalize manualmente</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ThemeSelector
+                  flags={flags}
+                  currentSettings={{
+                    background_type: formData.background_type,
+                    background_color: formData.background_color,
+                    background_gradient_start: formData.background_gradient_start,
+                    background_gradient_end: formData.background_gradient_end,
+                  }}
+                />
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader>
                 <CardTitle>Tipo de fundo</CardTitle>
@@ -616,6 +656,160 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                 </FeatureGate>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Subscribers Tab */}
+          <TabsContent value="subscribers" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Formulario de inscricao</CardTitle>
+                <CardDescription>
+                  Colete emails dos visitantes da sua pagina
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {hasFeature(flags, 'can_collect_subscribers') ? (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label>Habilitar formulario</Label>
+                        <p className="text-sm text-muted-foreground">
+                          Exibir formulario de inscricao na sua pagina
+                        </p>
+                      </div>
+                      <Switch
+                        checked={formData.subscriber_form_enabled}
+                        onCheckedChange={(checked) =>
+                          setFormData((prev) => ({ ...prev, subscriber_form_enabled: checked }))
+                        }
+                      />
+                    </div>
+
+                    {formData.subscriber_form_enabled && (
+                      <>
+                        <div className="space-y-2">
+                          <Label>Titulo</Label>
+                          <Input
+                            type="text"
+                            value={formData.subscriber_form_title}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                subscriber_form_title: e.target.value,
+                              }))
+                            }
+                            placeholder="Inscreva-se"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>Descricao (opcional)</Label>
+                          <Textarea
+                            value={formData.subscriber_form_description}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                subscriber_form_description: e.target.value,
+                              }))
+                            }
+                            placeholder="Receba novidades e conteudos exclusivos"
+                            rows={2}
+                          />
+                        </div>
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-8 text-center">
+                    <Lock className="h-8 w-8 text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground mb-2">
+                      Recurso disponivel a partir do plano Starter
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Colete emails dos visitantes e exporte para suas ferramentas de marketing.
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Advanced Tab */}
+          <TabsContent value="advanced" className="space-y-4">
+            <RedirectSettings flags={flags} settings={settings} />
+
+            {/* Social Icons Position */}
+            <FeatureGate flags={flags} feature="can_use_social_buttons">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Icones Sociais</CardTitle>
+                  <CardDescription>
+                    Configure onde os icones das redes sociais aparecem
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Posicao</Label>
+                    <Select
+                      value={formData.social_icons_position}
+                      onValueChange={(value) =>
+                        setFormData((prev) => ({ ...prev, social_icons_position: value }))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="hidden">Oculto</SelectItem>
+                        <SelectItem value="above">Acima dos links</SelectItem>
+                        <SelectItem value="below">Abaixo dos links</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <p className="text-sm text-muted-foreground">
+                      Configure seus links sociais na pagina de Links Sociais
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </FeatureGate>
+
+            {/* YouTube Header Video */}
+            <FeatureGate flags={flags} feature="can_use_header_video">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Video de Cabecalho</CardTitle>
+                  <CardDescription>
+                    Adicione um video do YouTube no topo da sua pagina
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>URL do YouTube</Label>
+                    <Input
+                      type="url"
+                      value={formData.header_video_url}
+                      onChange={(e) =>
+                        setFormData((prev) => ({ ...prev, header_video_url: e.target.value }))
+                      }
+                      placeholder="https://www.youtube.com/watch?v=..."
+                    />
+                    <p className="text-sm text-muted-foreground">
+                      Cole a URL de um video do YouTube. Deixe vazio para remover.
+                    </p>
+                  </div>
+
+                  {formData.header_video_url && (
+                    <div className="aspect-video rounded-lg overflow-hidden border">
+                      <iframe
+                        src={`https://www.youtube.com/embed/${extractYouTubeId(formData.header_video_url) || ''}`}
+                        className="w-full h-full"
+                        allowFullScreen
+                      />
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </FeatureGate>
           </TabsContent>
         </Tabs>
 

@@ -1,23 +1,48 @@
 'use client'
 
-import { useTransition } from 'react'
+import { useState, useTransition } from 'react'
+import { Share2 } from 'lucide-react'
 import { trackLinkClick } from '@/actions/analytics'
 import { cn } from '@/lib/utils'
 import { detectSocialIcon, getSocialIconSvg } from '@/lib/social-icons'
-import type { Link, PageSettings } from '@/types/database'
+import { ShareLinkModal } from './share-link-modal'
+import { LeadGateModal } from './lead-gate-modal'
+import type { Link, PageSettings, FeatureFlags } from '@/types/database'
 
 interface LinkButtonProps {
   link: Link
   settings: PageSettings
+  profileName: string
+  profileId: string
+  flags: FeatureFlags | null
 }
 
-export function LinkButton({ link, settings }: LinkButtonProps) {
+export function LinkButton({ link, settings, profileName, profileId, flags }: LinkButtonProps) {
   const [, startTransition] = useTransition()
+  const [shareModalOpen, setShareModalOpen] = useState(false)
+  const [leadGateOpen, setLeadGateOpen] = useState(false)
 
-  const handleClick = () => {
+  const canUseLeadGate = flags?.can_use_lead_gate ?? false
+  const requiresEmail = link.requires_email && canUseLeadGate
+
+  const handleClick = (e: React.MouseEvent) => {
+    // If requires email, show lead gate modal instead of navigating
+    if (requiresEmail) {
+      e.preventDefault()
+      setLeadGateOpen(true)
+      return
+    }
+
+    // Track click
     startTransition(async () => {
       await trackLinkClick(link.id)
     })
+  }
+
+  const handleShareClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setShareModalOpen(true)
   }
 
   // Detect social media icon from URL
@@ -25,6 +50,7 @@ export function LinkButton({ link, settings }: LinkButtonProps) {
   const socialIconSvg = socialInfo ? getSocialIconSvg(socialInfo.icon) : null
 
   // Determine what icon/image to show
+  const hasCoverImage = !!link.cover_image_url
   const hasCustomThumbnail = !!link.thumbnail_url
   const hasSocialIcon = !!socialIconSvg
   const hasIcon = hasCustomThumbnail || hasSocialIcon
@@ -35,8 +61,10 @@ export function LinkButton({ link, settings }: LinkButtonProps) {
       color: settings.link_text_color,
     }
 
-    if (settings.link_shadow) {
-      baseStyle.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+    if (settings.link_shadow || link.is_featured) {
+      baseStyle.boxShadow = link.is_featured
+        ? '0 0 0 2px rgba(234, 179, 8, 0.5), 0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+        : '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
     }
 
     return baseStyle
@@ -44,11 +72,16 @@ export function LinkButton({ link, settings }: LinkButtonProps) {
 
   const getLinkClasses = () => {
     const classes = [
-      'block w-full p-4 lg:p-5 font-medium lg:text-lg transition-all duration-200',
+      'block w-full font-medium lg:text-lg transition-all duration-200 overflow-hidden',
     ]
 
-    // Center text only if no icon
-    if (!hasIcon) {
+    // No padding at top if has cover image
+    if (!hasCoverImage) {
+      classes.push('p-4 lg:p-5')
+    }
+
+    // Center text only if no icon and no cover
+    if (!hasIcon && !hasCoverImage) {
       classes.push('text-center')
     }
 
@@ -57,7 +90,7 @@ export function LinkButton({ link, settings }: LinkButtonProps) {
         classes.push('rounded-lg')
         break
       case 'pill':
-        classes.push('rounded-full')
+        classes.push(hasCoverImage ? 'rounded-xl' : 'rounded-full')
         break
       case 'square':
         classes.push('rounded-none')
@@ -75,7 +108,7 @@ export function LinkButton({ link, settings }: LinkButtonProps) {
         classes.push('hover:translate-y-[-2px]')
         break
       case 'bounce':
-        classes.push('hover:scale-105')
+        classes.push('hover:scale-[1.02]')
         break
       default:
         classes.push('hover:brightness-95')
@@ -113,16 +146,40 @@ export function LinkButton({ link, settings }: LinkButtonProps) {
     return null
   }
 
-  return (
-    <a
-      href={link.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      onClick={handleClick}
-      className={getLinkClasses()}
-      style={getLinkStyle()}
-    >
-      {hasIcon ? (
+  const renderContent = () => {
+    // With cover image - special layout
+    if (hasCoverImage) {
+      return (
+        <>
+          <img
+            src={link.cover_image_url!}
+            alt=""
+            className="w-full h-40 lg:h-48 object-cover"
+          />
+          <div className="p-4 lg:p-5">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex-1 min-w-0">
+                <span className="block font-semibold truncate">{link.title}</span>
+                {link.description && (
+                  <span className="block text-sm opacity-75 truncate">{link.description}</span>
+                )}
+              </div>
+              <button
+                onClick={handleShareClick}
+                className="p-2 rounded-full hover:bg-black/10 transition-colors flex-shrink-0"
+                style={{ color: settings.link_text_color }}
+              >
+                <Share2 className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </>
+      )
+    }
+
+    // With icon/thumbnail
+    if (hasIcon) {
+      return (
         <div className="flex items-center gap-3">
           {renderIcon()}
           <div className="flex-1 text-left min-w-0">
@@ -131,15 +188,69 @@ export function LinkButton({ link, settings }: LinkButtonProps) {
               <span className="block text-sm opacity-75 truncate">{link.description}</span>
             )}
           </div>
+          <button
+            onClick={handleShareClick}
+            className="p-2 rounded-full hover:bg-black/10 transition-colors flex-shrink-0"
+            style={{ color: settings.link_text_color }}
+          >
+            <Share2 className="h-4 w-4" />
+          </button>
         </div>
-      ) : (
-        <>
+      )
+    }
+
+    // Default - no icon
+    return (
+      <div className="flex items-center justify-center gap-3 relative">
+        <div className="flex-1">
           {link.title}
           {link.description && (
             <span className="block text-sm opacity-75 mt-1">{link.description}</span>
           )}
-        </>
+        </div>
+        <button
+          onClick={handleShareClick}
+          className="p-2 rounded-full hover:bg-black/10 transition-colors absolute right-0"
+          style={{ color: settings.link_text_color }}
+        >
+          <Share2 className="h-4 w-4" />
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <>
+      <a
+        href={link.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={handleClick}
+        className={getLinkClasses()}
+        style={getLinkStyle()}
+      >
+        {renderContent()}
+      </a>
+
+      {/* Share Modal */}
+      <ShareLinkModal
+        link={link}
+        settings={settings}
+        profileName={profileName}
+        isOpen={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+      />
+
+      {/* Lead Gate Modal */}
+      {requiresEmail && (
+        <LeadGateModal
+          link={link}
+          settings={settings}
+          profileId={profileId}
+          isOpen={leadGateOpen}
+          onClose={() => setLeadGateOpen(false)}
+        />
       )}
-    </a>
+    </>
   )
 }

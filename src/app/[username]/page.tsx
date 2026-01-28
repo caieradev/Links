@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { PublicPage } from '@/components/public-page/public-page'
 import type { Metadata } from 'next'
 
@@ -49,27 +49,43 @@ export default async function UserPage({ params }: PageProps) {
     notFound()
   }
 
-  // Fetch user's active links
-  const { data: links } = await supabase
-    .from('links')
-    .select('*')
-    .eq('user_id', profile.id)
-    .eq('is_active', true)
-    .order('position', { ascending: true })
+  // Fetch user's active links, settings, flags, sections, and social links in parallel
+  const [{ data: links }, { data: settings }, { data: flags }, { data: sections }, { data: socialLinks }] = await Promise.all([
+    supabase
+      .from('links')
+      .select('*')
+      .eq('user_id', profile.id)
+      .eq('is_active', true)
+      .order('position', { ascending: true }),
+    supabase
+      .from('page_settings')
+      .select('*')
+      .eq('user_id', profile.id)
+      .single(),
+    supabase
+      .from('feature_flags')
+      .select('*')
+      .eq('user_id', profile.id)
+      .single(),
+    supabase
+      .from('link_sections')
+      .select('*')
+      .eq('profile_id', profile.id)
+      .order('position', { ascending: true }),
+    supabase
+      .from('social_links')
+      .select('*')
+      .eq('profile_id', profile.id)
+      .order('position', { ascending: true }),
+  ])
 
-  // Fetch page settings
-  const { data: settings } = await supabase
-    .from('page_settings')
-    .select('*')
-    .eq('user_id', profile.id)
-    .single()
-
-  // Fetch feature flags
-  const { data: flags } = await supabase
-    .from('feature_flags')
-    .select('*')
-    .eq('user_id', profile.id)
-    .single()
+  // Check for active redirect
+  if (settings?.redirect_url && settings?.redirect_until) {
+    const redirectUntil = new Date(settings.redirect_until)
+    if (redirectUntil > new Date()) {
+      redirect(settings.redirect_url)
+    }
+  }
 
   // Default settings if none exist
   const defaultSettings = {
@@ -93,9 +109,20 @@ export default async function UserPage({ params }: PageProps) {
     show_bio: true,
     avatar_size: 'medium',
     link_animation: 'none',
+    subscriber_form_enabled: false,
+    subscriber_form_title: 'Inscreva-se',
+    subscriber_form_description: null,
+    redirect_url: null,
+    redirect_until: null,
+    header_video_url: null,
+    social_icons_position: 'hidden',
     created_at: '',
     updated_at: '',
   }
+
+  // Build page URL
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+  const pageUrl = `${appUrl}/${username}`
 
   return (
     <PublicPage
@@ -103,6 +130,9 @@ export default async function UserPage({ params }: PageProps) {
       links={links ?? []}
       settings={settings ?? defaultSettings}
       flags={flags}
+      sections={sections ?? []}
+      socialLinks={socialLinks ?? []}
+      pageUrl={pageUrl}
     />
   )
 }

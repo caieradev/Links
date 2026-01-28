@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import type { FeatureFlags, PageSettings } from '@/types/database'
+import { getThemeById } from '@/lib/themes'
 
 const pageSettingsSchema = z.object({
   background_type: z.enum(['solid', 'gradient', 'image']),
@@ -24,6 +25,11 @@ const pageSettingsSchema = z.object({
   show_bio: z.boolean(),
   avatar_size: z.enum(['small', 'medium', 'large']),
   link_animation: z.enum(['none', 'fade', 'slide', 'bounce']),
+  subscriber_form_enabled: z.boolean(),
+  subscriber_form_title: z.string(),
+  subscriber_form_description: z.string().nullable(),
+  header_video_url: z.string().nullable(),
+  social_icons_position: z.enum(['hidden', 'above', 'below']),
 })
 
 export type AppearanceState = {
@@ -51,6 +57,8 @@ export async function updatePageSettings(
 
   const flags = flagsData as FeatureFlags | null
 
+  const subscriberFormEnabled = formData.get('subscriber_form_enabled') === 'true'
+
   const data = {
     background_type: formData.get('background_type') as string,
     background_color: formData.get('background_color') as string,
@@ -70,6 +78,11 @@ export async function updatePageSettings(
     show_bio: formData.get('show_bio') === 'true',
     avatar_size: formData.get('avatar_size') as string,
     link_animation: formData.get('link_animation') as string,
+    subscriber_form_enabled: subscriberFormEnabled && (flags?.can_collect_subscribers ?? false),
+    subscriber_form_title: formData.get('subscriber_form_title') as string || 'Inscreva-se',
+    subscriber_form_description: formData.get('subscriber_form_description') as string || null,
+    header_video_url: formData.get('header_video_url') as string || null,
+    social_icons_position: formData.get('social_icons_position') as string || 'hidden',
   }
 
   // Validate feature flags
@@ -87,6 +100,14 @@ export async function updatePageSettings(
 
   if (data.link_animation !== 'none' && !flags?.can_use_animations) {
     return { error: 'Voce nao tem permissao para usar animacoes' }
+  }
+
+  if (data.header_video_url && !flags?.can_use_header_video) {
+    return { error: 'Voce nao tem permissao para usar video de cabecalho' }
+  }
+
+  if (data.social_icons_position !== 'hidden' && !flags?.can_use_social_buttons) {
+    return { error: 'Voce nao tem permissao para usar icones sociais' }
   }
 
   const parsed = pageSettingsSchema.safeParse(data)
@@ -198,4 +219,102 @@ export async function uploadBackground(formData: FormData): Promise<{ url: strin
 
   revalidatePath('/appearance')
   return { url: publicUrl, error: null }
+}
+
+export async function updateRedirectSettings(
+  prevState: AppearanceState,
+  formData: FormData
+): Promise<AppearanceState> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    return { error: 'Nao autenticado' }
+  }
+
+  // Check feature flag
+  const { data: flagsData } = await supabase
+    .from('feature_flags')
+    .select('can_use_redirect_links')
+    .eq('user_id', user.id)
+    .single()
+
+  const flags = flagsData as Pick<FeatureFlags, 'can_use_redirect_links'> | null
+
+  if (!flags?.can_use_redirect_links) {
+    return { error: 'Voce nao tem permissao para usar redirecionamento' }
+  }
+
+  let redirectUrl = formData.get('redirect_url') as string || null
+  const redirectUntilStr = formData.get('redirect_until') as string || null
+
+  // Normalize and validate URL if provided
+  if (redirectUrl) {
+    redirectUrl = redirectUrl.trim()
+    // Add https:// if no protocol
+    if (!/^https?:\/\//i.test(redirectUrl)) {
+      redirectUrl = `https://${redirectUrl}`
+    }
+    try {
+      new URL(redirectUrl)
+    } catch {
+      return { error: 'URL invalida' }
+    }
+  }
+
+  const redirectUntil = redirectUntilStr ? new Date(redirectUntilStr).toISOString() : null
+
+  const { error } = await supabase
+    .from('page_settings')
+    .update({
+      redirect_url: redirectUrl,
+      redirect_until: redirectUntil,
+    } as Partial<PageSettings>)
+    .eq('user_id', user.id)
+
+  if (error) {
+    return { error: 'Erro ao salvar redirecionamento' }
+  }
+
+  revalidatePath('/appearance')
+  return { success: 'Redirecionamento salvo com sucesso' }
+}
+
+export async function applyTheme(themeId: string): Promise<AppearanceState> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    return { error: 'Nao autenticado' }
+  }
+
+  // Check feature flag
+  const { data: flagsData } = await supabase
+    .from('feature_flags')
+    .select('can_use_themes')
+    .eq('user_id', user.id)
+    .single()
+
+  const flags = flagsData as Pick<FeatureFlags, 'can_use_themes'> | null
+
+  if (!flags?.can_use_themes) {
+    return { error: 'Voce nao tem permissao para usar temas' }
+  }
+
+  const theme = getThemeById(themeId)
+  if (!theme) {
+    return { error: 'Tema nao encontrado' }
+  }
+
+  const { error } = await supabase
+    .from('page_settings')
+    .update(theme.settings as Partial<PageSettings>)
+    .eq('user_id', user.id)
+
+  if (error) {
+    return { error: 'Erro ao aplicar tema' }
+  }
+
+  revalidatePath('/appearance')
+  return { success: 'Tema aplicado com sucesso' }
 }

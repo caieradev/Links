@@ -58,6 +58,11 @@ export default async function AppearancePage() {
     show_bio: true,
     avatar_size: 'medium',
     link_animation: 'none',
+    subscriber_form_enabled: false,
+    subscriber_form_title: 'Inscreva-se',
+    subscriber_form_description: null,
+    redirect_url: null,
+    redirect_until: null,
     created_at: '',
     updated_at: '',
   }

@@ -13,19 +13,21 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
-import { GripVertical, MoreHorizontal, Pencil, Trash2, ExternalLink, BarChart2 } from 'lucide-react'
-import { deleteLink, toggleLinkActive } from '@/actions/links'
+import { GripVertical, MoreHorizontal, Pencil, Trash2, ExternalLink, BarChart2, Star } from 'lucide-react'
+import { deleteLink, toggleLinkActive, toggleLinkFeatured } from '@/actions/links'
+import { hasFeature } from '@/lib/feature-flags'
 import { cn } from '@/lib/utils'
-import type { Link, FeatureFlags } from '@/types/database'
+import type { Link, FeatureFlags, LinkSection } from '@/types/database'
 import { EditLinkDialog } from './edit-link-dialog'
 
 interface LinkCardProps {
   link: Link
   showAnalytics?: boolean
   flags: FeatureFlags | null
+  sections?: LinkSection[]
 }
 
-export function LinkCard({ link, showAnalytics = false, flags }: LinkCardProps) {
+export function LinkCard({ link, showAnalytics = false, flags, sections = [] }: LinkCardProps) {
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -44,9 +46,17 @@ export function LinkCard({ link, showAnalytics = false, flags }: LinkCardProps) 
     transition,
   }
 
+  const canUseFeaturedLinks = hasFeature(flags, 'can_use_featured_links')
+
   const handleToggleActive = () => {
     startTransition(async () => {
       await toggleLinkActive(link.id, !link.is_active)
+    })
+  }
+
+  const handleToggleFeatured = () => {
+    startTransition(async () => {
+      await toggleLinkFeatured(link.id, !link.is_featured)
     })
   }
 
@@ -80,6 +90,9 @@ export function LinkCard({ link, showAnalytics = false, flags }: LinkCardProps) 
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
+                {link.is_featured && (
+                  <Star className="h-4 w-4 text-yellow-500 fill-yellow-500 flex-shrink-0" />
+                )}
                 <h3 className="font-medium truncate">{link.title}</h3>
                 {!link.is_active && (
                   <span className="text-xs text-muted-foreground">(inativo)</span>
@@ -118,6 +131,12 @@ export function LinkCard({ link, showAnalytics = false, flags }: LinkCardProps) 
                     <Pencil className="mr-2 h-4 w-4" />
                     Editar
                   </DropdownMenuItem>
+                  {canUseFeaturedLinks && (
+                    <DropdownMenuItem onClick={handleToggleFeatured}>
+                      <Star className={cn("mr-2 h-4 w-4", link.is_featured && "fill-yellow-500 text-yellow-500")} />
+                      {link.is_featured ? 'Remover destaque' : 'Destacar'}
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem asChild>
                     <a href={link.url} target="_blank" rel="noopener noreferrer">
                       <ExternalLink className="mr-2 h-4 w-4" />
@@ -143,6 +162,7 @@ export function LinkCard({ link, showAnalytics = false, flags }: LinkCardProps) 
         open={isEditOpen}
         onOpenChange={setIsEditOpen}
         flags={flags}
+        sections={sections}
       />
 
       <ConfirmDialog

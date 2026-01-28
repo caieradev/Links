@@ -18,15 +18,16 @@ import {
 } from '@dnd-kit/sortable'
 import { LinkCard } from './link-card'
 import { reorderLinks } from '@/actions/links'
-import type { Link, FeatureFlags } from '@/types/database'
+import type { Link, FeatureFlags, LinkSection } from '@/types/database'
 
 interface LinkListProps {
   initialLinks: Link[]
   showAnalytics?: boolean
   flags: FeatureFlags | null
+  sections?: LinkSection[]
 }
 
-export function LinkList({ initialLinks, showAnalytics = false, flags }: LinkListProps) {
+export function LinkList({ initialLinks, showAnalytics = false, flags, sections = [] }: LinkListProps) {
   const [links, setLinks] = useState(initialLinks)
   const [, startTransition] = useTransition()
 
@@ -79,7 +80,7 @@ export function LinkList({ initialLinks, showAnalytics = false, flags }: LinkLis
       <SortableContext items={links} strategy={verticalListSortingStrategy}>
         <div className="space-y-3">
           {links.map((link) => (
-            <LinkCard key={link.id} link={link} showAnalytics={showAnalytics} flags={flags} />
+            <LinkCard key={link.id} link={link} showAnalytics={showAnalytics} flags={flags} sections={sections} />
           ))}
         </div>
       </SortableContext>

@@ -18,10 +18,11 @@ import {
 import { ImageCropper } from '@/components/ui/image-cropper'
 import { Plus, Loader2, ImageIcon, Trash2 } from 'lucide-react'
 import { hasFeature } from '@/lib/feature-flags'
-import type { FeatureFlags } from '@/types/database'
+import type { FeatureFlags, LinkSection } from '@/types/database'
 
 interface CreateLinkDialogProps {
   flags: FeatureFlags | null
+  sections?: LinkSection[]
 }
 
 const initialState: LinkActionState = {}
@@ -103,8 +104,7 @@ export function CreateLinkDialog({ flags }: CreateLinkDialogProps) {
               <Input
                 id="url"
                 name="url"
-                type="url"
-                placeholder="https://meusite.com"
+                placeholder="meusite.com ou https://meusite.com"
                 required
               />
             </div>

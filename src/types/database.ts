@@ -48,9 +48,13 @@ export interface Database {
           description: string | null
           icon: string | null
           thumbnail_url: string | null
+          cover_image_url: string | null
           position: number
           is_active: boolean
+          is_featured: boolean
+          requires_email: boolean
           click_count: number
+          section_id: string | null
           created_at: string
           updated_at: string
         }
@@ -62,9 +66,13 @@ export interface Database {
           description?: string | null
           icon?: string | null
           thumbnail_url?: string | null
+          cover_image_url?: string | null
           position: number
           is_active?: boolean
+          is_featured?: boolean
+          requires_email?: boolean
           click_count?: number
+          section_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -76,9 +84,13 @@ export interface Database {
           description?: string | null
           icon?: string | null
           thumbnail_url?: string | null
+          cover_image_url?: string | null
           position?: number
           is_active?: boolean
+          is_featured?: boolean
+          requires_email?: boolean
           click_count?: number
+          section_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -87,6 +99,12 @@ export interface Database {
             foreignKeyName: "links_user_id_fkey"
             columns: ["user_id"]
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "links_section_id_fkey"
+            columns: ["section_id"]
+            referencedRelation: "link_sections"
             referencedColumns: ["id"]
           }
         ]
@@ -113,6 +131,13 @@ export interface Database {
           show_bio: boolean
           avatar_size: string
           link_animation: string
+          subscriber_form_enabled: boolean
+          subscriber_form_title: string
+          subscriber_form_description: string | null
+          redirect_url: string | null
+          redirect_until: string | null
+          header_video_url: string | null
+          social_icons_position: string
           created_at: string
           updated_at: string
         }
@@ -137,6 +162,13 @@ export interface Database {
           show_bio?: boolean
           avatar_size?: string
           link_animation?: string
+          subscriber_form_enabled?: boolean
+          subscriber_form_title?: string
+          subscriber_form_description?: string | null
+          redirect_url?: string | null
+          redirect_until?: string | null
+          header_video_url?: string | null
+          social_icons_position?: string
           created_at?: string
           updated_at?: string
         }
@@ -161,6 +193,13 @@ export interface Database {
           show_bio?: boolean
           avatar_size?: string
           link_animation?: string
+          subscriber_form_enabled?: boolean
+          subscriber_form_title?: string
+          subscriber_form_description?: string | null
+          redirect_url?: string | null
+          redirect_until?: string | null
+          header_video_url?: string | null
+          social_icons_position?: string
           created_at?: string
           updated_at?: string
         }
@@ -187,7 +226,16 @@ export interface Database {
           can_view_analytics: boolean
           can_use_custom_domain: boolean
           can_remove_branding: boolean
-          max_links: number
+          can_collect_subscribers: boolean
+          can_use_link_sections: boolean
+          can_use_themes: boolean
+          can_use_redirect_links: boolean
+          can_use_featured_links: boolean
+          can_use_link_cover_images: boolean
+          can_use_social_buttons: boolean
+          can_use_lead_gate: boolean
+          can_use_header_video: boolean
+          max_links: number | null
           created_at: string
           updated_at: string
         }
@@ -204,7 +252,16 @@ export interface Database {
           can_view_analytics?: boolean
           can_use_custom_domain?: boolean
           can_remove_branding?: boolean
-          max_links?: number
+          can_collect_subscribers?: boolean
+          can_use_link_sections?: boolean
+          can_use_themes?: boolean
+          can_use_redirect_links?: boolean
+          can_use_featured_links?: boolean
+          can_use_link_cover_images?: boolean
+          can_use_social_buttons?: boolean
+          can_use_lead_gate?: boolean
+          can_use_header_video?: boolean
+          max_links?: number | null
           created_at?: string
           updated_at?: string
         }
@@ -221,7 +278,16 @@ export interface Database {
           can_view_analytics?: boolean
           can_use_custom_domain?: boolean
           can_remove_branding?: boolean
-          max_links?: number
+          can_collect_subscribers?: boolean
+          can_use_link_sections?: boolean
+          can_use_themes?: boolean
+          can_use_redirect_links?: boolean
+          can_use_featured_links?: boolean
+          can_use_link_cover_images?: boolean
+          can_use_social_buttons?: boolean
+          can_use_lead_gate?: boolean
+          can_use_header_video?: boolean
+          max_links?: number | null
           created_at?: string
           updated_at?: string
         }
@@ -271,6 +337,218 @@ export interface Database {
           }
         ]
       }
+      subscribers: {
+        Row: {
+          id: string
+          profile_id: string
+          email: string
+          name: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          profile_id: string
+          email: string
+          name?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          profile_id?: string
+          email?: string
+          name?: string | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscribers_profile_id_fkey"
+            columns: ["profile_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      link_sections: {
+        Row: {
+          id: string
+          profile_id: string
+          title: string
+          position: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          profile_id: string
+          title: string
+          position?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          profile_id?: string
+          title?: string
+          position?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "link_sections_profile_id_fkey"
+            columns: ["profile_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      social_links: {
+        Row: {
+          id: string
+          profile_id: string
+          platform: string
+          url: string
+          position: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          profile_id: string
+          platform: string
+          url: string
+          position?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          profile_id?: string
+          platform?: string
+          url?: string
+          position?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_links_profile_id_fkey"
+            columns: ["profile_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      analytics_events: {
+        Row: {
+          id: string
+          profile_id: string
+          link_id: string | null
+          event_type: string
+          referrer: string | null
+          user_agent: string | null
+          country: string | null
+          city: string | null
+          device_type: string | null
+          browser: string | null
+          os: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          profile_id: string
+          link_id?: string | null
+          event_type: string
+          referrer?: string | null
+          user_agent?: string | null
+          country?: string | null
+          city?: string | null
+          device_type?: string | null
+          browser?: string | null
+          os?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          profile_id?: string
+          link_id?: string | null
+          event_type?: string
+          referrer?: string | null
+          user_agent?: string | null
+          country?: string | null
+          city?: string | null
+          device_type?: string | null
+          browser?: string | null
+          os?: string | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analytics_events_profile_id_fkey"
+            columns: ["profile_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analytics_events_link_id_fkey"
+            columns: ["link_id"]
+            referencedRelation: "links"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      subscriptions: {
+        Row: {
+          id: string
+          user_id: string
+          stripe_customer_id: string
+          stripe_subscription_id: string | null
+          stripe_price_id: string | null
+          plan_type: string
+          status: string
+          current_period_start: string | null
+          current_period_end: string | null
+          cancel_at_period_end: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          stripe_customer_id: string
+          stripe_subscription_id?: string | null
+          stripe_price_id?: string | null
+          plan_type?: string
+          status?: string
+          current_period_start?: string | null
+          current_period_end?: string | null
+          cancel_at_period_end?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          stripe_customer_id?: string
+          stripe_subscription_id?: string | null
+          stripe_price_id?: string | null
+          plan_type?: string
+          status?: string
+          current_period_start?: string | null
+          current_period_end?: string | null
+          cancel_at_period_end?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -295,3 +573,22 @@ export type Link = Database['public']['Tables']['links']['Row']
 export type PageSettings = Database['public']['Tables']['page_settings']['Row']
 export type FeatureFlags = Database['public']['Tables']['feature_flags']['Row']
 export type CustomDomain = Database['public']['Tables']['custom_domains']['Row']
+export type Subscriber = Database['public']['Tables']['subscribers']['Row']
+export type LinkSection = Database['public']['Tables']['link_sections']['Row']
+export type SocialLink = Database['public']['Tables']['social_links']['Row']
+export type AnalyticsEvent = Database['public']['Tables']['analytics_events']['Row']
+
+export interface Subscription {
+  id: string
+  user_id: string
+  stripe_customer_id: string
+  stripe_subscription_id: string | null
+  stripe_price_id: string | null
+  plan_type: 'free' | 'starter' | 'pro'
+  status: 'active' | 'canceled' | 'past_due' | 'incomplete'
+  current_period_start: string | null
+  current_period_end: string | null
+  cancel_at_period_end: boolean
+  created_at: string
+  updated_at: string
+}

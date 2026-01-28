@@ -1,6 +1,13 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { LinkButton } from './link-button'
-import type { Profile, Link, PageSettings, FeatureFlags } from '@/types/database'
+import { PageTracker } from './page-tracker'
+import { SharePageButton } from './share-page-button'
+import { SubscriberBellModal } from './subscriber-bell-modal'
+import { SocialIconsBar } from './social-icons-bar'
+import { YouTubeHeader } from './youtube-header'
+import { JoinCTA } from './join-cta'
+import { DesktopQRCode } from './desktop-qr-code'
+import type { Profile, Link, PageSettings, FeatureFlags, LinkSection, SocialLink } from '@/types/database'
 import { cn } from '@/lib/utils'
 
 interface PublicPageProps {
@@ -8,10 +15,27 @@ interface PublicPageProps {
   links: Link[]
   settings: PageSettings
   flags: FeatureFlags | null
+  sections?: LinkSection[]
+  socialLinks?: SocialLink[]
+  pageUrl: string
 }
 
-export function PublicPage({ profile, links, settings, flags }: PublicPageProps) {
+export function PublicPage({ profile, links, settings, flags, sections = [], socialLinks = [], pageUrl }: PublicPageProps) {
   const canRemoveBranding = flags?.can_remove_branding ?? false
+  const canCollectSubscribers = flags?.can_collect_subscribers ?? false
+  const canUseSocialButtons = flags?.can_use_social_buttons ?? false
+  const canUseHeaderVideo = flags?.can_use_header_video ?? false
+
+  const showSubscriberBell = canCollectSubscribers && settings.subscriber_form_enabled
+  const showSocialIcons = canUseSocialButtons && socialLinks.length > 0 && settings.social_icons_position !== 'hidden'
+  const showYouTubeHeader = canUseHeaderVideo && settings.header_video_url
+
+  // Group links by section
+  const linksWithoutSection = links.filter((link) => !link.section_id)
+  const sectionedLinks = sections.map((section) => ({
+    section,
+    links: links.filter((link) => link.section_id === section.id),
+  })).filter((group) => group.links.length > 0)
 
   const getBackgroundStyle = (): React.CSSProperties => {
     const style: React.CSSProperties = {}
@@ -60,6 +84,8 @@ export function PublicPage({ profile, links, settings, flags }: PublicPageProps)
     return fonts[settings.font_family] || fonts.Inter
   }
 
+  const profileName = profile.display_name || profile.username
+
   return (
     <div
       className="min-h-screen relative"
@@ -68,6 +94,9 @@ export function PublicPage({ profile, links, settings, flags }: PublicPageProps)
         fontFamily: getFontFamily(),
       }}
     >
+      {/* Page view tracker */}
+      <PageTracker profileId={profile.id} />
+
       {/* Blur overlay for background image */}
       {settings.background_type === 'image' && settings.background_blur > 0 && (
         <div
@@ -79,17 +108,30 @@ export function PublicPage({ profile, links, settings, flags }: PublicPageProps)
         />
       )}
 
+      {/* Header Actions */}
+      <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+        {showSubscriberBell && (
+          <SubscriberBellModal profileId={profile.id} settings={settings} />
+        )}
+        <SharePageButton url={pageUrl} title={profileName} settings={settings} />
+      </div>
+
       <div className="relative z-10 container max-w-md lg:max-w-lg mx-auto px-4 py-12 lg:py-16">
         <div className="flex flex-col items-center text-center">
+          {/* YouTube Header Video */}
+          {showYouTubeHeader && (
+            <YouTubeHeader videoUrl={settings.header_video_url!} />
+          )}
+
           {/* Avatar */}
           {settings.show_avatar && (
             <Avatar className={cn(getAvatarSize(), 'mb-4 border-4 border-white/20')}>
-              <AvatarImage src={profile.avatar_url || undefined} alt={profile.display_name || profile.username} />
+              <AvatarImage src={profile.avatar_url || undefined} alt={profileName} />
               <AvatarFallback
                 className="text-2xl"
                 style={{ backgroundColor: settings.link_background_color, color: settings.link_text_color }}
               >
-                {(profile.display_name || profile.username).charAt(0).toUpperCase()}
+                {profileName.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
           )}
@@ -99,7 +141,7 @@ export function PublicPage({ profile, links, settings, flags }: PublicPageProps)
             className="text-2xl lg:text-3xl font-bold mb-1"
             style={{ color: settings.text_color }}
           >
-            {profile.display_name || profile.username}
+            {profileName}
           </h1>
 
           {/* Username */}
@@ -113,32 +155,73 @@ export function PublicPage({ profile, links, settings, flags }: PublicPageProps)
           {/* Bio */}
           {settings.show_bio && profile.bio && (
             <p
-              className="text-sm lg:text-base mb-8 max-w-xs lg:max-w-sm break-words whitespace-pre-wrap"
+              className="text-sm lg:text-base mb-6 max-w-xs lg:max-w-sm break-words whitespace-pre-wrap"
               style={{ color: settings.text_color }}
             >
               {profile.bio}
             </p>
           )}
 
+          {/* Social Icons - Above */}
+          {showSocialIcons && settings.social_icons_position === 'above' && (
+            <div className="mb-6">
+              <SocialIconsBar socialLinks={socialLinks} settings={settings} />
+            </div>
+          )}
+
           {/* Links */}
           <div className="w-full space-y-3">
-            {links.map((link) => (
-              <LinkButton key={link.id} link={link} settings={settings} />
+            {/* Links without section */}
+            {linksWithoutSection.map((link) => (
+              <LinkButton
+                key={link.id}
+                link={link}
+                settings={settings}
+                profileName={profileName}
+                profileId={profile.id}
+                flags={flags}
+              />
+            ))}
+
+            {/* Sectioned links */}
+            {sectionedLinks.map(({ section, links: sectionLinks }) => (
+              <div key={section.id} className="w-full space-y-3">
+                <h3
+                  className="text-sm font-medium opacity-75 mt-6 mb-2"
+                  style={{ color: settings.text_color }}
+                >
+                  {section.title}
+                </h3>
+                {sectionLinks.map((link) => (
+                  <LinkButton
+                    key={link.id}
+                    link={link}
+                    settings={settings}
+                    profileName={profileName}
+                    profileId={profile.id}
+                    flags={flags}
+                  />
+                ))}
+              </div>
             ))}
           </div>
 
-          {/* Branding */}
+          {/* Social Icons - Below */}
+          {showSocialIcons && settings.social_icons_position === 'below' && (
+            <div className="mt-8">
+              <SocialIconsBar socialLinks={socialLinks} settings={settings} />
+            </div>
+          )}
+
+          {/* Branding / Join CTA */}
           {!canRemoveBranding && (
-            <a
-              href="/"
-              className="mt-12 text-sm opacity-50 hover:opacity-75 transition-opacity"
-              style={{ color: settings.text_color }}
-            >
-              Feito com Links
-            </a>
+            <JoinCTA profileName={profileName} settings={settings} />
           )}
         </div>
       </div>
+
+      {/* Desktop QR Code */}
+      <DesktopQRCode url={pageUrl} settings={settings} />
     </div>
   )
 }
