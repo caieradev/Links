@@ -79,8 +79,8 @@ export function QRCodeGenerator({ username, appUrl }: QRCodeGeneratorProps) {
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
-          <QrCode className="mr-2 h-4 w-4" />
-          QR Code
+          <QrCode className="h-4 w-4 md:mr-2" />
+          <span className="hidden md:inline">QR Code</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">

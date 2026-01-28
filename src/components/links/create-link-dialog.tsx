@@ -128,9 +128,9 @@ export function CreateLinkDialog({ flags, sections = [] }: CreateLinkDialogProps
     <>
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogTrigger asChild>
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Adicionar Link
+          <Button size="sm">
+            <Plus className="md:mr-2 h-4 w-4" />
+            <span className="hidden md:inline">Adicionar Link</span>
           </Button>
         </DialogTrigger>
         <DialogContent className="max-h-[90vh] flex flex-col">
@@ -356,7 +356,7 @@ export function CreateLinkDialog({ flags, sections = [] }: CreateLinkDialogProps
           onOpenChange={setCoverCropperOpen}
           imageSrc={selectedCoverImage}
           onCropComplete={handleCoverCropComplete}
-          aspectRatio={16/9}
+          aspectRatio={16 / 9}
           circularCrop={false}
           outputWidth={800}
         />

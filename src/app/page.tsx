@@ -9,8 +9,8 @@ import {
   Zap,
   Shield,
   ArrowRight,
-  Check,
 } from 'lucide-react'
+import { PricingSection } from '@/components/pricing/pricing-section'
 
 const features = [
   {
@@ -45,60 +45,6 @@ const features = [
   },
 ]
 
-const plans = [
-  {
-    name: 'Free',
-    price: 'R$ 0',
-    description: 'Perfeito para começar',
-    features: [
-      'Links ilimitados',
-      'Cores personalizadas',
-      'Botão compartilhar página',
-      'QR Code da página',
-      'SEO básico',
-    ],
-    cta: 'Começar grátis',
-    highlighted: false,
-    href: '/register',
-  },
-  {
-    name: 'Starter',
-    price: 'R$ 15',
-    period: '/mês',
-    description: 'Para criadores em crescimento',
-    features: [
-      'Tudo do Free +',
-      'Temas prontos',
-      'Seções de links',
-      'Redirect links',
-      'Captura de subscribers',
-      'Ícones de redes sociais',
-      'Imagem de capa nos links',
-    ],
-    cta: 'Começar agora',
-    highlighted: true,
-    href: '/register?plan=starter&period=monthly',
-  },
-  {
-    name: 'Pro',
-    price: 'R$ 25',
-    period: '/mês',
-    description: 'Para profissionais',
-    features: [
-      'Tudo do Starter +',
-      'Remover branding',
-      'Analytics detalhado',
-      'Gradientes e backgrounds',
-      'Fontes e animações',
-      'Vídeo do YouTube no header',
-      'Lead gate (captura de email)',
-      'Domínio customizado',
-    ],
-    cta: 'Assinar Pro',
-    highlighted: false,
-    href: '/register?plan=pro&period=monthly',
-  },
-]
 
 export default function HomePage() {
   return (
@@ -195,59 +141,7 @@ export default function HomePage() {
         {/* Pricing */}
         <section id="pricing" className="py-20">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-4">
-              Planos simples e transparentes
-            </h2>
-            <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-12">
-              Comece grátis e faça upgrade quando precisar
-            </p>
-            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              {plans.map((plan) => (
-                <Card
-                  key={plan.name}
-                  className={
-                    plan.highlighted
-                      ? 'border-primary shadow-lg scale-105'
-                      : ''
-                  }
-                >
-                  <CardContent className="p-6">
-                    {plan.highlighted && (
-                      <div className="text-xs font-semibold text-primary mb-2">
-                        MAIS POPULAR
-                      </div>
-                    )}
-                    <h3 className="text-2xl font-bold">{plan.name}</h3>
-                    <div className="mt-4 mb-2">
-                      <span className="text-4xl font-bold">{plan.price}</span>
-                      {plan.period && (
-                        <span className="text-muted-foreground">
-                          {plan.period}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-muted-foreground mb-6">
-                      {plan.description}
-                    </p>
-                    <ul className="space-y-3 mb-6">
-                      {plan.features.map((feature) => (
-                        <li key={feature} className="flex items-center gap-2">
-                          <Check className="h-4 w-4 text-primary" />
-                          <span className="text-sm">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <Button
-                      className="w-full"
-                      variant={plan.highlighted ? 'default' : 'outline'}
-                      asChild
-                    >
-                      <Link href={plan.href}>{plan.cta}</Link>
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            <PricingSection isAuthenticated={false} />
           </div>
         </section>
 
