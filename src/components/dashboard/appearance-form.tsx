@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useTransition, useState, useEffect } from 'react'
+import { useActionState, useTransition, useState, useEffect, useRef, useCallback } from 'react'
 import { updatePageSettings, uploadAvatar, uploadBackground, type AppearanceState } from '@/actions/appearance'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -78,6 +78,24 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
   const [cropperOpen, setCropperOpen] = useState(false)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [cropperType, setCropperType] = useState<'avatar' | 'background'>('avatar')
+
+  // Tabs scroll state
+  const tabsScrollRef = useRef<HTMLDivElement>(null)
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(false)
+
+  const checkTabsScroll = useCallback(() => {
+    const el = tabsScrollRef.current
+    if (!el) return
+    setCanScrollLeft(el.scrollLeft > 0)
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 1)
+  }, [])
+
+  useEffect(() => {
+    checkTabsScroll()
+    window.addEventListener('resize', checkTabsScroll)
+    return () => window.removeEventListener('resize', checkTabsScroll)
+  }, [checkTabsScroll])
 
   const [formData, setFormData] = useState({
     background_type: settings.background_type,
@@ -198,13 +216,29 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
         <input type="hidden" name="bio" value={profileData.bio} />
 
         <Tabs defaultValue="profile">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="profile">Perfil</TabsTrigger>
-            <TabsTrigger value="background">Fundo</TabsTrigger>
-            <TabsTrigger value="links">Links</TabsTrigger>
-            <TabsTrigger value="subscribers">Inscritos</TabsTrigger>
-            <TabsTrigger value="advanced">Avancado</TabsTrigger>
-          </TabsList>
+          <div className="relative">
+            <TabsList className="relative w-full overflow-hidden rounded-lg p-0">
+              <div
+                ref={tabsScrollRef}
+                onScroll={checkTabsScroll}
+                className="flex overflow-x-auto overflow-y-hidden scrollbar-none p-1"
+              >
+                <TabsTrigger value="profile" className="flex-shrink-0">Perfil</TabsTrigger>
+                <TabsTrigger value="background" className="flex-shrink-0">Fundo</TabsTrigger>
+                <TabsTrigger value="links" className="flex-shrink-0">Links</TabsTrigger>
+                <TabsTrigger value="subscribers" className="flex-shrink-0">Inscritos</TabsTrigger>
+                <TabsTrigger value="advanced" className="flex-shrink-0">Avancado</TabsTrigger>
+              </div>
+              {/* Fade left */}
+              <div
+                className={`absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-muted to-transparent pointer-events-none transition-opacity rounded-l-lg ${canScrollLeft ? 'opacity-100' : 'opacity-0'}`}
+              />
+              {/* Fade right */}
+              <div
+                className={`absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-muted to-transparent pointer-events-none transition-opacity rounded-r-lg ${canScrollRight ? 'opacity-100' : 'opacity-0'}`}
+              />
+            </TabsList>
+          </div>
 
           {/* Profile Tab */}
           <TabsContent value="profile" className="space-y-4">
