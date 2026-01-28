@@ -94,7 +94,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   const customerId = session.customer as string
 
   // Try to get user_id from session metadata, then fallback to customer
-  let userId = session.metadata?.user_id
+  let userId: string | null = session.metadata?.user_id ?? null
   if (!userId) {
     console.log('Checkout: No user_id in session metadata, trying customer lookup')
     userId = await getUserIdFromCustomer(customerId)
@@ -142,7 +142,7 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
   const customerId = subscription.customer as string
 
   // Try to get user_id from subscription metadata, then fallback to customer
-  let userId = subscription.metadata?.user_id
+  let userId: string | null = subscription.metadata?.user_id ?? null
   if (!userId) {
     console.log('Subscription update: No user_id in metadata, trying customer lookup')
     userId = await getUserIdFromCustomer(customerId)
@@ -192,7 +192,7 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   const customerId = subscription.customer as string
 
   // Try to get user_id from subscription metadata, then fallback to customer
-  let userId = subscription.metadata?.user_id
+  let userId: string | null = subscription.metadata?.user_id ?? null
   if (!userId) {
     console.log('Subscription deleted: No user_id in metadata, trying customer lookup')
     userId = await getUserIdFromCustomer(customerId)
