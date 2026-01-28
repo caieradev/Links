@@ -122,17 +122,24 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     : null
 
   // Update subscription record
-  await supabaseAdmin.from('subscriptions').upsert({
-    user_id: userId,
-    stripe_customer_id: customerId,
-    stripe_subscription_id: subscriptionId,
-    stripe_price_id: priceId,
-    plan_type: planType,
-    status: subscription.status,
-    current_period_start: periodStart,
-    current_period_end: periodEnd,
-    cancel_at_period_end: subscription.cancel_at_period_end,
-  })
+  const { error } = await supabaseAdmin.from('subscriptions').upsert(
+    {
+      user_id: userId,
+      stripe_customer_id: customerId,
+      stripe_subscription_id: subscriptionId,
+      stripe_price_id: priceId,
+      plan_type: planType,
+      status: subscription.status,
+      current_period_start: periodStart,
+      current_period_end: periodEnd,
+      cancel_at_period_end: subscription.cancel_at_period_end,
+    },
+    { onConflict: 'user_id' }
+  )
+
+  if (error) {
+    console.error('Failed to upsert subscription:', error)
+  }
 
   // Update feature flags based on plan
   await updateFeatureFlags(userId, planType)
@@ -168,19 +175,26 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
     : null
 
   // Upsert subscription record (insert if not exists, update if exists)
-  await supabaseAdmin
+  const { error } = await supabaseAdmin
     .from('subscriptions')
-    .upsert({
-      user_id: userId,
-      stripe_customer_id: customerId,
-      stripe_subscription_id: subscription.id,
-      stripe_price_id: priceId,
-      plan_type: planType,
-      status: subscription.status,
-      current_period_start: periodStart,
-      current_period_end: periodEnd,
-      cancel_at_period_end: subscription.cancel_at_period_end,
-    })
+    .upsert(
+      {
+        user_id: userId,
+        stripe_customer_id: customerId,
+        stripe_subscription_id: subscription.id,
+        stripe_price_id: priceId,
+        plan_type: planType,
+        status: subscription.status,
+        current_period_start: periodStart,
+        current_period_end: periodEnd,
+        cancel_at_period_end: subscription.cancel_at_period_end,
+      },
+      { onConflict: 'user_id' }
+    )
+
+  if (error) {
+    console.error('Failed to upsert subscription:', error)
+  }
 
   // Update feature flags if subscription is active
   if (subscription.status === 'active') {
@@ -241,10 +255,19 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
 async function updateFeatureFlags(userId: string, planType: 'free' | 'starter' | 'pro') {
   const features = PLAN_FEATURES[planType]
 
-  await supabaseAdmin
+  const { error } = await supabaseAdmin
     .from('feature_flags')
-    .upsert({
-      user_id: userId,
-      ...features,
-    })
+    .upsert(
+      {
+        user_id: userId,
+        ...features,
+      },
+      { onConflict: 'user_id' }
+    )
+
+  if (error) {
+    console.error('Failed to update feature flags:', error)
+  } else {
+    console.log(`Feature flags updated for user ${userId} to plan ${planType}`)
+  }
 }
