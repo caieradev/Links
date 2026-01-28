@@ -72,7 +72,7 @@ export async function createSocialLink(
   })
 
   if (!parsed.success) {
-    return { error: parsed.error.errors[0].message }
+    return { error: parsed.error.issues[0].message }
   }
 
   // Get current max position
@@ -124,7 +124,7 @@ export async function updateSocialLink(
   })
 
   if (!parsed.success) {
-    return { error: parsed.error.errors[0].message }
+    return { error: parsed.error.issues[0].message }
   }
 
   const { error } = await supabase

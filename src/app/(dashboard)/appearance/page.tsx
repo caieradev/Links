@@ -63,6 +63,8 @@ export default async function AppearancePage() {
     subscriber_form_description: null,
     redirect_url: null,
     redirect_until: null,
+    header_video_url: null,
+    social_icons_position: 'hidden',
     created_at: '',
     updated_at: '',
   }
