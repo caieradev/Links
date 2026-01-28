@@ -59,10 +59,11 @@ const plans = [
     ],
     cta: 'Começar grátis',
     highlighted: false,
+    href: '/register',
   },
   {
     name: 'Starter',
-    price: 'R$ 19',
+    price: 'R$ 15',
     period: '/mês',
     description: 'Para criadores em crescimento',
     features: [
@@ -76,10 +77,11 @@ const plans = [
     ],
     cta: 'Começar agora',
     highlighted: true,
+    href: '/register?plan=starter&period=monthly',
   },
   {
     name: 'Pro',
-    price: 'R$ 31',
+    price: 'R$ 25',
     period: '/mês',
     description: 'Para profissionais',
     features: [
@@ -94,6 +96,7 @@ const plans = [
     ],
     cta: 'Assinar Pro',
     highlighted: false,
+    href: '/register?plan=pro&period=monthly',
   },
 ]
 
@@ -239,7 +242,7 @@ export default function HomePage() {
                       variant={plan.highlighted ? 'default' : 'outline'}
                       asChild
                     >
-                      <Link href="/register">{plan.cta}</Link>
+                      <Link href={plan.href}>{plan.cta}</Link>
                     </Button>
                   </CardContent>
                 </Card>

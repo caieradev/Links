@@ -14,7 +14,12 @@ import { toast } from 'sonner'
 
 const initialState: AuthState = {}
 
-export function OnboardingForm() {
+interface OnboardingFormProps {
+  plan?: string
+  period?: string
+}
+
+export function OnboardingForm({ plan, period }: OnboardingFormProps) {
   const router = useRouter()
   const [state, action, pending] = useActionState(completeOnboarding, initialState)
   const [username, setUsername] = useState('')
@@ -48,6 +53,26 @@ export function OnboardingForm() {
         toast.error(result.error)
         setIsSubmitting(false)
         return
+      }
+
+      // If user selected a paid plan, redirect to Stripe checkout
+      if (plan && plan !== 'free') {
+        try {
+          const response = await fetch('/api/stripe/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ plan, period: period || 'monthly' }),
+          })
+          const data = await response.json()
+
+          if (data.url) {
+            window.location.href = data.url
+            return
+          }
+        } catch (checkoutError) {
+          console.error('Error creating checkout session:', checkoutError)
+          toast.error('Erro ao processar pagamento. Redirecionando para o dashboard.')
+        }
       }
 
       router.push('/dashboard')

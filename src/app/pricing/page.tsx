@@ -28,7 +28,7 @@ export default async function PricingPage() {
   return (
     <div className="min-h-screen bg-muted/30">
       <div className="container mx-auto px-4 py-16">
-        <PricingSection currentPlan={currentPlan} />
+        <PricingSection currentPlan={currentPlan} isAuthenticated={!!user} />
       </div>
     </div>
   )

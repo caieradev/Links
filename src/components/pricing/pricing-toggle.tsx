@@ -32,7 +32,7 @@ export function PricingToggle({ period, onChange }: PricingToggleProps) {
         )}
       >
         Anual
-        <span className="absolute -top-2 -right-2 bg-green-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
+        <span className="absolute -top-3 -right-3 bg-white text-black border border-black text-[10px] px-1.5 py-0.5 rounded-full font-bold">
           -20%
         </span>
       </button>

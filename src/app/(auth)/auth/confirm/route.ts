@@ -8,6 +8,10 @@ export async function GET(request: Request) {
   const type = searchParams.get('type')
   const next = searchParams.get('next') ?? '/dashboard'
 
+  // Get plan selection params to preserve through onboarding
+  const plan = searchParams.get('plan')
+  const period = searchParams.get('period')
+
   const supabase = await createClient()
   let authError = null
 
@@ -38,7 +42,15 @@ export async function GET(request: Request) {
 
       if (!profile) {
         // Redirect to onboarding if no profile exists
-        return NextResponse.redirect(`${origin}/onboarding`)
+        // Preserve plan selection params
+        let onboardingUrl = '/onboarding'
+        if (plan) {
+          const params = new URLSearchParams()
+          params.set('plan', plan)
+          if (period) params.set('period', period)
+          onboardingUrl += `?${params.toString()}`
+        }
+        return NextResponse.redirect(`${origin}${onboardingUrl}`)
       }
     }
 

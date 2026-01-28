@@ -91,11 +91,24 @@ export async function register(prevState: AuthState, formData: FormData): Promis
     return { error: issues[0]?.message || 'Dados inválidos' }
   }
 
+  // Get plan selection from form data
+  const plan = formData.get('plan') as string | null
+  const period = formData.get('period') as string | null
+
+  // Build redirect URL with plan params if present
+  let redirectUrl = `${getAppUrl()}/auth/confirm`
+  if (plan) {
+    const params = new URLSearchParams()
+    params.set('plan', plan)
+    if (period) params.set('period', period)
+    redirectUrl += `?${params.toString()}`
+  }
+
   const { data, error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
     options: {
-      emailRedirectTo: `${getAppUrl()}/auth/confirm`,
+      emailRedirectTo: redirectUrl,
     },
   })
 
@@ -197,7 +210,7 @@ export async function completeOnboarding(prevState: AuthState, formData: FormDat
     console.error('Error creating feature flags:', flagsError)
   }
 
-  redirect('/dashboard')
+  return { success: 'Perfil criado com sucesso' }
 }
 
 export async function logout() {

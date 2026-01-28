@@ -11,7 +11,12 @@ import { Loader2 } from 'lucide-react'
 
 const initialState: AuthState = {}
 
-export function RegisterForm() {
+interface RegisterFormProps {
+  plan?: string
+  period?: string
+}
+
+export function RegisterForm({ plan, period }: RegisterFormProps) {
   const [state, action, pending] = useActionState(register, initialState)
 
   return (
@@ -24,6 +29,8 @@ export function RegisterForm() {
       </CardHeader>
       <CardContent>
         <form action={action} className="space-y-4">
+          {plan && <input type="hidden" name="plan" value={plan} />}
+          {period && <input type="hidden" name="period" value={period} />}
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input

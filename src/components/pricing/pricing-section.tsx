@@ -9,13 +9,20 @@ import { toast } from 'sonner'
 
 interface PricingSectionProps {
   currentPlan?: PlanType
+  isAuthenticated?: boolean
 }
 
-export function PricingSection({ currentPlan = 'free' }: PricingSectionProps) {
+export function PricingSection({ currentPlan = 'free', isAuthenticated = false }: PricingSectionProps) {
   const [period, setPeriod] = useState<BillingPeriod>('yearly')
   const router = useRouter()
 
   const handleSelectPlan = async (plan: 'starter' | 'pro', billingPeriod: BillingPeriod) => {
+    // If not authenticated, redirect to register with plan params
+    if (!isAuthenticated) {
+      router.push(`/register?plan=${plan}&period=${billingPeriod}`)
+      return
+    }
+
     try {
       const response = await fetch('/api/stripe/checkout', {
         method: 'POST',
@@ -43,7 +50,7 @@ export function PricingSection({ currentPlan = 'free' }: PricingSectionProps) {
       <div className="text-center space-y-4">
         <h2 className="text-3xl font-bold">Escolha seu plano</h2>
         <p className="text-muted-foreground max-w-md mx-auto">
-          Comece grátis e faça upgrade quando precisar de mais recursos
+          Comece grátis e faça upgrade quando quiser
         </p>
         <PricingToggle period={period} onChange={setPeriod} />
       </div>
@@ -57,6 +64,7 @@ export function PricingSection({ currentPlan = 'free' }: PricingSectionProps) {
             currentPlan={currentPlan}
             onSelect={handleSelectPlan}
             highlighted={plan.type === 'starter'}
+            isAuthenticated={isAuthenticated}
           />
         ))}
       </div>

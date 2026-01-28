@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Check, Loader2 } from 'lucide-react'
@@ -13,10 +14,12 @@ interface PricingCardProps {
   currentPlan?: PlanType
   onSelect?: (plan: 'starter' | 'pro', period: BillingPeriod) => Promise<void>
   highlighted?: boolean
+  isAuthenticated?: boolean
 }
 
-export function PricingCard({ plan, period, currentPlan, onSelect, highlighted }: PricingCardProps) {
+export function PricingCard({ plan, period, currentPlan, onSelect, highlighted, isAuthenticated = false }: PricingCardProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   const price = period === 'monthly' ? plan.monthlyPrice : plan.yearlyMonthlyPrice
   const isCurrentPlan = currentPlan === plan.type
@@ -24,7 +27,17 @@ export function PricingCard({ plan, period, currentPlan, onSelect, highlighted }
   const isUpgrade = !isFree && !isCurrentPlan && (currentPlan === 'free' || (currentPlan === 'starter' && plan.type === 'pro'))
 
   const handleSelect = async () => {
-    if (!onSelect || isFree || isCurrentPlan) return
+    if (isCurrentPlan) return
+
+    // For free plan, if not authenticated, go to register
+    if (isFree) {
+      if (!isAuthenticated) {
+        router.push('/register')
+      }
+      return
+    }
+
+    if (!onSelect) return
 
     setIsLoading(true)
     try {
@@ -68,7 +81,7 @@ export function PricingCard({ plan, period, currentPlan, onSelect, highlighted }
         <ul className="space-y-3">
           {plan.features.map((feature, index) => (
             <li key={index} className="flex items-start gap-2">
-              <Check className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
+              <Check className="h-5 w-5 text-black flex-shrink-0 mt-0.5" />
               <span className="text-sm">{feature}</span>
             </li>
           ))}
@@ -76,8 +89,13 @@ export function PricingCard({ plan, period, currentPlan, onSelect, highlighted }
       </CardContent>
       <CardFooter>
         {isFree ? (
-          <Button variant="outline" className="w-full" disabled>
-            {isCurrentPlan ? 'Plano atual' : 'Gratis'}
+          <Button
+            variant="outline"
+            className="w-full"
+            disabled={isCurrentPlan || isAuthenticated}
+            onClick={handleSelect}
+          >
+            {isCurrentPlan ? 'Plano atual' : isAuthenticated ? 'Gratis' : 'Começar grátis'}
           </Button>
         ) : (
           <Button
