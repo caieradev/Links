@@ -201,16 +201,16 @@ export function LinkButton({ link, settings, profileName, profileId, flags }: Li
 
     // Default - no icon
     return (
-      <div className="flex items-center justify-center gap-3 relative">
-        <div className="flex-1">
-          {link.title}
+      <div className="flex items-center gap-3">
+        <div className="flex-1 min-w-0 text-center">
+          <span className="block truncate">{link.title}</span>
           {link.description && (
-            <span className="block text-sm opacity-75 mt-1">{link.description}</span>
+            <span className="block text-sm opacity-75 mt-1 truncate">{link.description}</span>
           )}
         </div>
         <button
           onClick={handleShareClick}
-          className="p-2 rounded-full hover:bg-black/10 transition-colors absolute right-0"
+          className="p-2 rounded-full hover:bg-black/10 transition-colors flex-shrink-0"
           style={{ color: settings.link_text_color }}
         >
           <Share2 className="h-4 w-4" />

@@ -24,6 +24,7 @@ interface LeadGateModalProps {
 
 export function LeadGateModal({ link, settings, profileId, isOpen, onClose }: LeadGateModalProps) {
   const [email, setEmail] = useState('')
+  const [name, setName] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -47,6 +48,7 @@ export function LeadGateModal({ link, settings, profileId, isOpen, onClose }: Le
           profile_id: profileId,
           link_id: link.id,
           email: email,
+          name: name || undefined,
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -123,6 +125,13 @@ export function LeadGateModal({ link, settings, profileId, isOpen, onClose }: Le
               className="pl-10"
             />
           </div>
+
+          <Input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Seu nome (opcional)"
+          />
 
           {error && (
             <p className="text-sm text-red-500 text-center">{error}</p>

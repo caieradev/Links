@@ -6,6 +6,7 @@ const leadCaptureSchema = z.object({
   profile_id: z.string().uuid(),
   link_id: z.string().uuid(),
   email: z.string().email(),
+  name: z.string().optional(),
 })
 
 export async function POST(request: NextRequest) {
@@ -20,7 +21,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { profile_id, link_id, email } = parsed.data
+    const { profile_id, link_id, email, name } = parsed.data
 
     const supabase = await createClient()
 
@@ -60,18 +61,20 @@ export async function POST(request: NextRequest) {
     }
 
     // Add to subscribers (reuse existing table)
+    // If subscriber exists, update name if provided
+    const subscriberData: { profile_id: string; email: string; name?: string } = {
+      profile_id: profile_id,
+      email: email,
+    }
+    if (name) {
+      subscriberData.name = name
+    }
+
     const { error: subscriberError } = await supabase
       .from('subscribers')
-      .upsert(
-        {
-          profile_id: profile_id,
-          email: email,
-        },
-        {
-          onConflict: 'profile_id,email',
-          ignoreDuplicates: true,
-        }
-      )
+      .upsert(subscriberData, {
+        onConflict: 'profile_id,email',
+      })
 
     if (subscriberError && !subscriberError.message.includes('duplicate')) {
       console.error('Error adding subscriber:', subscriberError)
