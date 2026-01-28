@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
+import { ChangePasswordCard } from './change-password-card'
 import { Loader2, Trash2, Check, AlertCircle, Copy, Lock } from 'lucide-react'
 import { hasFeature } from '@/lib/feature-flags'
 import Link from 'next/link'
@@ -228,6 +229,9 @@ export function SettingsForm({ profile, domains, flags, appDomain }: SettingsFor
           </CardContent>
         </Card>
       )}
+
+      {/* Change Password */}
+      <ChangePasswordCard />
 
       {/* Danger Zone */}
       <Card className="border-destructive/50">

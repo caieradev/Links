@@ -235,3 +235,94 @@ export async function checkUsernameAvailability(username: string): Promise<{ ava
 
   return { available: !data }
 }
+
+export async function requestPasswordReset(prevState: AuthState, formData: FormData): Promise<AuthState> {
+  const supabase = await createClient()
+
+  const email = formData.get('email') as string
+
+  if (!email || !z.string().email().safeParse(email).success) {
+    return { error: 'E-mail inválido' }
+  }
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${getAppUrl()}/auth/reset-password`,
+  })
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  return { success: 'Se este e-mail estiver cadastrado, você receberá um link para redefinir sua senha.' }
+}
+
+export async function updatePassword(prevState: AuthState, formData: FormData): Promise<AuthState> {
+  const supabase = await createClient()
+
+  const password = formData.get('password') as string
+  const confirmPassword = formData.get('confirmPassword') as string
+
+  if (!password || password.length < 6) {
+    return { error: 'Senha deve ter pelo menos 6 caracteres' }
+  }
+
+  if (password !== confirmPassword) {
+    return { error: 'Senhas não coincidem' }
+  }
+
+  const { error } = await supabase.auth.updateUser({
+    password: password,
+  })
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  return { success: 'Senha atualizada com sucesso!' }
+}
+
+export async function changePassword(prevState: AuthState, formData: FormData): Promise<AuthState> {
+  const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return { error: 'Não autenticado' }
+  }
+
+  const currentPassword = formData.get('currentPassword') as string
+  const newPassword = formData.get('newPassword') as string
+  const confirmPassword = formData.get('confirmPassword') as string
+
+  if (!currentPassword) {
+    return { error: 'Senha atual é obrigatória' }
+  }
+
+  if (!newPassword || newPassword.length < 6) {
+    return { error: 'Nova senha deve ter pelo menos 6 caracteres' }
+  }
+
+  if (newPassword !== confirmPassword) {
+    return { error: 'Senhas não coincidem' }
+  }
+
+  // Verify current password by re-authenticating
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email: user.email!,
+    password: currentPassword,
+  })
+
+  if (signInError) {
+    return { error: 'Senha atual incorreta' }
+  }
+
+  // Update to new password
+  const { error } = await supabase.auth.updateUser({
+    password: newPassword,
+  })
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  return { success: 'Senha alterada com sucesso!' }
+}
