@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { PricingToggle } from './pricing-toggle'
 import { PricingCard } from './pricing-card'
-import { PRICING_PLANS, type BillingPeriod, type PlanType } from '@/lib/stripe'
+import { PRICING_PLANS, type BillingPeriod, type PlanType } from '@/lib/stripe-config'
 import { toast } from 'sonner'
 
 interface PricingSectionProps {

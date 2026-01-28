@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { PricingSection } from '@/components/pricing/pricing-section'
-import type { PlanType } from '@/lib/stripe'
+import type { PlanType } from '@/lib/stripe-config'
 
 export const metadata = {
   title: 'Preços - Links',

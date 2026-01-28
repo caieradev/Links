@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Loader2, Check, X, ArrowRight, ArrowLeft } from 'lucide-react'
 import { useDebounce } from '@/hooks/use-debounce'
 import { useEffect } from 'react'
-import { PRICING_PLANS, type BillingPeriod, type PlanType } from '@/lib/stripe'
+import { PRICING_PLANS, type BillingPeriod, type PlanType } from '@/lib/stripe-config'
 import { PricingToggle } from '@/components/pricing/pricing-toggle'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'

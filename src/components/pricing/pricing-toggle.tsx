@@ -1,7 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import type { BillingPeriod } from '@/lib/stripe'
+import type { BillingPeriod } from '@/lib/stripe-config'
 
 interface PricingToggleProps {
   period: BillingPeriod

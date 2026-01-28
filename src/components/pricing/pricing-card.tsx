@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Check, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { PricingPlan, BillingPeriod, PlanType } from '@/lib/stripe'
+import type { PricingPlan, BillingPeriod, PlanType } from '@/lib/stripe-config'
 
 interface PricingCardProps {
   plan: PricingPlan
