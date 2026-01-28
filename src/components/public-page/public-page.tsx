@@ -10,6 +10,15 @@ import { DesktopQRCode } from './desktop-qr-code'
 import type { Profile, Link, PageSettings, FeatureFlags, LinkSection, SocialLink } from '@/types/database'
 import { cn } from '@/lib/utils'
 
+// Google Fonts URL mapping
+const googleFontsMap: Record<string, string> = {
+  Inter: 'Inter:wght@400;500;600;700',
+  Roboto: 'Roboto:wght@400;500;700',
+  'Open Sans': 'Open+Sans:wght@400;500;600;700',
+  Poppins: 'Poppins:wght@400;500;600;700',
+  Montserrat: 'Montserrat:wght@400;500;600;700',
+}
+
 interface PublicPageProps {
   profile: Profile
   links: Link[]
@@ -86,142 +95,155 @@ export function PublicPage({ profile, links, settings, flags, sections = [], soc
 
   const profileName = profile.display_name || profile.username
 
+  // Get Google Fonts URL for the selected font
+  const fontToLoad = googleFontsMap[settings.font_family] || googleFontsMap.Inter
+  const googleFontsUrl = `https://fonts.googleapis.com/css2?family=${fontToLoad}&display=swap`
+
   return (
-    <div
-      className="min-h-screen relative"
-      style={{
-        ...getBackgroundStyle(),
-        fontFamily: getFontFamily(),
-      }}
-    >
-      {/* Page view tracker */}
-      <PageTracker profileId={profile.id} />
+    <>
+      {/* Load Google Font */}
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      <link href={googleFontsUrl} rel="stylesheet" />
 
-      {/* Blur overlay for background image */}
-      {settings.background_type === 'image' && settings.background_blur > 0 && (
-        <div
-          className="absolute inset-0"
-          style={{
-            backdropFilter: `blur(${settings.background_blur}px)`,
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
-          }}
-        />
-      )}
+      <div
+        className="min-h-screen relative"
+        style={{
+          ...getBackgroundStyle(),
+          fontFamily: getFontFamily(),
+        }}
+      >
+        {/* Page view tracker */}
+        <PageTracker profileId={profile.id} />
 
-      {/* Header Actions */}
-      <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
-        {showSubscriberBell && (
-          <SubscriberBellModal profileId={profile.id} settings={settings} />
+        {/* Blur overlay for background image */}
+        {settings.background_type === 'image' && settings.background_blur > 0 && (
+          <div
+            className="absolute inset-0"
+            style={{
+              backdropFilter: `blur(${settings.background_blur}px)`,
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            }}
+          />
         )}
-        <SharePageButton url={pageUrl} title={profileName} settings={settings} />
-      </div>
 
-      <div className="relative z-10 container max-w-md lg:max-w-lg mx-auto px-4 py-12 lg:py-16">
-        <div className="flex flex-col items-center text-center">
-          {/* YouTube Header Vídeo */}
-          {showYouTubeHeader && (
-            <YouTubeHeader videoUrl={settings.header_video_url!} />
+        {/* Header Actions */}
+        <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+          {showSubscriberBell && (
+            <SubscriberBellModal profileId={profile.id} settings={settings} />
           )}
+          <SharePageButton url={pageUrl} title={profileName} settings={settings} />
+        </div>
 
-          {/* Avatar */}
-          {settings.show_avatar && (
-            <Avatar className={cn(getAvatarSize(), 'mb-4 border-4 border-white/20')}>
-              <AvatarImage src={profile.avatar_url || undefined} alt={profileName} />
-              <AvatarFallback
-                className="text-2xl"
-                style={{ backgroundColor: settings.link_background_color, color: settings.link_text_color }}
-              >
-                {profileName.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-          )}
+        <div className="relative z-10 container max-w-md lg:max-w-lg mx-auto px-4 py-12 lg:py-16">
+          <div className="flex flex-col items-center text-center">
+            {/* Avatar */}
+            {settings.show_avatar && (
+              <Avatar className={cn(getAvatarSize(), 'mb-4 border-4 border-white/20')}>
+                <AvatarImage src={profile.avatar_url || undefined} alt={profileName} />
+                <AvatarFallback
+                  className="text-2xl"
+                  style={{ backgroundColor: settings.link_background_color, color: settings.link_text_color }}
+                >
+                  {profileName.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            )}
 
-          {/* Display Name */}
-          <h1
-            className="text-2xl lg:text-3xl font-bold mb-1"
-            style={{ color: settings.text_color }}
-          >
-            {profileName}
-          </h1>
-
-          {/* Username */}
-          <p
-            className="text-sm lg:text-base opacity-75 mb-2"
-            style={{ color: settings.text_color }}
-          >
-            @{profile.username}
-          </p>
-
-          {/* Bio */}
-          {settings.show_bio && profile.bio && (
-            <p
-              className="text-sm lg:text-base mb-6 max-w-xs lg:max-w-sm break-words whitespace-pre-wrap"
+            {/* Display Name */}
+            <h1
+              className="text-2xl lg:text-3xl font-bold mb-1"
               style={{ color: settings.text_color }}
             >
-              {profile.bio}
+              {profileName}
+            </h1>
+
+            {/* Username */}
+            <p
+              className="text-sm lg:text-base opacity-75 mb-2"
+              style={{ color: settings.text_color }}
+            >
+              @{profile.username}
             </p>
-          )}
 
-          {/* Social Icons - Above */}
-          {showSocialIcons && settings.social_icons_position === 'above' && (
-            <div className="mb-6">
-              <SocialIconsBar socialLinks={socialLinks} settings={settings} />
-            </div>
-          )}
+            {/* Bio */}
+            {settings.show_bio && profile.bio && (
+              <p
+                className="text-sm lg:text-base mb-6 max-w-xs lg:max-w-sm break-words whitespace-pre-wrap"
+                style={{ color: settings.text_color }}
+              >
+                {profile.bio}
+              </p>
+            )}
 
-          {/* Links */}
-          <div className="w-full space-y-3">
-            {/* Links without section */}
-            {linksWithoutSection.map((link) => (
-              <LinkButton
-                key={link.id}
-                link={link}
-                settings={settings}
-                profileName={profileName}
-                profileId={profile.id}
-                flags={flags}
-              />
-            ))}
-
-            {/* Sectioned links */}
-            {sectionedLinks.map(({ section, links: sectionLinks }) => (
-              <div key={section.id} className="w-full space-y-3">
-                <h3
-                  className="text-sm font-medium opacity-75 mt-6 mb-2"
-                  style={{ color: settings.text_color }}
-                >
-                  {section.title}
-                </h3>
-                {sectionLinks.map((link) => (
-                  <LinkButton
-                    key={link.id}
-                    link={link}
-                    settings={settings}
-                    profileName={profileName}
-                    profileId={profile.id}
-                    flags={flags}
-                  />
-                ))}
+            {/* Social Icons - Above */}
+            {showSocialIcons && settings.social_icons_position === 'above' && (
+              <div className="mb-6">
+                <SocialIconsBar socialLinks={socialLinks} settings={settings} />
               </div>
-            ))}
-          </div>
+            )}
 
-          {/* Social Icons - Below */}
-          {showSocialIcons && settings.social_icons_position === 'below' && (
-            <div className="mt-8">
-              <SocialIconsBar socialLinks={socialLinks} settings={settings} />
+            {/* YouTube Video */}
+            {showYouTubeHeader && (
+              <div className="w-full mb-6">
+                <YouTubeHeader videoUrl={settings.header_video_url!} />
+              </div>
+            )}
+
+            {/* Links */}
+            <div className="w-full space-y-3">
+              {/* Links without section */}
+              {linksWithoutSection.map((link) => (
+                <LinkButton
+                  key={link.id}
+                  link={link}
+                  settings={settings}
+                  profileName={profileName}
+                  profileId={profile.id}
+                  flags={flags}
+                />
+              ))}
+
+              {/* Sectioned links */}
+              {sectionedLinks.map(({ section, links: sectionLinks }) => (
+                <div key={section.id} className="w-full space-y-3">
+                  <h3
+                    className="text-sm font-medium opacity-75 mt-6 mb-4"
+                    style={{ color: settings.text_color }}
+                  >
+                    {section.title}
+                  </h3>
+                  {sectionLinks.map((link) => (
+                    <LinkButton
+                      key={link.id}
+                      link={link}
+                      settings={settings}
+                      profileName={profileName}
+                      profileId={profile.id}
+                      flags={flags}
+                    />
+                  ))}
+                </div>
+              ))}
             </div>
-          )}
 
-          {/* Branding / Join CTA */}
-          {!canRemoveBranding && (
-            <JoinCTA profileName={profileName} settings={settings} />
-          )}
+            {/* Social Icons - Below */}
+            {showSocialIcons && settings.social_icons_position === 'below' && (
+              <div className="mt-8">
+                <SocialIconsBar socialLinks={socialLinks} settings={settings} />
+              </div>
+            )}
+
+            {/* Branding / Join CTA */}
+            {!canRemoveBranding && (
+              <JoinCTA profileName={profileName} settings={settings} />
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* Desktop QR Code */}
-      <DesktopQRCode url={pageUrl} settings={settings} />
-    </div>
+        {/* Desktop QR Code */}
+        <DesktopQRCode url={pageUrl} settings={settings} />
+      </div>
+    </>
   )
 }

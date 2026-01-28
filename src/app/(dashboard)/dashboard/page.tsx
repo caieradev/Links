@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { LinkList } from '@/components/links/link-list'
 import { CreateLinkDialog } from '@/components/links/create-link-dialog'
 import { SectionManager } from '@/components/links/section-manager'
+import { SocialLinksManager } from '@/components/dashboard/social-links-manager'
 import { QRCodeGenerator } from '@/components/dashboard/qr-code-generator'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -19,7 +20,7 @@ export default async function DashboardPage() {
     return null
   }
 
-  const [{ data: links }, { data: flags }, { data: profile }, { data: sections }] = await Promise.all([
+  const [{ data: links }, { data: flags }, { data: profile }, { data: sections }, { data: socialLinks }] = await Promise.all([
     supabase
       .from('links')
       .select('*')
@@ -37,6 +38,11 @@ export default async function DashboardPage() {
       .single(),
     supabase
       .from('link_sections')
+      .select('*')
+      .eq('profile_id', user.id)
+      .order('position', { ascending: true }),
+    supabase
+      .from('social_links')
       .select('*')
       .eq('profile_id', user.id)
       .order('position', { ascending: true }),
@@ -93,6 +99,9 @@ export default async function DashboardPage() {
           <SectionManager sections={sections ?? []} flags={flags} />
         </CardContent>
       </Card>
+
+      {/* Social Links Manager */}
+      <SocialLinksManager socialLinks={socialLinks ?? []} flags={flags} />
     </div>
   )
 }

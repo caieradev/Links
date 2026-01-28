@@ -26,9 +26,9 @@ import {
   createSocialLink,
   updateSocialLink,
   deleteSocialLink,
-  SOCIAL_PLATFORMS,
   type SocialLinkActionState,
 } from '@/actions/social-links'
+import { SOCIAL_PLATFORMS } from '@/lib/social-platforms'
 import { getSocialIconSvg } from '@/lib/social-icons'
 import type { SocialLink, FeatureFlags } from '@/types/database'
 
@@ -86,7 +86,7 @@ export function SocialLinksManager({ socialLinks, flags }: SocialLinksManagerPro
           <Lock className="h-12 w-12 text-muted-foreground mb-4" />
           <h2 className="text-xl font-semibold mb-2">Recurso Premium</h2>
           <p className="text-muted-foreground mb-6 max-w-md">
-            Os links sociais estao disponíveis a partir do plano Pro.
+            Os links sociais estao disponíveis a partir do plano Starter.
             Adicione ícones de suas redes sociais na sua página.
           </p>
           <Button asChild>

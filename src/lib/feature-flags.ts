@@ -6,7 +6,7 @@ export const DEFAULT_FEATURE_FLAGS: Omit<FeatureFlags, 'id' | 'user_id' | 'creat
   can_use_custom_background_image: false,
   can_use_custom_fonts: false,
   can_use_animations: false,
-  can_use_link_thumbnails: false,
+  can_use_link_thumbnails: true,
   can_use_link_scheduling: false,
   can_view_analytics: false,
   can_use_custom_domain: false,

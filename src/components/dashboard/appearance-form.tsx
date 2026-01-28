@@ -793,7 +793,7 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                   <Lock className="h-12 w-12 text-muted-foreground mb-4" />
                   <h3 className="text-xl font-semibold mb-2">Recurso Premium</h3>
                   <p className="text-muted-foreground mb-6 max-w-md">
-                    Os ícones de redes sociais estao disponíveis a partir do plano Pro.
+                    Os ícones de redes sociais estao disponíveis a partir do plano Starter.
                     Exiba seus perfis sociais de forma elegante na sua página.
                   </p>
                   <Button type="button" asChild>

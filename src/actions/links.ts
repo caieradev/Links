@@ -37,6 +37,9 @@ const createLinkSchema = z.object({
   description: z.string().max(200, 'Descrição muito longa').optional(),
   icon: z.string().optional(),
   thumbnail_url: z.string().optional(),
+  cover_image_url: z.string().optional(),
+  requires_email: z.boolean().optional(),
+  section_id: z.string().uuid().optional().nullable(),
 })
 
 const updateLinkSchema = createLinkSchema.extend({
@@ -62,12 +65,16 @@ export async function createLink(
     return { error: 'Não autenticado' }
   }
 
+  const sectionIdRaw = formData.get('section_id') as string
   const parsed = createLinkSchema.safeParse({
     title: formData.get('title'),
     url: formData.get('url'),
     description: formData.get('description') || undefined,
     icon: formData.get('icon') || undefined,
     thumbnail_url: formData.get('thumbnail_url') || undefined,
+    cover_image_url: formData.get('cover_image_url') || undefined,
+    requires_email: formData.get('requires_email') === 'true',
+    section_id: sectionIdRaw && sectionIdRaw !== '' ? sectionIdRaw : null,
   })
 
   if (!parsed.success) {
@@ -111,6 +118,9 @@ export async function createLink(
     description: parsed.data.description || null,
     icon: parsed.data.icon || null,
     thumbnail_url: parsed.data.thumbnail_url || null,
+    cover_image_url: parsed.data.cover_image_url || null,
+    requires_email: parsed.data.requires_email ?? false,
+    section_id: parsed.data.section_id || null,
     position: nextPosition,
   })
 
@@ -309,16 +319,7 @@ export async function uploadLinkThumbnail(formData: FormData): Promise<{ url: st
     return { url: null, error: 'Não autenticado' }
   }
 
-  // Check feature flag
-  const { data: flags } = await supabase
-    .from('feature_flags')
-    .select('can_use_link_thumbnails')
-    .eq('user_id', user.id)
-    .single()
-
-  if (!flags?.can_use_link_thumbnails) {
-    return { url: null, error: 'Você não tem permissão para usar thumbnails em links' }
-  }
+  // Thumbnails are available for all plans - no feature flag check needed
 
   const file = formData.get('file') as File
   if (!file) {

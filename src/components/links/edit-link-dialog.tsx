@@ -42,6 +42,7 @@ export function EditLinkDialog({ link, open, onOpenChange, flags, sections = [] 
   const [isUploading, startUpload] = useTransition()
   const [isUploadingCover, startUploadCover] = useTransition()
   const [isAssigning, startAssigning] = useTransition()
+  const [formKey, setFormKey] = useState(0)
 
   // Cropper state
   const [cropperOpen, setCropperOpen] = useState(false)
@@ -65,6 +66,7 @@ export function EditLinkDialog({ link, open, onOpenChange, flags, sections = [] 
   useEffect(() => {
     if (state.success) {
       onOpenChange(false)
+      setFormKey(prev => prev + 1)
     }
   }, [state.success, onOpenChange])
 
@@ -121,14 +123,14 @@ export function EditLinkDialog({ link, open, onOpenChange, flags, sections = [] 
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent>
+        <DialogContent className="max-h-[90vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>Editar link</DialogTitle>
             <DialogDescription>
               Edite as informações do seu link.
             </DialogDescription>
           </DialogHeader>
-          <form action={action} className="space-y-4">
+          <form key={formKey} action={action} className="space-y-4 overflow-y-auto flex-1 pr-2">
             <input type="hidden" name="id" value={link.id} />
             <input type="hidden" name="is_active" value={String(link.is_active)} />
             <input type="hidden" name="thumbnail_url" value={thumbnailUrl || ''} />
@@ -206,32 +208,32 @@ export function EditLinkDialog({ link, open, onOpenChange, flags, sections = [] 
                     <img
                       src={thumbnailUrl}
                       alt="Thumbnail preview"
-                      className="w-full h-32 object-cover rounded-lg"
+                      className="w-full h-24 object-cover rounded-lg"
                     />
                     <Button
                       type="button"
                       variant="destructive"
                       size="icon"
-                      className="absolute top-2 right-2"
+                      className="absolute top-2 right-2 h-6 w-6"
                       onClick={() => setThumbnailUrl(null)}
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-3 w-3" />
                     </Button>
                   </div>
                 ) : (
                   <div className="flex items-center justify-center w-full">
                     <Label
                       htmlFor="edit-thumbnail"
-                      className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-muted/50 hover:bg-muted transition-colors"
+                      className="flex flex-col items-center justify-center w-full h-20 border-2 border-dashed rounded-lg cursor-pointer bg-muted/50 hover:bg-muted transition-colors"
                     >
-                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <div className="flex flex-col items-center justify-center py-2">
                         {isUploading ? (
-                          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                          <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
                         ) : (
                           <>
-                            <ImageIcon className="h-6 w-6 mb-2 text-muted-foreground" />
+                            <ImageIcon className="h-5 w-5 mb-1 text-muted-foreground" />
                             <p className="text-xs text-muted-foreground">
-                              Clique para adicionar imagem
+                              Clique para adicionar
                             </p>
                           </>
                         )}
@@ -261,30 +263,30 @@ export function EditLinkDialog({ link, open, onOpenChange, flags, sections = [] 
                     <img
                       src={coverImageUrl}
                       alt="Cover preview"
-                      className="w-full h-40 object-cover rounded-lg"
+                      className="w-full h-28 object-cover rounded-lg"
                     />
                     <Button
                       type="button"
                       variant="destructive"
                       size="icon"
-                      className="absolute top-2 right-2"
+                      className="absolute top-2 right-2 h-6 w-6"
                       onClick={() => setCoverImageUrl(null)}
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-3 w-3" />
                     </Button>
                   </div>
                 ) : (
                   <div className="flex items-center justify-center w-full">
                     <Label
                       htmlFor="edit-cover"
-                      className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-muted/50 hover:bg-muted transition-colors"
+                      className="flex flex-col items-center justify-center w-full h-20 border-2 border-dashed rounded-lg cursor-pointer bg-muted/50 hover:bg-muted transition-colors"
                     >
-                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <div className="flex flex-col items-center justify-center py-2">
                         {isUploadingCover ? (
-                          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                          <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
                         ) : (
                           <>
-                            <ImageIcon className="h-6 w-6 mb-2 text-muted-foreground" />
+                            <ImageIcon className="h-5 w-5 mb-1 text-muted-foreground" />
                             <p className="text-xs text-muted-foreground">
                               Clique para adicionar capa
                             </p>
@@ -308,12 +310,12 @@ export function EditLinkDialog({ link, open, onOpenChange, flags, sections = [] 
             {canUseLeadGate && (
               <div className="flex items-center justify-between rounded-lg border p-3 bg-muted/30">
                 <div className="space-y-0.5">
-                  <Label className="flex items-center gap-2">
+                  <Label className="flex items-center gap-2 text-sm">
                     <Mail className="h-4 w-4" />
                     Capturar email
                   </Label>
                   <p className="text-xs text-muted-foreground">
-                    Exigir email antes de acessar o link
+                    Exigir email antes de acessar
                   </p>
                 </div>
                 <Switch
@@ -327,7 +329,7 @@ export function EditLinkDialog({ link, open, onOpenChange, flags, sections = [] 
               <p className="text-sm text-destructive">{state.error}</p>
             )}
 
-            <DialogFooter>
+            <DialogFooter className="pt-2">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Cancelar
               </Button>

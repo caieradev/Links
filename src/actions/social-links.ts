@@ -229,25 +229,3 @@ export async function getSocialLinks() {
   return { data: data || [], error: null }
 }
 
-// Available platforms for the dropdown
-export const SOCIAL_PLATFORMS = [
-  { value: 'instagram', label: 'Instagram' },
-  { value: 'facebook', label: 'Facebook' },
-  { value: 'x', label: 'X (Twitter)' },
-  { value: 'tiktok', label: 'TikTok' },
-  { value: 'youtube', label: 'YouTube' },
-  { value: 'linkedin', label: 'LinkedIn' },
-  { value: 'github', label: 'GitHub' },
-  { value: 'twitch', label: 'Twitch' },
-  { value: 'discord', label: 'Discord' },
-  { value: 'spotify', label: 'Spotify' },
-  { value: 'whatsapp', label: 'WhatsApp' },
-  { value: 'telegram', label: 'Telegram' },
-  { value: 'pinterest', label: 'Pinterest' },
-  { value: 'snapchat', label: 'Snapchat' },
-  { value: 'threads', label: 'Threads' },
-  { value: 'reddit', label: 'Reddit' },
-  { value: 'medium', label: 'Medium' },
-  { value: 'dribbble', label: 'Dribbble' },
-  { value: 'behance', label: 'Behance' },
-]

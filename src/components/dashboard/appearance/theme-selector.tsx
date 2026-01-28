@@ -1,6 +1,7 @@
 'use client'
 
 import { useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import { applyTheme } from '@/actions/appearance'
 import { themes, type Theme } from '@/lib/themes'
 import { hasFeature } from '@/lib/feature-flags'
@@ -21,6 +22,7 @@ interface ThemeSelectorProps {
 
 export function ThemeSelector({ flags, currentSettings }: ThemeSelectorProps) {
   const [isPending, startTransition] = useTransition()
+  const router = useRouter()
   const canUseThemes = hasFeature(flags, 'can_use_themes')
 
   const isThemeActive = (theme: Theme): boolean => {
@@ -53,6 +55,7 @@ export function ThemeSelector({ flags, currentSettings }: ThemeSelectorProps) {
       const result = await applyTheme(themeId)
       if (result.success) {
         toast.success(result.success)
+        router.refresh()
       } else if (result.error) {
         toast.error(result.error)
       }
