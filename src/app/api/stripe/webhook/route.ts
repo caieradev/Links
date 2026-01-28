@@ -4,10 +4,10 @@ import { stripe, getPlanFromPriceId, PLAN_FEATURES } from '@/lib/stripe'
 import { createClient } from '@supabase/supabase-js'
 import type Stripe from 'stripe'
 
-// Use service role client for webhook (no auth context)
+// Use secret key client for webhook (no auth context)
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SECRET_KEY!
 )
 
 export async function POST(request: NextRequest) {
