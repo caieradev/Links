@@ -1,4 +1,3 @@
-import { createClient } from '@/lib/supabase/server'
 import { LinkList } from '@/components/links/link-list'
 import { CreateLinkDialog } from '@/components/links/create-link-dialog'
 import { SectionManager } from '@/components/links/section-manager'
@@ -6,6 +5,7 @@ import { SocialLinksManager } from '@/components/dashboard/social-links-manager'
 import { QRCodeGenerator } from '@/components/dashboard/qr-code-generator'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { getUser, getProfile, getFeatureFlags, getLinks, getSections, getSocialLinks } from '@/lib/supabase/queries'
 
 export const metadata = {
   title: 'Dashboard - Links',
@@ -13,39 +13,19 @@ export const metadata = {
 }
 
 export default async function DashboardPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getUser()
 
   if (!user) {
     return null
   }
 
-  const [{ data: links }, { data: flags }, { data: profile }, { data: sections }, { data: socialLinks }] = await Promise.all([
-    supabase
-      .from('links')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('position', { ascending: true }),
-    supabase
-      .from('feature_flags')
-      .select('*')
-      .eq('user_id', user.id)
-      .single(),
-    supabase
-      .from('profiles')
-      .select('username')
-      .eq('id', user.id)
-      .single(),
-    supabase
-      .from('link_sections')
-      .select('*')
-      .eq('profile_id', user.id)
-      .order('position', { ascending: true }),
-    supabase
-      .from('social_links')
-      .select('*')
-      .eq('profile_id', user.id)
-      .order('position', { ascending: true }),
+  // Parallel queries - todas rodam ao mesmo tempo
+  const [links, flags, profile, sections, socialLinks] = await Promise.all([
+    getLinks(user.id),
+    getFeatureFlags(user.id),
+    getProfile(user.id),
+    getSections(user.id),
+    getSocialLinks(user.id),
   ])
 
   const maxLinks = flags?.max_links ?? null

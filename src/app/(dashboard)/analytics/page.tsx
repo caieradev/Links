@@ -1,10 +1,10 @@
-import { createClient } from '@/lib/supabase/server'
 import { getAnalytics } from '@/actions/analytics'
 import { AnalyticsDashboard } from '@/components/dashboard/analytics-dashboard'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Lock } from 'lucide-react'
 import Link from 'next/link'
+import { getUser, getFeatureFlags } from '@/lib/supabase/queries'
 
 export const metadata = {
   title: 'Analytics - Links',
@@ -12,19 +12,13 @@ export const metadata = {
 }
 
 export default async function AnalyticsPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getUser()
 
   if (!user) {
     return null
   }
 
-  const { data: flags } = await supabase
-    .from('feature_flags')
-    .select('can_view_analytics')
-    .eq('user_id', user.id)
-    .single()
-
+  const flags = await getFeatureFlags(user.id)
   const canViewAnalytics = flags?.can_view_analytics ?? false
 
   if (!canViewAnalytics) {

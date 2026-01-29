@@ -1,6 +1,6 @@
-import { createClient } from '@/lib/supabase/server'
 import { AppearanceForm } from '@/components/dashboard/appearance-form'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { getUser, getProfile, getPageSettings, getFeatureFlags } from '@/lib/supabase/queries'
 
 export const metadata = {
   title: 'Aparência - Links',
@@ -8,30 +8,18 @@ export const metadata = {
 }
 
 export default async function AppearancePage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getUser()
 
   if (!user) {
     return null
   }
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single()
-
-  const { data: settings } = await supabase
-    .from('page_settings')
-    .select('*')
-    .eq('user_id', user.id)
-    .single()
-
-  const { data: flags } = await supabase
-    .from('feature_flags')
-    .select('*')
-    .eq('user_id', user.id)
-    .single()
+  // Parallel queries - todas rodam ao mesmo tempo
+  const [profile, settings, flags] = await Promise.all([
+    getProfile(user.id),
+    getPageSettings(user.id),
+    getFeatureFlags(user.id),
+  ])
 
   if (!profile) {
     return null

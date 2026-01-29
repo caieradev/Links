@@ -1,6 +1,6 @@
-import { createClient } from '@/lib/supabase/server'
 import { SettingsForm } from '@/components/dashboard/settings-form'
 import { SubscriptionCard } from '@/components/dashboard/subscription-card'
+import { getUser, getProfile, getFeatureFlags, getCustomDomains, getSubscription } from '@/lib/supabase/queries'
 import type { Subscription } from '@/types/database'
 
 export const metadata = {
@@ -9,34 +9,18 @@ export const metadata = {
 }
 
 export default async function SettingsPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getUser()
 
   if (!user) {
     return null
   }
 
-  const [{ data: profile }, { data: domains }, { data: flags }, { data: subscription }] = await Promise.all([
-    supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single(),
-    supabase
-      .from('custom_domains')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false }),
-    supabase
-      .from('feature_flags')
-      .select('*')
-      .eq('user_id', user.id)
-      .single(),
-    supabase
-      .from('subscriptions')
-      .select('*')
-      .eq('user_id', user.id)
-      .single(),
+  // Parallel queries
+  const [profile, domains, flags, subscription] = await Promise.all([
+    getProfile(user.id),
+    getCustomDomains(user.id),
+    getFeatureFlags(user.id),
+    getSubscription(user.id),
   ])
 
   if (!profile) {

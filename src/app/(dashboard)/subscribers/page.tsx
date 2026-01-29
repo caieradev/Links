@@ -1,4 +1,3 @@
-import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { SubscribersTable } from '@/components/dashboard/subscribers-table'
@@ -6,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { Lock } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { getUser, getFeatureFlags, getSubscribersWithCount, getPageSettings } from '@/lib/supabase/queries'
 
 export const metadata = {
   title: 'Inscritos - Links',
@@ -13,19 +13,13 @@ export const metadata = {
 }
 
 export default async function SubscribersPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getUser()
 
   if (!user) {
     redirect('/login')
   }
 
-  const { data: flags } = await supabase
-    .from('feature_flags')
-    .select('can_collect_subscribers')
-    .eq('user_id', user.id)
-    .single()
-
+  const flags = await getFeatureFlags(user.id)
   const canCollectSubscribers = flags?.can_collect_subscribers ?? false
 
   if (!canCollectSubscribers) {
@@ -48,17 +42,11 @@ export default async function SubscribersPage() {
     )
   }
 
-  const { data: subscribers, count } = await supabase
-    .from('subscribers')
-    .select('*', { count: 'exact' })
-    .eq('profile_id', user.id)
-    .order('created_at', { ascending: false })
-
-  const { data: settings } = await supabase
-    .from('page_settings')
-    .select('subscriber_form_enabled')
-    .eq('user_id', user.id)
-    .single()
+  // Parallel queries
+  const [{ data: subscribers, count }, settings] = await Promise.all([
+    getSubscribersWithCount(user.id),
+    getPageSettings(user.id),
+  ])
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { NavLink } from '@/components/ui/nav-link'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
@@ -58,10 +59,12 @@ export function DashboardNav({ profile }: DashboardNavProps) {
               </SheetHeader>
               <nav className="flex flex-col gap-2 mt-4">
                 {navItems.map((item) => (
-                  <Link
+                  <NavLink
                     key={item.href}
                     href={item.href}
                     onClick={() => setMobileMenuOpen(false)}
+                    icon={item.icon}
+                    isActive={pathname === item.href}
                     className={cn(
                       'flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors',
                       pathname === item.href
@@ -69,9 +72,8 @@ export function DashboardNav({ profile }: DashboardNavProps) {
                         : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                     )}
                   >
-                    <item.icon className="h-4 w-4" />
                     {item.label}
-                  </Link>
+                  </NavLink>
                 ))}
               </nav>
             </SheetContent>
@@ -82,9 +84,11 @@ export function DashboardNav({ profile }: DashboardNavProps) {
           </Link>
           <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => (
-              <Link
+              <NavLink
                 key={item.href}
                 href={item.href}
+                icon={item.icon}
+                isActive={pathname === item.href}
                 className={cn(
                   'flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition-colors',
                   pathname === item.href
@@ -92,9 +96,8 @@ export function DashboardNav({ profile }: DashboardNavProps) {
                     : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                 )}
               >
-                <item.icon className="h-4 w-4" />
                 {item.label}
-              </Link>
+              </NavLink>
             ))}
           </nav>
         </div>
