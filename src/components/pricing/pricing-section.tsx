@@ -68,6 +68,10 @@ export function PricingSection({ currentPlan = 'free', isAuthenticated = false }
           />
         ))}
       </div>
+
+      <p className="text-center text-sm text-muted-foreground mt-6">
+        * O domínio personalizado não está incluso no plano. O registro e renovação do domínio devem ser adquiridos separadamente pelo usuário.
+      </p>
     </div>
   )
 }

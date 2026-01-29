@@ -58,7 +58,7 @@ export const PRICING_PLANS: PricingPlan[] = [
       'Fontes e animações',
       'Vídeo do YouTube no header',
       'Lead gate (captura de email)',
-      'Domínio customizado',
+      'Domínio customizado*',
     ],
   },
 ]

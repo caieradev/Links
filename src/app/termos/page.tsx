@@ -127,7 +127,26 @@ export default function TermosPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">8. Suspensao e Encerramento</h2>
+            <h2 className="text-2xl font-semibold mb-4">8. Dominios Personalizados</h2>
+            <p className="text-muted-foreground leading-relaxed mb-4">
+              O recurso de dominio personalizado disponivel em determinados planos permite que voce
+              conecte um dominio proprio a sua pagina de links. E importante esclarecer que:
+            </p>
+            <ul className="list-disc list-inside text-muted-foreground space-y-2">
+              <li>O registro e a renovacao do dominio NAO estao inclusos em nenhum plano da Plataforma;</li>
+              <li>Voce e integralmente responsavel pela aquisicao, manutencao e renovacao do dominio
+                  junto a um registrador de dominios de sua escolha;</li>
+              <li>A Plataforma oferece apenas a funcionalidade tecnica de vincular seu dominio
+                  existente a sua pagina de links;</li>
+              <li>Custos relacionados ao registro, transferencia ou renovacao de dominios sao de
+                  exclusiva responsabilidade do Usuario;</li>
+              <li>A Plataforma nao se responsabiliza por problemas relacionados ao registro,
+                  disponibilidade ou configuracao de DNS do seu dominio.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold mb-4">9. Suspensao e Encerramento</h2>
             <p className="text-muted-foreground leading-relaxed">
               Reservamo-nos o direito de, a nosso exclusivo criterio e sem aviso previo, suspender,
               restringir ou encerrar sua conta e acesso ao Servico, por qualquer motivo, incluindo
@@ -139,7 +158,7 @@ export default function TermosPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">9. Isencao de Garantias</h2>
+            <h2 className="text-2xl font-semibold mb-4">10. Isencao de Garantias</h2>
             <p className="text-muted-foreground leading-relaxed font-semibold">
               O SERVICO E FORNECIDO &quot;COMO ESTA&quot;, &quot;CONFORME DISPONIVEL&quot; E &quot;COM TODAS AS FALHAS&quot;,
               SEM GARANTIAS DE QUALQUER TIPO, EXPRESSAS OU IMPLICITAS. NA MAXIMA EXTENSAO PERMITIDA
@@ -152,7 +171,7 @@ export default function TermosPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">10. Limitacao de Responsabilidade</h2>
+            <h2 className="text-2xl font-semibold mb-4">11. Limitacao de Responsabilidade</h2>
             <p className="text-muted-foreground leading-relaxed font-semibold">
               NA MAXIMA EXTENSAO PERMITIDA PELA LEI APLICAVEL, EM NENHUMA CIRCUNSTANCIA SEREMOS
               RESPONSAVEIS POR QUAISQUER DANOS INDIRETOS, INCIDENTAIS, ESPECIAIS, CONSEQUENCIAIS,
@@ -167,7 +186,7 @@ export default function TermosPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">11. Indenizacao</h2>
+            <h2 className="text-2xl font-semibold mb-4">12. Indenizacao</h2>
             <p className="text-muted-foreground leading-relaxed">
               Voce concorda em defender, indenizar e isentar a Plataforma, seus diretores,
               funcionarios, agentes, parceiros e licenciadores de e contra quaisquer reclamacoes,
@@ -181,7 +200,7 @@ export default function TermosPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">12. Links de Terceiros</h2>
+            <h2 className="text-2xl font-semibold mb-4">13. Links de Terceiros</h2>
             <p className="text-muted-foreground leading-relaxed">
               O Servico pode conter links para sites ou servicos de terceiros que nao sao de nossa
               propriedade ou controlados por nos. Nao temos controle sobre, e nao assumimos
@@ -193,7 +212,7 @@ export default function TermosPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">13. Modificacoes dos Termos</h2>
+            <h2 className="text-2xl font-semibold mb-4">14. Modificacoes dos Termos</h2>
             <p className="text-muted-foreground leading-relaxed">
               Reservamo-nos o direito de modificar estes Termos a qualquer momento. Alteracoes
               materiais serao notificadas por meio do Servico ou por e-mail. O uso continuado do
@@ -203,7 +222,7 @@ export default function TermosPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">14. Disposicoes Gerais</h2>
+            <h2 className="text-2xl font-semibold mb-4">15. Disposicoes Gerais</h2>
             <p className="text-muted-foreground leading-relaxed mb-4">
               <strong>Lei Aplicavel:</strong> Estes Termos serao regidos e interpretados de acordo
               com as leis da Republica Federativa do Brasil, independentemente de conflitos de
@@ -229,7 +248,7 @@ export default function TermosPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">15. Contato</h2>
+            <h2 className="text-2xl font-semibold mb-4">16. Contato</h2>
             <p className="text-muted-foreground leading-relaxed">
               Para questoes sobre estes Termos de Uso, entre em contato conosco pelo e-mail:{' '}
               <a href="mailto:contato@stratus.dev.br" className="text-primary hover:underline">

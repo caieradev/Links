@@ -120,7 +120,9 @@ export function SettingsForm({ profile, domains, flags, appDomain }: SettingsFor
         <Card>
           <CardHeader>
             <CardTitle>Domínios Customizados</CardTitle>
-            <CardDescription>Use seu próprio domínio para sua página</CardDescription>
+            <CardDescription>
+              Use seu próprio domínio para sua página. O registro do domínio não está incluso no plano e deve ser adquirido separadamente.
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {domains.length > 0 && (
@@ -221,7 +223,7 @@ export function SettingsForm({ profile, domains, flags, appDomain }: SettingsFor
             <h2 className="text-xl font-semibold mb-2">Recurso Premium</h2>
             <p className="text-muted-foreground mb-6 max-w-md">
               Os domínios customizados estao disponíveis a partir do plano Pro.
-              Use seu próprio domínio para sua página de links.
+              Use seu próprio domínio para sua página de links. O registro do domínio não está incluso e deve ser adquirido separadamente.
             </p>
             <Button asChild>
               <Link href="/pricing">Fazer Upgrade</Link>
