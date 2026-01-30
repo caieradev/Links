@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('display_name, bio')
+    .select('display_name, bio, avatar_url')
     .eq('id', customDomain.user_id)
     .single()
 
@@ -37,13 +37,28 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
   }
 
+  const title = `${profile.display_name} - Links`
+  const description = profile.bio || `Veja os links de ${profile.display_name}`
+
   return {
-    title: `${profile.display_name} - Links`,
-    description: profile.bio || `Veja os links de ${profile.display_name}`,
+    title,
+    description,
+    icons: profile.avatar_url ? { icon: profile.avatar_url } : undefined,
     openGraph: {
-      title: `${profile.display_name} - Links`,
-      description: profile.bio || `Veja os links de ${profile.display_name}`,
+      title,
+      description,
       type: 'profile',
+      ...(profile.avatar_url && {
+        images: [{ url: profile.avatar_url }],
+      }),
+    },
+    twitter: {
+      card: profile.avatar_url ? 'summary' : undefined,
+      title,
+      description,
+      ...(profile.avatar_url && {
+        images: [profile.avatar_url],
+      }),
     },
   }
 }
