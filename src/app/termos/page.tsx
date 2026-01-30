@@ -64,10 +64,10 @@ export default function TermosPage() {
               Voce concorda em NAO utilizar o Servico para:
             </p>
             <ul className="list-disc list-inside text-muted-foreground space-y-2">
-              <li>Publicar, transmitir ou compartilhar conteudo ilegal, difamatorio, obsceno, pornografico,
-                  ameacador, abusivo, discriminatorio ou que viole direitos de terceiros;</li>
+              <li>Publicar, transmitir ou compartilhar conteúdo ilegal, difamatorio, obsceno, pornografico,
+                ameacador, abusivo, discriminatorio ou que viole direitos de terceiros;</li>
               <li>Promover atividades ilegais, incluindo mas nao limitado a fraudes, pirataria,
-                  jogos de azar ilegais ou venda de substancias proibidas;</li>
+                jogos de azar ilegais ou venda de substancias proibidas;</li>
               <li>Distribuir malware, virus, spam ou qualquer codigo malicioso;</li>
               <li>Coletar dados de outros usuarios sem consentimento;</li>
               <li>Interferir ou sobrecarregar nossos servidores ou infraestrutura;</li>
@@ -82,19 +82,19 @@ export default function TermosPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">5. Conteudo do Usuario</h2>
+            <h2 className="text-2xl font-semibold mb-4">5. Conteúdo do Usuario</h2>
             <p className="text-muted-foreground leading-relaxed mb-4">
-              Voce e o unico responsavel por todo conteudo que publica, transmite ou disponibiliza
-              atraves do Servico (&quot;Conteudo do Usuario&quot;). Ao publicar Conteudo do Usuario, voce:
+              Voce e o unico responsavel por todo conteúdo que publica, transmite ou disponibiliza
+              atraves do Servico (&quot;Conteúdo do Usuario&quot;). Ao publicar Conteúdo do Usuario, voce:
             </p>
             <ul className="list-disc list-inside text-muted-foreground space-y-2">
-              <li>Declara possuir todos os direitos necessarios sobre tal conteudo;</li>
+              <li>Declara possuir todos os direitos necessarios sobre tal conteúdo;</li>
               <li>Concede-nos licenca mundial, nao-exclusiva, livre de royalties, transferivel e
-                  sublicenciavel para usar, reproduzir, modificar, adaptar, publicar, traduzir,
-                  distribuir e exibir tal conteudo em conexao com o Servico;</li>
-              <li>Isenta-nos de qualquer responsabilidade relacionada ao seu Conteudo do Usuario;</li>
-              <li>Reconhece que nao temos obrigacao de monitorar, editar ou remover conteudo,
-                  embora possamos faze-lo a nosso exclusivo criterio.</li>
+                sublicenciavel para usar, reproduzir, modificar, adaptar, publicar, traduzir,
+                distribuir e exibir tal conteúdo em conexao com o Servico;</li>
+              <li>Isenta-nos de qualquer responsabilidade relacionada ao seu Conteúdo do Usuario;</li>
+              <li>Reconhece que nao temos obrigacao de monitorar, editar ou remover conteúdo,
+                embora possamos faze-lo a nosso exclusivo criterio.</li>
             </ul>
           </section>
 
@@ -117,7 +117,7 @@ export default function TermosPage() {
             </p>
             <ul className="list-disc list-inside text-muted-foreground space-y-2">
               <li>Os pagamentos sao processados por terceiros (Stripe) e estao sujeitos aos termos
-                  desses provedores;</li>
+                desses provedores;</li>
               <li>As assinaturas sao renovadas automaticamente ate que sejam canceladas;</li>
               <li>Os precos podem ser alterados mediante aviso previo de 30 dias;</li>
               <li>Reembolsos sao concedidos exclusivamente a nosso criterio e conforme legislacao aplicavel;</li>
@@ -135,13 +135,13 @@ export default function TermosPage() {
             <ul className="list-disc list-inside text-muted-foreground space-y-2">
               <li>O registro e a renovacao do dominio NAO estao inclusos em nenhum plano da Plataforma;</li>
               <li>Voce e integralmente responsavel pela aquisicao, manutencao e renovacao do dominio
-                  junto a um registrador de dominios de sua escolha;</li>
+                junto a um registrador de dominios de sua escolha;</li>
               <li>A Plataforma oferece apenas a funcionalidade tecnica de vincular seu dominio
-                  existente a sua pagina de links;</li>
+                existente a sua pagina de links;</li>
               <li>Custos relacionados ao registro, transferencia ou renovacao de dominios sao de
-                  exclusiva responsabilidade do Usuario;</li>
+                exclusiva responsabilidade do Usuario;</li>
               <li>A Plataforma nao se responsabiliza por problemas relacionados ao registro,
-                  disponibilidade ou configuracao de DNS do seu dominio.</li>
+                disponibilidade ou configuracao de DNS do seu dominio.</li>
             </ul>
           </section>
 
@@ -194,7 +194,7 @@ export default function TermosPage() {
               mas nao se limitando a, honorarios advocaticios) decorrentes de: (a) seu uso e acesso
               ao Servico; (b) violacao de qualquer termo destes Termos; (c) violacao de direitos de
               terceiros, incluindo direitos autorais, propriedade ou privacidade; (d) qualquer
-              alegacao de que seu Conteudo do Usuario causou danos a terceiros. Esta obrigacao de
+              alegacao de que seu Conteúdo do Usuario causou danos a terceiros. Esta obrigacao de
               indenizacao sobrevivera ao encerramento destes Termos e de sua conta.
             </p>
           </section>
@@ -204,10 +204,10 @@ export default function TermosPage() {
             <p className="text-muted-foreground leading-relaxed">
               O Servico pode conter links para sites ou servicos de terceiros que nao sao de nossa
               propriedade ou controlados por nos. Nao temos controle sobre, e nao assumimos
-              responsabilidade pelo conteudo, politicas de privacidade ou praticas de sites ou
+              responsabilidade pelo conteúdo, politicas de privacidade ou praticas de sites ou
               servicos de terceiros. Voce reconhece e concorda que nao seremos responsaveis, direta
               ou indiretamente, por qualquer dano ou perda causados ou alegadamente causados pelo
-              uso ou confianca em tais conteudos, bens ou servicos.
+              uso ou confianca em tais conteúdos, bens ou servicos.
             </p>
           </section>
 

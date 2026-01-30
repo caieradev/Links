@@ -43,21 +43,21 @@ export default function PrivacidadePage() {
             <ul className="list-disc list-inside text-muted-foreground space-y-2">
               <li><strong>Dados de cadastro:</strong> e-mail, senha (criptografada), nome de usuario;</li>
               <li><strong>Dados de perfil:</strong> nome de exibicao, biografia, foto de perfil;</li>
-              <li><strong>Conteudo:</strong> links, titulos, descricoes e configuracoes de aparencia
-                  que voce adiciona a sua pagina;</li>
+              <li><strong>Conteúdo:</strong> links, titulos, descricoes e configuracoes de aparencia
+                que voce adiciona a sua pagina;</li>
               <li><strong>Dados de pagamento:</strong> processados diretamente pelo Stripe - nao
-                  armazenamos dados de cartao de credito em nossos servidores.</li>
+                armazenamos dados de cartao de credito em nossos servidores.</li>
             </ul>
 
             <h3 className="text-xl font-medium mb-3 mt-6">2.2 Dados coletados automaticamente</h3>
             <ul className="list-disc list-inside text-muted-foreground space-y-2">
               <li><strong>Dados de uso:</strong> paginas visitadas, cliques em links, tempo de acesso;</li>
               <li><strong>Dados de dispositivo:</strong> tipo de navegador, sistema operacional,
-                  resolucao de tela;</li>
+                resolucao de tela;</li>
               <li><strong>Dados de conexao:</strong> endereco IP, provedor de internet, localizacao
-                  aproximada (pais/cidade);</li>
+                aproximada (pais/cidade);</li>
               <li><strong>Cookies e tecnologias similares:</strong> identificadores de sessao,
-                  preferencias de usuario.</li>
+                preferencias de usuario.</li>
             </ul>
 
             <h3 className="text-xl font-medium mb-3 mt-6">2.3 Dados de terceiros</h3>
@@ -74,17 +74,17 @@ export default function PrivacidadePage() {
             </p>
             <ul className="list-disc list-inside text-muted-foreground space-y-2">
               <li><strong>Prestacao do servico:</strong> criar e manter sua conta, exibir sua pagina
-                  de links, processar pagamentos;</li>
+                de links, processar pagamentos;</li>
               <li><strong>Comunicacao:</strong> enviar notificacoes sobre sua conta, atualizacoes do
-                  servico, comunicacoes de marketing (com seu consentimento);</li>
+                servico, comunicacoes de marketing (com seu consentimento);</li>
               <li><strong>Melhoria do servico:</strong> analisar padroes de uso para aprimorar
-                  funcionalidades e experiencia do usuario;</li>
+                funcionalidades e experiencia do usuario;</li>
               <li><strong>Seguranca:</strong> detectar e prevenir fraudes, abusos e atividades
-                  maliciosas;</li>
+                maliciosas;</li>
               <li><strong>Cumprimento legal:</strong> atender obrigacoes legais, responder a
-                  solicitacoes de autoridades competentes;</li>
+                solicitacoes de autoridades competentes;</li>
               <li><strong>Analytics:</strong> fornecer estatisticas de acesso e cliques em sua pagina
-                  (para planos que incluem este recurso).</li>
+                (para planos que incluem este recurso).</li>
             </ul>
           </section>
 
@@ -97,9 +97,9 @@ export default function PrivacidadePage() {
               <li><strong>Execucao de contrato:</strong> para prestacao dos servicos contratados;</li>
               <li><strong>Consentimento:</strong> para comunicacoes de marketing e funcionalidades opcionais;</li>
               <li><strong>Legitimo interesse:</strong> para melhoria do servico, seguranca e prevencao
-                  de fraudes;</li>
+                de fraudes;</li>
               <li><strong>Cumprimento de obrigacao legal:</strong> para atender exigencias legais e
-                  regulatorias.</li>
+                regulatorias.</li>
             </ul>
           </section>
 
@@ -118,11 +118,11 @@ export default function PrivacidadePage() {
                 </ul>
               </li>
               <li><strong>Autoridades competentes:</strong> quando exigido por lei, ordem judicial
-                  ou processo legal;</li>
+                ou processo legal;</li>
               <li><strong>Protecao de direitos:</strong> para proteger nossos direitos, propriedade
-                  ou seguranca, ou de terceiros;</li>
+                ou seguranca, ou de terceiros;</li>
               <li><strong>Transacoes corporativas:</strong> em caso de fusao, aquisicao ou venda de
-                  ativos, seus dados podem ser transferidos.</li>
+                ativos, seus dados podem ser transferidos.</li>
             </ul>
             <p className="text-muted-foreground leading-relaxed mt-4 font-semibold">
               NAO VENDEMOS SEUS DADOS PESSOAIS A TERCEIROS.
@@ -165,14 +165,14 @@ export default function PrivacidadePage() {
             </p>
             <ul className="list-disc list-inside text-muted-foreground space-y-2">
               <li><strong>Confirmacao e acesso:</strong> confirmar a existencia de tratamento e
-                  acessar seus dados;</li>
+                acessar seus dados;</li>
               <li><strong>Correcao:</strong> solicitar a correcao de dados incompletos, inexatos
-                  ou desatualizados;</li>
+                ou desatualizados;</li>
               <li><strong>Anonimizacao, bloqueio ou eliminacao:</strong> de dados desnecessarios,
-                  excessivos ou tratados em desconformidade;</li>
+                excessivos ou tratados em desconformidade;</li>
               <li><strong>Portabilidade:</strong> obter seus dados em formato estruturado;</li>
               <li><strong>Eliminacao:</strong> solicitar a exclusao de dados tratados com base
-                  em consentimento;</li>
+                em consentimento;</li>
               <li><strong>Informacao:</strong> ser informado sobre compartilhamento de dados;</li>
               <li><strong>Revogacao:</strong> revogar consentimento a qualquer momento;</li>
               <li><strong>Oposicao:</strong> opor-se ao tratamento em determinadas circunstancias.</li>
@@ -190,10 +190,10 @@ export default function PrivacidadePage() {
             </p>
             <ul className="list-disc list-inside text-muted-foreground space-y-2">
               <li><strong>Cookies essenciais:</strong> necessarios para funcionamento basico do site
-                  (autenticacao, sessao);</li>
+                (autenticacao, sessao);</li>
               <li><strong>Cookies de preferencias:</strong> armazenam suas configuracoes e preferencias;</li>
               <li><strong>Cookies analiticos:</strong> ajudam a entender como os usuarios interagem
-                  com o servico;</li>
+                com o servico;</li>
             </ul>
             <p className="text-muted-foreground leading-relaxed mt-4">
               Voce pode gerenciar suas preferencias de cookies atraves das configuracoes do seu
@@ -234,7 +234,7 @@ export default function PrivacidadePage() {
               Informacoes que voce inclui em sua pagina publica de links (nome de usuario, nome de
               exibicao, biografia, avatar, links) sao vissiveis publicamente na internet. Essas
               informacoes podem ser indexadas por mecanismos de busca e acessadas por qualquer pessoa.
-              Voce e responsavel pelo conteudo que torna publico.
+              Voce e responsavel pelo conteúdo que torna publico.
             </p>
           </section>
 

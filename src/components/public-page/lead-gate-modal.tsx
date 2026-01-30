@@ -76,7 +76,7 @@ export function LeadGateModal({ link, settings, profileId, isOpen, onClose }: Le
         <DialogHeader>
           <DialogTitle className="text-center flex items-center justify-center gap-2">
             <Lock className="h-5 w-5" />
-            Conteudo exclusivo
+            Conteúdo exclusivo
           </DialogTitle>
           <DialogDescription className="text-center">
             Insira seu email para acessar este link
@@ -130,7 +130,8 @@ export function LeadGateModal({ link, settings, profileId, isOpen, onClose }: Le
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Seu nome (opcional)"
+            required
+            placeholder="Seu nome"
           />
 
           {error && (
@@ -144,12 +145,12 @@ export function LeadGateModal({ link, settings, profileId, isOpen, onClose }: Le
                 Processando...
               </>
             ) : (
-              'Acessar conteudo'
+              'Acessar conteúdo'
             )}
           </Button>
 
           <p className="text-xs text-center text-muted-foreground">
-            Seu email sera usado apenas para contato do criador deste conteudo
+            Seu email sera usado apenas para contato do criador deste conteúdo
           </p>
         </form>
       </DialogContent>

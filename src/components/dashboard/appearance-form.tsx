@@ -819,7 +819,7 @@ export function AppearanceForm({ profile, settings, flags }: AppearanceFormProps
                                 subscriber_form_description: e.target.value,
                               }))
                             }
-                            placeholder="Receba novidades e conteudos exclusivos"
+                            placeholder="Receba novidades e conteúdos exclusivos"
                             rows={2}
                           />
                         </div>
