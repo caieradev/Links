@@ -83,7 +83,8 @@ export function SubscriberBellModal({ profileId, settings }: SubscriberBellModal
               <Input
                 type="text"
                 name="name"
-                placeholder="Seu nome (opcional)"
+                placeholder="Seu nome"
+                required
               />
 
               {state.error && (
