@@ -92,7 +92,7 @@ export const metadata: Metadata = {
     locale: "pt_BR",
     images: [
       {
-        url: "/banner.jpeg",
+        url: "/banner.png",
         width: 1200,
         height: 630,
         alt: "Links na Bio — Sua página de links personalizada",
@@ -106,7 +106,7 @@ export const metadata: Metadata = {
       "Reúna todos os seus links, redes sociais e conteúdos em um só lugar. Personalize sua página e compartilhe com uma única URL.",
     images: [
       {
-        url: "/banner.jpeg",
+        url: "/banner.png",
         alt: "Links na Bio — Sua página de links personalizada",
       },
     ],
