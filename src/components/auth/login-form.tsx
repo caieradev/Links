@@ -15,7 +15,7 @@ const initialState: AuthState = {}
 export function LoginForm() {
   const [loginState, loginAction, loginPending] = useActionState(login, initialState)
   const [magicLinkState, magicLinkAction, magicLinkPending] = useActionState(sendMagicLink, initialState)
-  const [activeTab, setActiveTab] = useState('password')
+  const [activeTab, setActiveTab] = useState('magic-link')
 
   return (
     <Card className="w-full max-w-md">
@@ -28,8 +28,8 @@ export function LoginForm() {
       <CardContent>
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="password">Email e Senha</TabsTrigger>
             <TabsTrigger value="magic-link">Magic Link</TabsTrigger>
+            <TabsTrigger value="password">Email e Senha</TabsTrigger>
           </TabsList>
 
           <TabsContent value="password">

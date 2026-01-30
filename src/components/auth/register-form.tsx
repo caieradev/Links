@@ -1,15 +1,22 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useState } from 'react'
 import { register, type AuthState } from '@/actions/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Check, X } from 'lucide-react'
 
 const initialState: AuthState = {}
+
+const passwordRules = [
+  { label: 'Mínimo 8 caracteres', test: (v: string) => v.length >= 8 },
+  { label: 'Letra maiúscula', test: (v: string) => /[A-Z]/.test(v) },
+  { label: 'Letra minúscula', test: (v: string) => /[a-z]/.test(v) },
+  { label: 'Caractere especial', test: (v: string) => /[^a-zA-Z0-9]/.test(v) },
+]
 
 interface RegisterFormProps {
   plan?: string
@@ -18,6 +25,9 @@ interface RegisterFormProps {
 
 export function RegisterForm({ plan, period }: RegisterFormProps) {
   const [state, action, pending] = useActionState(register, initialState)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
 
   return (
     <Card className="w-full max-w-md">
@@ -39,6 +49,8 @@ export function RegisterForm({ plan, period }: RegisterFormProps) {
               type="email"
               placeholder="seu@email.com"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="space-y-2">
@@ -49,7 +61,23 @@ export function RegisterForm({ plan, period }: RegisterFormProps) {
               type="password"
               placeholder="********"
               required
+              minLength={8}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
+            {password.length > 0 && (
+              <ul className="space-y-1 mt-2">
+                {passwordRules.map((rule) => {
+                  const passed = rule.test(password)
+                  return (
+                    <li key={rule.label} className={`flex items-center gap-1.5 text-xs ${passed ? 'text-green-600' : 'text-muted-foreground'}`}>
+                      {passed ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
+                      {rule.label}
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="confirmPassword">Confirmar Senha</Label>
@@ -59,6 +87,8 @@ export function RegisterForm({ plan, period }: RegisterFormProps) {
               type="password"
               placeholder="********"
               required
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
 
