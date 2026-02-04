@@ -346,6 +346,7 @@ export interface Database {
           profile_id: string
           email: string
           name: string | null
+          phone: string | null
           created_at: string
         }
         Insert: {
@@ -353,6 +354,7 @@ export interface Database {
           profile_id: string
           email: string
           name?: string | null
+          phone?: string | null
           created_at?: string
         }
         Update: {
@@ -360,6 +362,7 @@ export interface Database {
           profile_id?: string
           email?: string
           name?: string | null
+          phone?: string | null
           created_at?: string
         }
         Relationships: [

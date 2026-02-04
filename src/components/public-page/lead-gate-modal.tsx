@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Mail, Loader2, Lock } from 'lucide-react'
+import { Mail, Phone, Loader2, Lock } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import type { Link, PageSettings } from '@/types/database'
 import { detectSocialIcon, getSocialIconSvg } from '@/lib/social-icons'
+import { formatPhone } from '@/lib/utils'
 
 interface LeadGateModalProps {
   link: Link
@@ -25,6 +26,7 @@ interface LeadGateModalProps {
 export function LeadGateModal({ link, settings, profileId, isOpen, onClose }: LeadGateModalProps) {
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
+  const [phone, setPhone] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -37,11 +39,6 @@ export function LeadGateModal({ link, settings, profileId, isOpen, onClose }: Le
     setIsSubmitting(true)
 
     try {
-      // Submit email to subscribers
-      const formData = new FormData()
-      formData.append('profile_id', profileId)
-      formData.append('email', email)
-
       const response = await fetch('/api/lead-capture', {
         method: 'POST',
         body: JSON.stringify({
@@ -49,6 +46,7 @@ export function LeadGateModal({ link, settings, profileId, isOpen, onClose }: Le
           link_id: link.id,
           email: email,
           name: name || undefined,
+          phone: phone,
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -60,9 +58,8 @@ export function LeadGateModal({ link, settings, profileId, isOpen, onClose }: Le
         throw new Error(data.error || 'Erro ao processar')
       }
 
-      // Success - redirect to link
-      window.open(link.url, '_blank', 'noopener,noreferrer')
-      onClose()
+      // Success - redirect to link (use location.href for mobile compatibility)
+      window.location.href = link.url
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao processar')
     } finally {
@@ -70,9 +67,37 @@ export function LeadGateModal({ link, settings, profileId, isOpen, onClose }: Le
     }
   }
 
+  const renderLinkIcon = () => {
+    if (link.thumbnail_url || link.cover_image_url) {
+      return (
+        <img
+          src={link.thumbnail_url || link.cover_image_url || ''}
+          alt=""
+          className="w-12 h-12 rounded-lg object-cover"
+        />
+      )
+    }
+    if (socialIconSvg) {
+      return (
+        <div className="w-12 h-12 rounded-lg bg-background flex items-center justify-center">
+          {/* Social icon SVGs are generated internally by getSocialIconSvg, not user input */}
+          <div
+            className="w-6 h-6"
+            dangerouslySetInnerHTML={{ __html: socialIconSvg }}
+          />
+        </div>
+      )
+    }
+    return (
+      <div className="w-12 h-12 rounded-lg bg-background flex items-center justify-center">
+        <span className="text-lg font-bold">{link.title.charAt(0).toUpperCase()}</span>
+      </div>
+    )
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md overflow-x-hidden">
         <DialogHeader>
           <DialogTitle className="text-center flex items-center justify-center gap-2">
             <Lock className="h-5 w-5" />
@@ -86,24 +111,7 @@ export function LeadGateModal({ link, settings, profileId, isOpen, onClose }: Le
         {/* Link Preview */}
         <div className="bg-muted rounded-lg p-4 mb-4">
           <div className="flex items-center gap-3">
-            {link.thumbnail_url || link.cover_image_url ? (
-              <img
-                src={link.thumbnail_url || link.cover_image_url || ''}
-                alt=""
-                className="w-12 h-12 rounded-lg object-cover"
-              />
-            ) : socialIconSvg ? (
-              <div className="w-12 h-12 rounded-lg bg-background flex items-center justify-center">
-                <div
-                  className="w-6 h-6"
-                  dangerouslySetInnerHTML={{ __html: socialIconSvg }}
-                />
-              </div>
-            ) : (
-              <div className="w-12 h-12 rounded-lg bg-background flex items-center justify-center">
-                <span className="text-lg font-bold">{link.title.charAt(0).toUpperCase()}</span>
-              </div>
-            )}
+            {renderLinkIcon()}
             <div className="flex-1 min-w-0">
               <h3 className="font-semibold truncate">{link.title}</h3>
               {link.description && (
@@ -121,6 +129,18 @@ export function LeadGateModal({ link, settings, profileId, isOpen, onClose }: Le
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Seu melhor email"
+              required
+              className="pl-10"
+            />
+          </div>
+
+          <div className="relative">
+            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(formatPhone(e.target.value))}
+              placeholder="(00) 00000-0000"
               required
               className="pl-10"
             />

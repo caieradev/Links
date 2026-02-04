@@ -7,6 +7,7 @@ import { z } from 'zod'
 const subscribeSchema = z.object({
   email: z.string().email('Email invalido'),
   name: z.string().max(100, 'Nome muito longo').optional(),
+  phone: z.string().min(14, 'Telefone invalido').max(15, 'Telefone invalido'),
   profile_id: z.string().uuid('Profile invalido'),
 })
 
@@ -24,6 +25,7 @@ export async function addSubscriber(
   const parsed = subscribeSchema.safeParse({
     email: formData.get('email'),
     name: formData.get('name') || undefined,
+    phone: formData.get('phone'),
     profile_id: formData.get('profile_id'),
   })
 
@@ -58,6 +60,7 @@ export async function addSubscriber(
     profile_id: parsed.data.profile_id,
     email: parsed.data.email,
     name: parsed.data.name || null,
+    phone: parsed.data.phone,
   })
 
   if (error) {
@@ -123,7 +126,7 @@ export async function exportSubscribersCSV(): Promise<{ csv: string | null; erro
 
   const { data, error } = await supabase
     .from('subscribers')
-    .select('email, name, created_at')
+    .select('email, name, phone, created_at')
     .eq('profile_id', user.id)
     .order('created_at', { ascending: false })
 
@@ -136,10 +139,11 @@ export async function exportSubscribersCSV(): Promise<{ csv: string | null; erro
   }
 
   // Build CSV
-  const headers = ['email', 'name', 'created_at']
+  const headers = ['email', 'name', 'phone', 'created_at']
   const rows = data.map((sub) => [
     sub.email,
     sub.name || '',
+    sub.phone || '',
     new Date(sub.created_at).toISOString(),
   ])
 

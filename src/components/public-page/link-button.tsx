@@ -147,6 +147,16 @@ export function LinkButton({ link, settings, profileName, profileId, flags }: Li
   }
 
   const renderContent = () => {
+    const shareButton = !requiresEmail ? (
+      <button
+        onClick={handleShareClick}
+        className="p-2 rounded-full hover:bg-black/10 transition-colors flex-shrink-0"
+        style={{ color: settings.link_text_color }}
+      >
+        <Share2 className="h-4 w-4" />
+      </button>
+    ) : null
+
     // With cover image - special layout
     if (hasCoverImage) {
       return (
@@ -164,13 +174,7 @@ export function LinkButton({ link, settings, profileName, profileId, flags }: Li
                   <span className="block text-sm opacity-75 truncate">{link.description}</span>
                 )}
               </div>
-              <button
-                onClick={handleShareClick}
-                className="p-2 rounded-full hover:bg-black/10 transition-colors flex-shrink-0"
-                style={{ color: settings.link_text_color }}
-              >
-                <Share2 className="h-4 w-4" />
-              </button>
+              {shareButton}
             </div>
           </div>
         </>
@@ -188,13 +192,7 @@ export function LinkButton({ link, settings, profileName, profileId, flags }: Li
               <span className="block text-sm opacity-75 truncate">{link.description}</span>
             )}
           </div>
-          <button
-            onClick={handleShareClick}
-            className="p-2 rounded-full hover:bg-black/10 transition-colors flex-shrink-0"
-            style={{ color: settings.link_text_color }}
-          >
-            <Share2 className="h-4 w-4" />
-          </button>
+          {shareButton}
         </div>
       )
     }
@@ -202,19 +200,21 @@ export function LinkButton({ link, settings, profileName, profileId, flags }: Li
     // Default - no icon
     return (
       <div className="relative">
-        <div className="text-center px-10">
+        <div className={requiresEmail ? "text-center" : "text-center px-10"}>
           <span className="block">{link.title}</span>
           {link.description && (
             <span className="block text-sm opacity-75 mt-1">{link.description}</span>
           )}
         </div>
-        <button
-          onClick={handleShareClick}
-          className="p-2 rounded-full hover:bg-black/10 transition-colors absolute right-0 top-1/2 -translate-y-1/2"
-          style={{ color: settings.link_text_color }}
-        >
-          <Share2 className="h-4 w-4" />
-        </button>
+        {!requiresEmail && (
+          <button
+            onClick={handleShareClick}
+            className="p-2 rounded-full hover:bg-black/10 transition-colors absolute right-0 top-1/2 -translate-y-1/2"
+            style={{ color: settings.link_text_color }}
+          >
+            <Share2 className="h-4 w-4" />
+          </button>
+        )}
       </div>
     )
   }

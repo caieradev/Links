@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useActionState } from 'react'
-import { Bell, Mail, Check, Loader2 } from 'lucide-react'
+import { Bell, Mail, Phone, Check, Loader2 } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { addSubscriber, type SubscriberActionState } from '@/actions/subscribers'
 import type { PageSettings } from '@/types/database'
+import { formatPhone } from '@/lib/utils'
 
 interface SubscriberBellModalProps {
   profileId: string
@@ -22,6 +23,7 @@ interface SubscriberBellModalProps {
 
 export function SubscriberBellModal({ profileId, settings }: SubscriberBellModalProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const [phone, setPhone] = useState('')
   const [state, formAction, isPending] = useActionState<SubscriberActionState, FormData>(
     addSubscriber,
     {}
@@ -43,7 +45,7 @@ export function SubscriberBellModal({ profileId, settings }: SubscriberBellModal
           <span className="sr-only">Inscrever-se</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md overflow-x-hidden">
         <DialogHeader>
           <DialogTitle className="text-center">
             {settings.subscriber_form_title || 'Inscreva-se'}
@@ -76,6 +78,19 @@ export function SubscriberBellModal({ profileId, settings }: SubscriberBellModal
                   name="email"
                   placeholder="Seu email"
                   required
+                  className="pl-10"
+                />
+              </div>
+
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="tel"
+                  name="phone"
+                  placeholder="(00) 00000-0000"
+                  required
+                  value={phone}
+                  onChange={(e) => setPhone(formatPhone(e.target.value))}
                   className="pl-10"
                 />
               </div>

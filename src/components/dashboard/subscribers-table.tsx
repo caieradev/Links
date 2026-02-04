@@ -31,7 +31,8 @@ export function SubscribersTable({ subscribers }: SubscribersTableProps) {
   const filteredSubscribers = subscribers.filter(
     (sub) =>
       sub.email.toLowerCase().includes(search.toLowerCase()) ||
-      (sub.name && sub.name.toLowerCase().includes(search.toLowerCase()))
+      (sub.name && sub.name.toLowerCase().includes(search.toLowerCase())) ||
+      (sub.phone && sub.phone.includes(search))
   )
 
   const handleDelete = async () => {
@@ -128,6 +129,7 @@ export function SubscribersTable({ subscribers }: SubscribersTableProps) {
             <TableRow>
               <TableHead>Email</TableHead>
               <TableHead>Nome</TableHead>
+              <TableHead>Telefone</TableHead>
               <TableHead>Data</TableHead>
               <TableHead className="w-[50px]"></TableHead>
             </TableRow>
@@ -137,6 +139,7 @@ export function SubscribersTable({ subscribers }: SubscribersTableProps) {
               <TableRow key={subscriber.id}>
                 <TableCell className="font-medium">{subscriber.email}</TableCell>
                 <TableCell>{subscriber.name || '-'}</TableCell>
+                <TableCell>{subscriber.phone || '-'}</TableCell>
                 <TableCell className="text-muted-foreground">
                   {formatDate(subscriber.created_at)}
                 </TableCell>

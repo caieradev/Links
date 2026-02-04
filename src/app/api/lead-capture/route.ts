@@ -7,6 +7,7 @@ const leadCaptureSchema = z.object({
   link_id: z.string().uuid(),
   email: z.string().email(),
   name: z.string().optional(),
+  phone: z.string().min(14).max(15),
 })
 
 export async function POST(request: NextRequest) {
@@ -21,7 +22,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { profile_id, link_id, email, name } = parsed.data
+    const { profile_id, link_id, email, name, phone } = parsed.data
 
     const supabase = await createClient()
 
@@ -62,9 +63,10 @@ export async function POST(request: NextRequest) {
 
     // Add to subscribers (reuse existing table)
     // If subscriber exists, update name if provided
-    const subscriberData: { profile_id: string; email: string; name?: string } = {
+    const subscriberData: { profile_id: string; email: string; name?: string; phone: string } = {
       profile_id: profile_id,
       email: email,
+      phone: phone,
     }
     if (name) {
       subscriberData.name = name
