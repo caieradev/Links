@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -79,8 +80,8 @@ export function DashboardNav({ profile }: DashboardNavProps) {
             </SheetContent>
           </Sheet>
 
-          <Link href="/dashboard" className="text-xl font-bold">
-            Links
+          <Link href="/dashboard">
+            <Image src="/logo.png" alt="linksnabio" width={240} height={56} className="h-14 w-auto" />
           </Link>
           <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => (

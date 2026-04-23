@@ -40,6 +40,20 @@ export type AuthState = {
   success?: string
 }
 
+function translateSupabaseError(message: string): string {
+  const translations: Record<string, string> = {
+    'Invalid login credentials': 'E-mail ou senha inválidos',
+    'Email not confirmed': 'E-mail não confirmado. Verifique sua caixa de entrada.',
+    'Invalid Refresh Token: Refresh Token Not Found': 'Sessão expirada. Faça login novamente.',
+    'User already registered': 'Este e-mail já está cadastrado.',
+    'Password should be at least 6 characters': 'Senha deve ter pelo menos 6 caracteres',
+    'For security purposes, you can only request this once every 60 seconds': 'Por segurança, aguarde 60 segundos antes de tentar novamente.',
+    'Email rate limit exceeded': 'Muitas tentativas. Aguarde alguns minutos antes de tentar novamente.',
+    'Too many requests': 'Muitas tentativas. Aguarde alguns minutos antes de tentar novamente.',
+  }
+  return translations[message] || message
+}
+
 export async function login(prevState: AuthState, formData: FormData): Promise<AuthState> {
   const supabase = await createClient()
 
@@ -59,7 +73,7 @@ export async function login(prevState: AuthState, formData: FormData): Promise<A
   })
 
   if (error) {
-    return { error: error.message }
+    return { error: translateSupabaseError(error.message) }
   }
 
   // Check if user has a profile
@@ -117,7 +131,7 @@ export async function register(prevState: AuthState, formData: FormData): Promis
   })
 
   if (error) {
-    return { error: error.message }
+    return { error: translateSupabaseError(error.message) }
   }
 
   // Supabase returns a user with identities = [] if email already exists (for security)
@@ -149,7 +163,7 @@ export async function sendMagicLink(prevState: AuthState, formData: FormData): P
   })
 
   if (error) {
-    return { error: error.message }
+    return { error: translateSupabaseError(error.message) }
   }
 
   return { success: 'Link mágico enviado! Verifique seu e-mail.' }
@@ -254,7 +268,7 @@ export async function requestPasswordReset(prevState: AuthState, formData: FormD
   })
 
   if (error) {
-    return { error: error.message }
+    return { error: translateSupabaseError(error.message) }
   }
 
   return { success: 'Se este e-mail estiver cadastrado, você receberá um link para redefinir sua senha.' }
@@ -279,7 +293,7 @@ export async function updatePassword(prevState: AuthState, formData: FormData): 
   })
 
   if (error) {
-    return { error: error.message }
+    return { error: translateSupabaseError(error.message) }
   }
 
   return { success: 'Senha atualizada com sucesso!' }
@@ -325,7 +339,7 @@ export async function changePassword(prevState: AuthState, formData: FormData): 
   })
 
   if (error) {
-    return { error: error.message }
+    return { error: translateSupabaseError(error.message) }
   }
 
   return { success: 'Senha alterada com sucesso!' }

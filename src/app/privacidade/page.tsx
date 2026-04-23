@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 export const metadata = {
   title: 'Politica de Privacidade - Links',
@@ -10,8 +11,8 @@ export default function PrivacidadePage() {
     <div className="min-h-screen bg-background">
       <header className="border-b">
         <div className="container mx-auto px-4 flex h-16 items-center">
-          <Link href="/" className="text-2xl font-bold">
-            Links
+          <Link href="/">
+            <Image src="/logo.png" alt="linksnabio" width={160} height={40} className="h-10 w-auto" />
           </Link>
         </div>
       </header>

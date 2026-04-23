@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import Link from 'next/link'
-import { Loader2 } from 'lucide-react'
+import { Eye, EyeOff, Loader2 } from 'lucide-react'
 
 const initialState: AuthState = {}
 
@@ -16,6 +16,7 @@ export function LoginForm() {
   const [loginState, loginAction, loginPending] = useActionState(login, initialState)
   const [magicLinkState, magicLinkAction, magicLinkPending] = useActionState(sendMagicLink, initialState)
   const [activeTab, setActiveTab] = useState('magic-link')
+  const [showPassword, setShowPassword] = useState(false)
 
   return (
     <Card className="w-full max-w-md">
@@ -51,13 +52,24 @@ export function LoginForm() {
                     Esqueci minha senha
                   </Link>
                 </div>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  placeholder="********"
-                  required
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    name="password"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="********"
+                    required
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4 text-muted-foreground" /> : <Eye className="h-4 w-4 text-muted-foreground" />}
+                  </Button>
+                </div>
               </div>
 
               {loginState.error && (

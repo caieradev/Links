@@ -1,4 +1,5 @@
 import { OnboardingForm } from '@/components/auth/onboarding-form'
+import Image from 'next/image'
 
 export const metadata = {
   title: 'Escolha seu username - Links',
@@ -16,7 +17,9 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-b from-background to-muted">
-      <div className="text-3xl font-bold mb-8">Links</div>
+      <div className="mb-8">
+        <Image src="/logo.png" alt="linksnabio" width={200} height={48} className="h-12 w-auto" />
+      </div>
       <OnboardingForm plan={plan} period={period} />
     </div>
   )
