@@ -89,21 +89,23 @@ export async function getAnalytics(days: number = 30): Promise<AnalyticsData | n
   const startDate = new Date()
   startDate.setDate(startDate.getDate() - days)
 
-  // Fetch all analytics events for the period
-  const { data: events } = await supabase
-    .from('analytics_events')
-    .select('*')
-    .eq('profile_id', user.id)
-    .gte('created_at', startDate.toISOString())
-    .order('created_at', { ascending: true })
+  // Aggregate all analytics in Postgres via RPC — returns only summary counts
+  interface AnalyticsSummary {
+    events_by_day: { date: string; event_type: string; count: number }[]
+    top_links: { id: string; title: string | null; url: string | null; clicks: number }[]
+    device_stats: { type: string; count: number }[]
+    browser_stats: { browser: string; count: number }[]
+    referrer_stats: { referrer: string; count: number }[]
+  }
 
-  // Fetch user's links for mapping
-  const { data: links } = await supabase
-    .from('links')
-    .select('id, title, url')
-    .eq('user_id', user.id)
+  const { data } = await supabase.rpc('get_analytics_summary', {
+    p_profile_id: user.id,
+    p_start_date: startDate.toISOString(),
+  })
 
-  if (!events) {
+  const summary = data as unknown as AnalyticsSummary | null
+
+  if (!summary) {
     return {
       totalPageViews: 0,
       totalLinkClicks: 0,
@@ -116,104 +118,50 @@ export async function getAnalytics(days: number = 30): Promise<AnalyticsData | n
     }
   }
 
-  // Process events
-  const pageViews = events.filter(e => e.event_type === 'page_view')
-  const linkClicks = events.filter(e => e.event_type === 'link_click')
-
-  // Group by day
-  const pageViewsByDay = groupByDay(pageViews, days)
-  const linkClicksByDay = groupByDay(linkClicks, days)
-
-  // Top links
-  const linkClickCounts: Record<string, number> = {}
-  linkClicks.forEach(e => {
-    if (e.link_id) {
-      linkClickCounts[e.link_id] = (linkClickCounts[e.link_id] || 0) + 1
-    }
-  })
-
-  const topLinks = Object.entries(linkClickCounts)
-    .map(([linkId, clicks]) => {
-      const link = links?.find(l => l.id === linkId)
-      return {
-        id: linkId,
-        title: link?.title || 'Link removido',
-        url: link?.url || '',
-        clicks,
-      }
-    })
-    .sort((a, b) => b.clicks - a.clicks)
-    .slice(0, 10)
-
-  // Device stats
-  const deviceCounts: Record<string, number> = {}
-  events.forEach(e => {
-    const type = e.device_type || 'unknown'
-    deviceCounts[type] = (deviceCounts[type] || 0) + 1
-  })
-  const deviceStats = Object.entries(deviceCounts)
-    .map(([type, count]) => ({ type, count }))
-    .sort((a, b) => b.count - a.count)
-
-  // Browser stats
-  const browserCounts: Record<string, number> = {}
-  events.forEach(e => {
-    const browser = e.browser || 'unknown'
-    browserCounts[browser] = (browserCounts[browser] || 0) + 1
-  })
-  const browserStats = Object.entries(browserCounts)
-    .map(([browser, count]) => ({ browser, count }))
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 5)
-
-  // Referrer stats
-  const referrerCounts: Record<string, number> = {}
-  events.forEach(e => {
-    if (e.referrer) {
-      try {
-        const url = new URL(e.referrer)
-        const host = url.hostname
-        referrerCounts[host] = (referrerCounts[host] || 0) + 1
-      } catch {
-        // Invalid URL, skip
-      }
-    }
-  })
-  const referrerStats = Object.entries(referrerCounts)
-    .map(([referrer, count]) => ({ referrer, count }))
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 10)
-
-  return {
-    totalPageViews: pageViews.length,
-    totalLinkClicks: linkClicks.length,
-    pageViewsByDay,
-    linkClicksByDay,
-    topLinks,
-    deviceStats,
-    browserStats,
-    referrerStats,
-  }
-}
-
-function groupByDay(events: { created_at: string }[], days: number): { date: string; count: number }[] {
-  const result: Record<string, number> = {}
+  // Build day-by-day arrays from DB aggregation
+  const pvCounts: Record<string, number> = {}
+  const lcCounts: Record<string, number> = {}
 
   // Initialize all days with 0
   for (let i = days - 1; i >= 0; i--) {
-    const date = new Date()
-    date.setDate(date.getDate() - i)
-    const dateStr = date.toISOString().split('T')[0]
-    result[dateStr] = 0
+    const d = new Date()
+    d.setDate(d.getDate() - i)
+    const key = d.toISOString().split('T')[0]
+    pvCounts[key] = 0
+    lcCounts[key] = 0
   }
 
-  // Count events
-  events.forEach(e => {
-    const dateStr = e.created_at.split('T')[0]
-    if (result[dateStr] !== undefined) {
-      result[dateStr]++
+  // Fill in actual counts from DB
+  for (const row of summary.events_by_day) {
+    const dateStr = String(row.date)
+    if (row.event_type === 'page_view' && dateStr in pvCounts) {
+      pvCounts[dateStr] = Number(row.count)
+    } else if (row.event_type === 'link_click' && dateStr in lcCounts) {
+      lcCounts[dateStr] = Number(row.count)
     }
-  })
+  }
 
-  return Object.entries(result).map(([date, count]) => ({ date, count }))
+  const pageViewsByDay = Object.entries(pvCounts).map(([date, count]) => ({ date, count }))
+  const linkClicksByDay = Object.entries(lcCounts).map(([date, count]) => ({ date, count }))
+
+  const totalPageViews = pageViewsByDay.reduce((sum, d) => sum + d.count, 0)
+  const totalLinkClicks = linkClicksByDay.reduce((sum, d) => sum + d.count, 0)
+
+  const topLinks = summary.top_links.map(l => ({
+    id: l.id,
+    title: l.title || 'Link removido',
+    url: l.url || '',
+    clicks: Number(l.clicks),
+  }))
+
+  return {
+    totalPageViews,
+    totalLinkClicks,
+    pageViewsByDay,
+    linkClicksByDay,
+    topLinks,
+    deviceStats: summary.device_stats,
+    browserStats: summary.browser_stats,
+    referrerStats: summary.referrer_stats,
+  }
 }

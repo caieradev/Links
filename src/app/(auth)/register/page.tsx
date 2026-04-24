@@ -19,7 +19,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-b from-background to-muted">
       <Link href="/" className="mb-8">
-        <Image src="/logo.png" alt="linksnabio" width={200} height={48} className="h-12 w-auto" />
+        <Image src="/logo.png" alt="linksnabio" width={280} height={64} className="h-16 w-auto" />
       </Link>
       <RegisterForm plan={plan} period={period} />
     </div>

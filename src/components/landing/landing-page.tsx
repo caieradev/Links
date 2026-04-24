@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion } from 'motion/react'
+import { motion, useReducedMotion } from 'motion/react'
 import {
   Sparkles, Link2, BarChart3, Palette, Shield, Zap,
   CheckCircle2, Users, ShoppingBag, Music, Video,
@@ -15,6 +15,17 @@ import { ScrollToTop } from './scroll-to-top'
 
 export function LandingPage() {
   const [isYearly, setIsYearly] = useState(true)
+  const prefersReducedMotion = useReducedMotion()
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+
+  const fadeInUp = prefersReducedMotion
+    ? {}
+    : { initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: '-50px' } }
+
+  const fadeInUpWithDelay = (delay: number) =>
+    prefersReducedMotion
+      ? {}
+      : { initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: '-50px' }, transition: { duration: 0.4, delay } }
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id)
@@ -59,9 +70,9 @@ export function LandingPage() {
         {/* Right Side Full-Bleed Image (Desktop) */}
         <motion.div
           className="hidden lg:block absolute top-0 right-0 bottom-0 w-[50vw] z-0"
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
         >
           <div className="absolute inset-0 overflow-hidden shadow-2xl">
             <Image
@@ -77,9 +88,9 @@ export function LandingPage() {
 
         <div className="max-w-7xl mx-auto px-4 w-full h-full flex flex-col lg:flex-row items-center gap-12 relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
             className="text-left flex flex-col justify-center lg:w-[48%] py-12 lg:py-20 lg:pr-12 xl:pr-20"
           >
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-black mb-6 leading-tight">
@@ -111,9 +122,9 @@ export function LandingPage() {
           {/* Mobile/Tablet Image Container */}
           <motion.div
             className="relative lg:hidden w-full h-[50vh] mb-12"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
           >
             <div className="absolute inset-0 overflow-hidden shadow-2xl rounded-3xl">
               <Image
@@ -150,10 +161,7 @@ export function LandingPage() {
             ].map((feature, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                {...fadeInUpWithDelay(isMobile ? 0 : index * 0.1)}
                 className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition group"
               >
                 <div className="w-14 h-14 bg-black rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
@@ -172,10 +180,8 @@ export function LandingPage() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+              {...fadeInUp}
+              transition={{ duration: 0.4 }}
             >
               <h2 className="text-4xl font-bold text-black mb-6">
                 Seu link,<br className="sm:hidden" /> <span className="underline decoration-4 underline-offset-8">sua identidade</span>
@@ -202,20 +208,18 @@ export function LandingPage() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+              {...fadeInUp}
+              transition={{ duration: 0.4 }}
               className="relative"
             >
               <motion.div
                 className="w-full max-w-2xl mx-auto cursor-pointer"
-                animate={{ y: [0, -15, 0] }}
+                animate={isMobile ? undefined : { y: [0, -10, 0] }}
                 transition={{
-                  y: { repeat: Infinity, duration: 4, ease: 'easeInOut' },
+                  y: { repeat: Infinity, duration: 5, ease: 'easeInOut' },
                 }}
-                whileHover={{ scale: 1.05, rotate: -2, transition: { duration: 0.2 } }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={isMobile ? undefined : { scale: 1.05, rotate: -2, transition: { duration: 0.2 } }}
+                whileTap={isMobile ? undefined : { scale: 0.95 }}
               >
                 <Image
                   src="/landing/mockup.png"
@@ -248,10 +252,7 @@ export function LandingPage() {
             ].map((platform, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
+                {...fadeInUpWithDelay(isMobile ? 0 : index * 0.05)}
                 className="flex flex-col items-center gap-2 group"
               >
                 <div className="w-12 h-12 text-black group-hover:scale-110 transition">
@@ -281,10 +282,7 @@ export function LandingPage() {
             ].map((useCase, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                {...fadeInUpWithDelay(isMobile ? 0 : index * 0.1)}
                 className="bg-gray-50 p-6 rounded-2xl hover:shadow-lg transition group"
               >
                 <div className="w-12 h-12 bg-black rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition">
@@ -370,10 +368,7 @@ export function LandingPage() {
             ].map((plan, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                {...fadeInUpWithDelay(isMobile ? 0 : index * 0.1)}
                 className={`bg-white p-8 rounded-2xl ${
                   plan.popular ? 'ring-2 ring-black shadow-2xl scale-105' : 'shadow-lg'
                 } relative`}

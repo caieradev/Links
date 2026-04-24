@@ -560,6 +560,10 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
+      get_analytics_summary: {
+        Args: { p_profile_id: string; p_start_date: string }
+        Returns: Json
+      }
       increment_link_click: {
         Args: { link_id: string }
         Returns: undefined

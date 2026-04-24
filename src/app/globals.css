@@ -151,6 +151,13 @@
 
 .animate-blob {
   animation: blob 7s infinite;
+  will-change: transform;
+}
+
+@media (max-width: 768px) {
+  .animate-blob {
+    animation: none;
+  }
 }
 
 .animation-delay-2000 {
