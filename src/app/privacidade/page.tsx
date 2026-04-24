@@ -257,8 +257,8 @@ export default function PrivacidadePage() {
             </p>
             <p className="text-muted-foreground leading-relaxed">
               <strong>E-mail:</strong>{' '}
-              <a href="mailto:contato@stratus.dev.br" className="text-primary hover:underline">
-                contato@stratus.dev.br
+              <a href="mailto:contato@linksnabio.cc" className="text-primary hover:underline">
+                contato@linksnabio.cc
               </a>
             </p>
             <p className="text-muted-foreground leading-relaxed mt-4">

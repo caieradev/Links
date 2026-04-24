@@ -507,7 +507,7 @@ export function LandingPage() {
             <div>
               <h4 className="font-bold mb-4">Suporte</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><Link href="mailto:contato@stratus.dev.br" className="hover:text-white transition">Contato</Link></li>
+                <li><Link href="mailto:contato@linksnabio.cc" className="hover:text-white transition">Contato</Link></li>
               </ul>
             </div>
             <div>

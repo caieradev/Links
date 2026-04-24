@@ -252,8 +252,8 @@ export default function TermosPage() {
             <h2 className="text-2xl font-semibold mb-4">16. Contato</h2>
             <p className="text-muted-foreground leading-relaxed">
               Para questoes sobre estes Termos de Uso, entre em contato conosco pelo e-mail:{' '}
-              <a href="mailto:contato@stratus.dev.br" className="text-primary hover:underline">
-                contato@stratus.dev.br
+              <a href="mailto:contato@linksnabio.cc" className="text-primary hover:underline">
+                contato@linksnabio.cc
               </a>
             </p>
           </section>
