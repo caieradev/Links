@@ -20,12 +20,12 @@ export function LandingPage() {
 
   const fadeInUp = prefersReducedMotion
     ? {}
-    : { initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: '-50px' } }
+    : { initial: { opacity: 0, ...(isMobile ? {} : { y: 20 }) }, whileInView: { opacity: 1, ...(isMobile ? {} : { y: 0 }) }, viewport: { once: true, margin: '-50px' } }
 
   const fadeInUpWithDelay = (delay: number) =>
     prefersReducedMotion
       ? {}
-      : { initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: '-50px' }, transition: { duration: 0.4, delay } }
+      : { initial: { opacity: 0, ...(isMobile ? {} : { y: 20 }) }, whileInView: { opacity: 1, ...(isMobile ? {} : { y: 0 }) }, viewport: { once: true, margin: '-50px' }, transition: { duration: 0.4, delay } }
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id)
