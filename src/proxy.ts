@@ -43,6 +43,7 @@ export async function proxy(request: NextRequest) {
   // Check if this is a custom domain (not main domain, localhost, or vercel.app)
   const isCustomDomain = !hostname.includes(mainDomain) &&
                          !hostname.includes('localhost') &&
+                         !hostname.includes('192.168.') &&
                          !hostname.includes('vercel.app')
 
   if (isCustomDomain) {
