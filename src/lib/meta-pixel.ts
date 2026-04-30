@@ -1,7 +1,7 @@
 import { createHash } from 'crypto'
 
-const PIXEL_ID = process.env.META_PIXEL_ID!
-const ACCESS_TOKEN = process.env.META_CONVERSIONS_API_TOKEN!
+const PIXEL_ID = process.env.META_PIXEL_ID
+const ACCESS_TOKEN = process.env.META_CONVERSIONS_API_TOKEN
 const API_VERSION = 'v21.0'
 
 function hashSHA256(value: string): string {
@@ -38,6 +38,8 @@ export async function sendConversionEvent({
   userData: UserData
   customData?: CustomData
 }) {
+  if (!PIXEL_ID || !ACCESS_TOKEN) return
+
   const hashedUserData: Record<string, unknown> = {}
 
   if (userData.email) {

@@ -63,6 +63,11 @@ export const PRICING_PLANS: PricingPlan[] = [
   },
 ]
 
+export function getPlanPrice(plan: 'starter' | 'pro', period: BillingPeriod): number {
+  const planConfig = PRICING_PLANS.find(p => p.type === plan)!
+  return period === 'yearly' ? planConfig.yearlyPrice : planConfig.monthlyPrice
+}
+
 // Feature flags for each plan
 export const PLAN_FEATURES: Record<PlanType, Record<string, boolean | number | null>> = {
   free: {

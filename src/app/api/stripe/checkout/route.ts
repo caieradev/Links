@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { stripe, getPriceId, type BillingPeriod } from '@/lib/stripe'
+import { getPlanPrice } from '@/lib/stripe-config'
 import { getAppUrl } from '@/lib/utils'
 import { sendConversionEvent } from '@/lib/meta-pixel'
+import { headers } from 'next/headers'
 
 export async function POST(request: NextRequest) {
   try {
@@ -79,17 +81,20 @@ export async function POST(request: NextRequest) {
 
     // Fire Meta CAPI InitiateCheckout event
     const eventId = event_id || crypto.randomUUID()
+    const headersList = await headers()
     sendConversionEvent({
       eventName: 'InitiateCheckout',
       eventId,
       eventSourceUrl: `${getAppUrl()}/pricing`,
       userData: {
         email: user.email || undefined,
+        clientIpAddress: headersList.get('x-forwarded-for') || undefined,
+        clientUserAgent: headersList.get('user-agent') || undefined,
       },
       customData: {
         content_name: plan,
         currency: 'BRL',
-        value: plan === 'pro' ? (period === 'yearly' ? 300 : 31) : (period === 'yearly' ? 180 : 19),
+        value: getPlanPrice(plan, period),
       },
     })
 

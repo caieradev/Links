@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { PricingToggle } from './pricing-toggle'
 import { PricingCard } from './pricing-card'
-import { PRICING_PLANS, type BillingPeriod, type PlanType } from '@/lib/stripe-config'
+import { PRICING_PLANS, getPlanPrice, type BillingPeriod, type PlanType } from '@/lib/stripe-config'
 import { toast } from 'sonner'
 import { trackMetaEvent } from '@/components/meta-pixel'
 
@@ -29,7 +29,7 @@ export function PricingSection({ currentPlan = 'free', isAuthenticated = false }
       trackMetaEvent('InitiateCheckout', {
         content_name: plan,
         currency: 'BRL',
-        value: plan === 'pro' ? (billingPeriod === 'yearly' ? 300 : 31) : (billingPeriod === 'yearly' ? 180 : 19),
+        value: getPlanPrice(plan, billingPeriod),
       }, eventId)
 
       const response = await fetch('/api/stripe/checkout', {

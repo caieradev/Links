@@ -167,7 +167,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     },
     customData: {
       content_name: planType,
-      currency: 'brl',
+      currency: 'BRL',
       value: amountTotal ? amountTotal / 100 : undefined,
     },
   })
