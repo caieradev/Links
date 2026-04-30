@@ -11,6 +11,7 @@ import { Loader2, Check, X } from 'lucide-react'
 import { useDebounce } from '@/hooks/use-debounce'
 import { useEffect } from 'react'
 import { toast } from 'sonner'
+import { trackMetaEvent } from '@/components/meta-pixel'
 
 const initialState: AuthState = {}
 
@@ -55,13 +56,24 @@ export function OnboardingForm({ plan, period }: OnboardingFormProps) {
         return
       }
 
+      // Fire Meta Pixel CompleteRegistration event
+      if (result.eventId) {
+        trackMetaEvent('CompleteRegistration', { content_name: 'Onboarding', status: true }, result.eventId)
+      }
+
       // If user selected a paid plan, redirect to Stripe checkout
       if (plan && plan !== 'free') {
         try {
+          const checkoutEventId = crypto.randomUUID()
+          trackMetaEvent('InitiateCheckout', {
+            content_name: plan,
+            currency: 'BRL',
+          }, checkoutEventId)
+
           const response = await fetch('/api/stripe/checkout', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ plan, period: period || 'monthly' }),
+            body: JSON.stringify({ plan, period: period || 'monthly', event_id: checkoutEventId }),
           })
           const data = await response.json()
 

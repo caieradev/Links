@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { stripe, getPriceId, type BillingPeriod } from '@/lib/stripe'
 import { getAppUrl } from '@/lib/utils'
+import { sendConversionEvent } from '@/lib/meta-pixel'
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,7 +13,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
     }
 
-    const { plan, period } = await request.json() as { plan: 'starter' | 'pro'; period: BillingPeriod }
+    const { plan, period, event_id } = await request.json() as { plan: 'starter' | 'pro'; period: BillingPeriod; event_id?: string }
 
     if (!plan || !period) {
       return NextResponse.json({ error: 'Plano e período sao obrigatorios' }, { status: 400 })
@@ -76,7 +77,23 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    return NextResponse.json({ url: session.url })
+    // Fire Meta CAPI InitiateCheckout event
+    const eventId = event_id || crypto.randomUUID()
+    sendConversionEvent({
+      eventName: 'InitiateCheckout',
+      eventId,
+      eventSourceUrl: `${getAppUrl()}/pricing`,
+      userData: {
+        email: user.email || undefined,
+      },
+      customData: {
+        content_name: plan,
+        currency: 'BRL',
+        value: plan === 'pro' ? (period === 'yearly' ? 300 : 31) : (period === 'yearly' ? 180 : 19),
+      },
+    })
+
+    return NextResponse.json({ url: session.url, event_id: eventId })
   } catch (error) {
     console.error('Checkout error:', error)
     return NextResponse.json({ error: 'Erro ao criar sessao de checkout' }, { status: 500 })

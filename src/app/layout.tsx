@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/next";
+import { MetaPixel } from "@/components/meta-pixel";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -129,6 +130,7 @@ export default function RootLayout({
         {children}
         <Toaster />
         <Analytics />
+        <MetaPixel />
       </body>
     </html>
   );

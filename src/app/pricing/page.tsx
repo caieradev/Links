@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { PricingSection } from '@/components/pricing/pricing-section'
+import { MetaViewContent } from '@/components/meta-view-content'
 import type { PlanType } from '@/lib/stripe-config'
 
 export const metadata = {
@@ -27,6 +28,7 @@ export default async function PricingPage() {
 
   return (
     <div className="min-h-screen bg-muted/30">
+      <MetaViewContent contentName="Pricing Page" />
       <div className="container mx-auto px-4 py-16">
         <PricingSection currentPlan={currentPlan} isAuthenticated={!!user} />
       </div>

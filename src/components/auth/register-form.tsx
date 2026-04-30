@@ -1,12 +1,13 @@
 'use client'
 
-import { useActionState, useState } from 'react'
+import { useActionState, useState, useEffect, useRef } from 'react'
 import { register, type AuthState } from '@/actions/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
+import { trackMetaEvent } from '@/components/meta-pixel'
 import { Loader2, Check, X } from 'lucide-react'
 
 const initialState: AuthState = {}
@@ -28,6 +29,15 @@ export function RegisterForm({ plan, period }: RegisterFormProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+
+  const leadTracked = useRef(false)
+
+  useEffect(() => {
+    if (state.success && state.eventId && !leadTracked.current) {
+      leadTracked.current = true
+      trackMetaEvent('Lead', { content_name: 'Registration' }, state.eventId)
+    }
+  }, [state.success, state.eventId])
 
   return (
     <Card className="w-full max-w-md">

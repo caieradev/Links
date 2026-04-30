@@ -4,6 +4,9 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import { getAppUrl } from '@/lib/utils'
+import { sendConversionEvent } from '@/lib/meta-pixel'
+import { headers } from 'next/headers'
+import { randomUUID } from 'crypto'
 
 const loginSchema = z.object({
   email: z.string().email('E-mail inválido'),
@@ -38,6 +41,7 @@ const usernameSchema = z.object({
 export type AuthState = {
   error?: string
   success?: string
+  eventId?: string
 }
 
 function translateSupabaseError(message: string): string {
@@ -140,7 +144,22 @@ export async function register(prevState: AuthState, formData: FormData): Promis
     return { error: 'Este email já está cadastrado. Tente fazer login.' }
   }
 
-  return { success: 'Verifique seu e-mail para confirmar sua conta' }
+  // Fire Meta CAPI Lead event
+  const eventId = randomUUID()
+  const headersList = await headers()
+  sendConversionEvent({
+    eventName: 'Lead',
+    eventId,
+    eventSourceUrl: `${getAppUrl()}/register`,
+    userData: {
+      email: parsed.data.email,
+      clientIpAddress: headersList.get('x-forwarded-for') || undefined,
+      clientUserAgent: headersList.get('user-agent') || undefined,
+    },
+    customData: { content_name: 'Registration' },
+  })
+
+  return { success: 'Verifique seu e-mail para confirmar sua conta', eventId }
 }
 
 export async function sendMagicLink(prevState: AuthState, formData: FormData): Promise<AuthState> {
@@ -228,7 +247,22 @@ export async function completeOnboarding(prevState: AuthState, formData: FormDat
     console.error('Error creating feature flags:', flagsError)
   }
 
-  return { success: 'Perfil criado com sucesso' }
+  // Fire Meta CAPI CompleteRegistration event
+  const eventId = randomUUID()
+  const headersList = await headers()
+  sendConversionEvent({
+    eventName: 'CompleteRegistration',
+    eventId,
+    eventSourceUrl: `${getAppUrl()}/onboarding`,
+    userData: {
+      email: user.email || undefined,
+      clientIpAddress: headersList.get('x-forwarded-for') || undefined,
+      clientUserAgent: headersList.get('user-agent') || undefined,
+    },
+    customData: { content_name: 'Onboarding', status: true },
+  })
+
+  return { success: 'Perfil criado com sucesso', eventId }
 }
 
 export async function logout() {

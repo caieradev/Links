@@ -6,6 +6,7 @@ import { PricingToggle } from './pricing-toggle'
 import { PricingCard } from './pricing-card'
 import { PRICING_PLANS, type BillingPeriod, type PlanType } from '@/lib/stripe-config'
 import { toast } from 'sonner'
+import { trackMetaEvent } from '@/components/meta-pixel'
 
 interface PricingSectionProps {
   currentPlan?: PlanType
@@ -24,10 +25,17 @@ export function PricingSection({ currentPlan = 'free', isAuthenticated = false }
     }
 
     try {
+      const eventId = crypto.randomUUID()
+      trackMetaEvent('InitiateCheckout', {
+        content_name: plan,
+        currency: 'BRL',
+        value: plan === 'pro' ? (billingPeriod === 'yearly' ? 300 : 31) : (billingPeriod === 'yearly' ? 180 : 19),
+      }, eventId)
+
       const response = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan, period: billingPeriod }),
+        body: JSON.stringify({ plan, period: billingPeriod, event_id: eventId }),
       })
 
       const data = await response.json()

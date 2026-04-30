@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { stripe, getPlanFromPriceId, PLAN_FEATURES } from '@/lib/stripe'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { sendConversionEvent } from '@/lib/meta-pixel'
+import { getAppUrl } from '@/lib/utils'
 import type Stripe from 'stripe'
 
 // Use admin client for webhook (bypasses RLS)
@@ -143,6 +145,32 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
   // Update feature flags based on plan
   await updateFeatureFlags(userId, planType)
+
+  // Fire Meta CAPI Purchase event
+  let customerEmail: string | undefined
+  try {
+    const customer = await stripe.customers.retrieve(customerId)
+    if (!customer.deleted) {
+      customerEmail = customer.email || undefined
+    }
+  } catch (err) {
+    console.error('Failed to retrieve customer email for Meta CAPI:', err)
+  }
+
+  const amountTotal = session.amount_total
+  sendConversionEvent({
+    eventName: 'Purchase',
+    eventId: `purchase_${session.id}`,
+    eventSourceUrl: `${getAppUrl()}/settings`,
+    userData: {
+      email: customerEmail,
+    },
+    customData: {
+      content_name: planType,
+      currency: 'brl',
+      value: amountTotal ? amountTotal / 100 : undefined,
+    },
+  })
 }
 
 async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
