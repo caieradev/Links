@@ -15,8 +15,9 @@ import { ScrollToTop } from './scroll-to-top'
 
 export function LandingPage() {
   const [isYearly, setIsYearly] = useState(true)
-  const [isMobile, setIsMobile] = useState(false)
+  const [username, setUsername] = useState('')
   const prefersReducedMotion = useReducedMotion()
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 768)
@@ -108,14 +109,19 @@ export function LandingPage() {
               Compartilhe conteúdo, venda produtos e expanda sua presença online.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
-              <input
-                type="text"
-                placeholder="linksnabio.cc/seunome"
-                className="flex-1 px-6 py-4 rounded-full border-2 border-gray-300 focus:border-black focus:outline-none text-lg text-black"
-              />
+              <div className="flex-1 flex items-center px-6 py-4 rounded-full border-2 border-gray-300 focus-within:border-black bg-white">
+                <span className="text-lg text-gray-500 select-none whitespace-nowrap">linksnabio.cc/</span>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase())}
+                  placeholder="seunome"
+                  className="flex-1 text-lg text-black bg-transparent focus:outline-none min-w-0"
+                />
+              </div>
               <Link
-                href="/register"
-                className="bg-black text-white px-8 py-4 rounded-full font-semibold hover:bg-gray-800 transition transform hover:scale-105 whitespace-nowrap text-center"
+                href={username ? `/register?username=${username}` : '/register'}
+                className="bg-black text-white px-8 py-4 rounded-full font-semibold hover:bg-gray-800 transition-colors whitespace-nowrap text-center"
               >
                 Reivindique seu link
               </Link>
@@ -165,8 +171,8 @@ export function LandingPage() {
             ].map((feature, index) => (
               <motion.div
                 key={index}
-                {...fadeInUpWithDelay(isMobile ? 0 : index * 0.1)}
-                className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition group"
+                {...fadeInUp}
+                className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow group"
               >
                 <div className="w-14 h-14 bg-black rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
                   <feature.icon className="w-7 h-7 text-white" />
@@ -286,8 +292,8 @@ export function LandingPage() {
             ].map((useCase, index) => (
               <motion.div
                 key={index}
-                {...fadeInUpWithDelay(isMobile ? 0 : index * 0.1)}
-                className="bg-gray-50 p-6 rounded-2xl hover:shadow-lg transition group"
+                {...fadeInUp}
+                className="bg-gray-50 p-6 rounded-2xl hover:shadow-lg transition-shadow group"
               >
                 <div className="w-12 h-12 bg-black rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition">
                   <useCase.icon className="w-6 h-6 text-white" />
@@ -472,14 +478,19 @@ export function LandingPage() {
               Junte-se a milhões de criadores que já transformaram seu link na bio em uma máquina de crescimento
             </p>
             <div className="w-full max-w-2xl flex flex-col sm:flex-row gap-4 items-center justify-center">
-              <input
-                type="text"
-                placeholder="linksnabio.cc/seunome"
-                className="w-full sm:flex-1 bg-white px-6 py-4 rounded-full text-lg focus:outline-none focus:ring-2 focus:ring-white/50 text-black placeholder:text-gray-500"
-              />
+              <div className="w-full sm:flex-1 flex items-center px-6 py-4 rounded-full bg-white focus-within:ring-2 focus-within:ring-white/50">
+                <span className="text-lg text-gray-500 select-none whitespace-nowrap">linksnabio.cc/</span>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase())}
+                  placeholder="seunome"
+                  className="flex-1 text-lg text-black bg-transparent focus:outline-none min-w-0"
+                />
+              </div>
               <Link
-                href="/register"
-                className="w-full sm:w-auto bg-white text-black px-8 py-4 rounded-full font-bold hover:bg-gray-100 transition transform hover:scale-105 whitespace-nowrap text-center"
+                href={username ? `/register?username=${username}` : '/register'}
+                className="w-full sm:w-auto bg-white text-black px-8 py-4 rounded-full font-bold hover:bg-gray-100 transition-colors whitespace-nowrap text-center"
               >
                 Criar Conta Grátis
               </Link>
